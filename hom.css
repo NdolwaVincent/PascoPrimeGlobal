@@ -1,0 +1,196 @@
+*{
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+body{
+	font-family: 'Ariel', sanserif;
+	background-color: #f9f9f8;
+	line-height: 1.6;
+}
+header{
+	background-color:  #444;
+	color: #fff;
+	padding: 1rem;
+}
+nav{
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+header{
+	background-color:  #444;
+	color: #fff;
+	padding: 1rem;
+}
+.logo{
+	font-size: 1.5rem;
+	font-weight: bold;
+	}
+	#payment #pay-button {
+    background-color: #34b233; /* M-Pesa green */
+    color: white;
+    padding: 10px 20px;
+    font-size: 1em;
+    border: none;
+    text-align: center;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+#payment #pay-button:hover {
+    background-color: #2a8c28;
+}
+.hero{
+	background-color:  #333;
+	/*/background: url('opiyo2.jpg') no-repeat center center/cover;*/
+	height: 50vh;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	text-align: center;
+	color: white;
+}
+h1, h2 {
+	color: white;
+	text-align: center;
+}
+footer {
+    font-size: 0.9em;
+    padding: 10px;
+    width: 100%;
+    text-align: center;
+    padding: 40px 20px;
+    background: #333;
+    color: #fff;
+}
+.footer-container{
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: space-between;
+	margin: auto;
+	gap: 20px;
+}
+.footer-section{
+	flex: 1;
+	min-width: 200px;
+}
+.footer-secton h3{
+	font-size: 1.2em;
+	margin-bottom: 10px;
+	color: #ffdd57;
+}
+.footer-secton p, .footer-section ul,.footer-section li{
+	font-size: 0.9em;
+	line-height: 1.6;
+}
+.footer-section ul{
+	list-style: none;
+	padding: 0
+}
+.footer-section ul li{
+	margin-bottom: 8px;
+}
+.social-media a{
+	color: #ffdd57;
+	text-decoration: none;
+	display: inline-block;
+	margin-right: 10px;
+	transition: color 0.3s ease;
+}
+.social-media a: hover{
+	color: #fff;
+	
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    body {
+        padding: 10px;
+    }
+
+    header h1 {
+        font-size: 1.8em;
+    }
+
+    section {
+        padding: 20px;
+    }
+
+    section ul li {
+        padding: 5px 0;
+    }
+}
+.skills-container{
+	display: flex;
+	justify-content: space-around;
+}
+.skill{
+	background-color: #f4f4f4;
+	padding: 20px;
+	border-radius: 5px;
+	width: 30%
+}
+.project-card{
+	background-color: #eaeaea;
+	padding: 20px;
+	border-radius: 5px;
+	width: 30%;
+}
+.project-grid{
+	display: flex;
+	justify-content: space-around;
+}
+.project-card a{
+	display: block;
+	margin-top: 10px;
+	color: #333;
+	text-decoration: none;
+	font-weight: bold;
+}
+.project-card a :hover {
+	text-decoration: underline;
+}
+.logo {
+    width: 70px;
+    height: 70px;
+    border-radius: 70%;
+    background-color: blue;
+}
+.project-card p{
+	font-size: 18px;
+	font-weight: bold;
+}
+.project-card-earn{
+	background-color: #eaeaea;
+	padding: 20px;
+	border-radius: 5px;
+	width: 30%;
+}
+.project-earn{
+	display: flex;
+	justify-content: space-around;
+}
+.project-card-earn a{
+	display: block;
+	margin-top: 10px;
+	color: #333;
+	text-decoration: none;
+	font-weight: bold;
+}
+.project-card-earn a :hover {
+	text-decoration: underline;
+}
+.project-card-earn p{
+	font-size: 18px;
+	font-weight: normal;
+}
+.cta-btn{
+	color: orange;
+	background-color: gold;
+	text-decoration: none;
+}
+.rgbt{
+	text-decoration: none;
+}

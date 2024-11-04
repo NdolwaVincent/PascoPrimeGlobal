@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Vincent Company</title>
+    <link rel="stylesheet" href="dash.css">
+</head>
+<body>
+    <div class="form-container">
+        <h2>Pasco Global Management</h2>
+        <p>Please sign-in to your account and start making money</p>
+        <form id="loginForm" onsubmit="return validateLoginForm()">
+            <input type="email" id="loginEmail" placeholder="Email" required>
+            <input type="password" id="loginPassword" placeholder="Password" required>
+            <label class="remember-me">
+                <input type="checkbox" id="rememberMe"> Remember Me
+            </label>
+            <button type="submit" class="btn">Login</button>
+        </form>
+        <p>New on our platform? <a href="register.html">Register here</a></p>
+    </div>
+    <script src="validation.js"></script>
+</body>
+</html>
