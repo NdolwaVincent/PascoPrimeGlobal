@@ -194,3 +194,35 @@ footer {
 .rgbt{
 	text-decoration: none;
 }
+/*about packages*/
+#dashboard {
+    padding: 30px;
+    width: 100%;
+    max-width: 1000px;
+}
+
+#dashboard section {
+    background-color: #fff;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+#dashboard h2 {
+    color: orange;
+    font-size: 1.8em;
+    margin-bottom: 10px;
+}
+
+#dashboard p, #dashboard ul {
+    font-size: 1em;
+    color: #333;
+    font-style: bold;
+    line-height: 1.6;
+}
+
+#dashboard ul {
+    list-style: disc;
+    
+}
