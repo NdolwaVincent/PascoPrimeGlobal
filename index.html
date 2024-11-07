@@ -4,99 +4,26 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard with Drawer</title>
-    <link rel="stylesheet" href="Css/styles.css">
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-
     <div class="drawer" id="drawer">
         <h2>Dashboard</h2>
         <ul>
-            <li><a href="#" onclick="loadPage('dashboard.html')">Dashboard</a></li>
-            <li><a href="#" onclick="loadPage('deposit.html')">Deposit</a></li>
-            <li><a href="#" onclick="loadPage('index.html')">Packages</a></li>
-            <li><a href="#" onclick="loadPage('academics.html')">Package History</a></li>
-             <li><a href="#" onclick="loadPage('commission.html')">Commisions</a></li>
-              <li><a href="#" onclick="loadPage('withdraw.html')">Withdrawal</a></li>
-               <li><a href="#" onclick="loadPage('bout.html')">About Us</a></li>
-                <li><a href="#" onclick="loadPage('academics.html')">Support</a></li>
-                 <li><a href="#" onclick="loadPage('academics.html')">Profile</a></li>
-                  <li><a href="#" onclick="loadPage('academics.html')">Logout</a></li>
+            <li><a href="#" onclick="loadPage('about.html')">Home</a></li>
+            <li><a href="#" onclick="loadPage('contact.html')">About</a></li>
+            <li><a href="#" onclick="loadPage('index.html')">Services</a></li>
+            <li><a href="#" onclick="loadPage('academics.html')">Contact</a></li>
         </ul>
     </div>
 
-     <div id="main">
-      <div class="dashboard-container">
-        <h1>Dashboard</h1>
-        <div class="card-container">
-            <div class="whatsapp-group">
-        <p><a href="https://wa.me/+1 (840) 20644328" target="_blank">JOIN our WhatsApp group</a></p>
-      </div>
-
-          <div class="card">
-            <h2>USD 0</h2>
-            <p>Account Balance</p>
-          </div>
-          <div class="card">
-            <h2>USD 0</h2>
-            <p>Deposit Balance</p>
-            <button id="btndepo">Deposit Now</button>
-          </div>
-          <div class="card">
-            <h2>USD 0</h2>
-            <p>Total Withdrawn</p>
-          </div>
-          <div class="card">
-            <h2>USD 0</h2>
-            <p>Affiliate Commission</p>
-          </div>
-          <div class="affiliate-container">
-          <h3>Affiliate Link</h3>
-          <p>This is your invite link.</p>
-          <a href="https://petrolwealth.com/register?invite=Vincentn" target="_blank">https://pascoprime.com/register?invite=Vincentn</a>
-        </div>
-        </div>
-        
-      </div>
+    <div class="main-content" id="main-content">
+        <h1>Welcome to the Dashboard</h1>
+        <p>Select a page from the drawer.</p>
     </div>
-  </div>
 
     <button class="toggle-button" onclick="toggleDrawer()">☰</button>
-<footer id="footer-container">
-        <div class="footer-section">
-            <h2>Mission</h2>
-            <p>To empower individuals and businesses with tools, resources, and opportunities in global markets, providing a secure, transparent trading experience.</p>
-        
-            
-        </div>
-        <div class="footer-section">
-            <h3>Vision</h3>
-            <p>To be the leading global trading platform that democratizes access, fosters inclusion, and sets new industry standards.</p>
-        </div>
-        <div class="footer-section">
-            <h2>Impact on Society</h2>
-        <ul>
-            <li><strong>Financial Inclusion:</strong> Accessible packages for all backgrounds to build wealth.</li>
-            <li><strong>Educational Initiatives:</strong> Workshops and webinars to boost financial literacy.</li>
-            <li><strong>Sustainable Growth:</strong> Supporting companies driving environmental and social progress.</li>
-            <li><strong>Community Engagement:</strong> Supporting local programs and initiatives.</li>
-        </ul>
-        </div>
-        <div class="footer-section">
-            <h3>Contact US</h3>
-            <p>Emal: pascoprimeint@gmail.com</p>
-            <p>Phone: +1(840)2064328</p>
-            <p>Address: 54433222 ss</p>
-        </div>
-        <div class="footer-section social-media">
-            <h3>Follow Us</h3>
 
-             <a href="https://facebook.com" target="_blank" class="social-icon">Facebook</a>
-                        <a href="https://twitter.com" target="_blank" class="social-icon">Twitter</a>
-                        <a href="https://instagram.com" target="_blank" class="social-icon">Instagram</a>
-                        <a href="https://linkedin.com" target="_blank" class="social-icon">LinkedIn</a>
-        </div>
-        <p>&copy; 2023 PascoPrime Global. All rights reserved.</p>
-    </footer>
-    <script src="javascript/dbs.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
