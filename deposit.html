@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recharge</title>
+    <link rel="stylesheet" href="Css/depo.css">
+</head>
+<body>
+<div class="container">
+	<div class="avatar">
+		<img src="images/logob.PNG">
+
+	</div>
+	<div class="title">Recharge your Account</div>
+	<div class="section-title">Deposit</div>
+	<label for="payment-option">Payment Option</label>
+	<select id="payment-option">
+		<option value="mpesa">MPESA</option>
+		<option value="mpesa">BINANCE</option>
+		<option value="mpesa">PAYPAL</option>
+		<option value="mpesa">PERFECT MONEY</option>
+	</select>
+	<label for="amount">Enter Amount</label>
+	<input type="number" id="amount" placeholder="Amount" oninput="convertToUSD()">
+	<div class="conversion">
+		<span>Converted to USD:</span>
+		<span id="usd-amount">0.00</span>
+	</div>
+	<button class="btn" onclick="submitDeposit()">Submit</button>
+</div>
+<script type="javascript/dep.js"></script>
+</body>
+</html>

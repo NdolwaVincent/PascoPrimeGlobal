@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Withdrawal Interface</title>
+    <link rel="stylesheet" href="Css/wid.css">
+</head>
+<body>
+
+<div class="container">
+    <div class="avatar">
+        <img src="images/logob.PNG" alt="User Avatar">
+    </div>
+    <div class="title">Withdrawal Your Earnings</div>
+
+    <div class="section-title">Withdrawal</div>
+
+    <label for="wallet">Select Wallet</label>
+    <select id="wallet">
+        <option value="main_balance">MAIN BALANCE</option>
+        <!-- Add other wallet options here if needed -->
+    </select>
+
+    <label for="withdraw-amount">Amount (USD)</label>
+    <input type="number" id="withdraw-amount" placeholder="Enter Amount in USD">
+
+    <div class="minimum-amount">
+        Minimum Amount: USD 5
+    </div>
+
+    <button class="btn" onclick="submitWithdrawal()">Withdraw</button>
+</div>
+
+<script src="javascript/wid.js"></script>
+</body>
+</html>

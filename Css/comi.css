@@ -1,0 +1,62 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f9;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+}
+
+.container {
+    background-color: #333;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    width: 400px;
+}
+
+.section-title {
+    font-size: 1.5em;
+    font-weight: bold;
+    color: white;
+    margin-bottom: 10px;
+}
+
+.affiliate-info, .commission-info {
+    margin-top: 15px;
+    font-size: 1.0em;
+}
+
+.affiliate-link a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+.affiliate-link a:hover {
+    text-decoration: underline;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+}
+
+table, th, td {
+    border: 1px solid #333;
+}
+
+th, td {
+    padding: 8px;
+    text-align: center;
+}
+
+th {
+    background-color: #333;
+    font-weight: bold;
+}
+
+td {
+    font-size: 0.9em;
+}

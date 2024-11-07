@@ -1,0 +1,198 @@
+* {
+    box-sizing: border-box;
+    border-radius: 8px;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+.drawer {
+    height: auto;%;
+    width: auto;
+    position: fixed;
+    left: -250px; /* Hide drawer */
+    background-color: #111;
+    color: white;
+    transition: left 0.3s ease;
+    padding: 15px;
+}
+
+.drawer h2 {
+    text-align: center;
+}
+
+.drawer ul {
+    list-style-type: none;
+}
+
+.drawer ul li {
+    margin: 15px 0;
+    padding: 5px;
+    background-color: #333;
+
+}
+
+.drawer ul li a {
+    color: white;
+    text-decoration: none;
+    width: auto;
+    padding: 10px;
+    height: auto;
+}
+
+.toggle-button {
+    position: fixed;
+    top: 10px;
+    left: 10px;
+    font-size: 24px;
+    background-color: #111;
+    color: white;
+    border: none;
+    cursor: pointer;
+    padding: 5px;
+    z-index: 1;
+}
+
+.toggle-button:hover {
+    background-color: #575757;
+}
+#main {
+  transition: margin-left 0.3s;
+  padding: 20px;
+  height: auto;
+  width: auto;
+  background-color: #333;
+}
+
+.openbtn {
+  font-size: 30px;
+  background-color: #111;
+  color: white;
+  border: none;
+  cursor: pointer;
+  padding: 10px;
+}
+
+.openbtn:hover {
+  background-color: #444;
+}
+
+/* Dashboard Card Styles */
+.dashboard-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.card {
+  background-color: #f4f4f4;
+  padding: 20px;
+  text-align: center;
+  width: auto;
+  border-radius: 8px;
+  margin-top: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.card h2 {
+  font-size: 1.5em;
+  margin-bottom: 10px;
+}
+
+.card p {
+  font-size: 1em;
+  color: #555;
+}
+
+/* Affiliate Link Section */
+.affiliate-container {
+  margin-top: 30px;
+  text-align: center;
+}
+
+.affiliate-container a {
+  color: #007bff;
+  text-decoration: none;
+}
+
+.affiliate-container a:hover {
+  text-decoration: underline;
+}
+#btndepo{
+    text-align: center;
+    padding: 10px;
+    background-color: green;
+    color: white;
+    text-decoration: none;
+    border: none;
+}
+/*footer*/
+footer {
+    font-size: 0.9em;
+    padding: 10px;
+    width: 100%;
+    margin-top: 2px;
+    text-align: center;
+    padding: 40px 20px;
+    background: #333;
+    color: #fff;
+}
+.footer-container{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    margin: auto;
+    gap: 20px;
+}
+.footer-section{
+    flex: 1;
+    min-width: 200px;
+}
+.footer-secton h3{
+    font-size: 1.2em;
+    margin-bottom: 10px;
+    color: #ffdd57;
+}
+.footer-secton p, .footer-section ul,.footer-section li{
+    font-size: 0.9em;
+    line-height: 1.6;
+}
+.footer-section ul{
+    list-style: none;
+    padding: 0
+}
+.footer-section ul li{
+    margin-bottom: 8px;
+}
+.social-media a{
+    color: #ffdd57;
+    text-decoration: none;
+    display: inline-block;
+    margin-right: 10px;
+    transition: color 0.3s ease;
+}
+.social-media a: hover{
+    color: #fff;
+    
+}
+.whatsapp-group {
+  margin-top: 30px;
+  text-align: center;
+}
+
+.whatsapp-group a {
+  font-size: 1.2em;
+  color: green;
+  text-decoration: none;
+}
+
+.whatsapp-group a:hover {
+  text-decoration: underline;
+}
+/*heaader*/
+

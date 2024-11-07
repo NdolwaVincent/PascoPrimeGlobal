@@ -33,12 +33,3 @@ function drawBarChart(ctx, data) {
 }
 
 drawBarChart(userCtx, userData);
-document.querySelectorAll('#sidebar a, .header-nav a').forEach(anchor => {
-    anchor.addEventListener('click', function (e) {
-        e.preventDefault();
-        document.querySelector(this.getAttribute('href')).scrollIntoView({
-            behavior: 'smooth'
-        });
-    });
-});
-

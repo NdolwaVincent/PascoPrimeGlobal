@@ -1,0 +1,76 @@
+body{
+	font-family: Arial,sans-serif;
+	background-color: grey;
+	display: flex;
+	justify-content: center;
+	text-align: center;
+	min-height: auto;
+	margin: 0;
+}
+.container{
+	background-color: #333;
+	box-shadow: 0 0 10px rgba( 0, 0, 0 ,0.1);
+	padding: 20px;
+	width: 350px;
+	border-radius: 8px;
+	margin-top: 20px;
+}
+.avatar{
+	display: flex;
+	justify-content: center;
+	margin-bottom: 10px;
+}
+.avatar img{
+	width: 120px;
+	height: 120px;
+	border-radius: 10px;
+}
+.title{
+	font-size: 1.4em;
+	text-align: center;
+	color: #333;
+}
+.section-title{
+	margin-top: 20px;
+	font-weight: bold;
+	color: #555;
+
+}
+label{
+	font-size: 1.4em;
+	color: white;
+	display: block;
+	margin-top: 20px;
+}
+input[type="number"]{
+	width: 100%;
+	padding: 8px;
+	margin-top: 10px;
+	boarder: 1px solid #ddd;
+	border-radius: 5px;
+	box-sizing: border-box;
+}
+.conversion{
+	display: flex;
+	justify-content: space-between;
+	margin-top: 20px;
+	color: white;
+
+}
+.btn{
+	background-color: #34b233; /* M-Pesa green */
+    color: white;
+    padding: 10px 20px;
+    font-size: 1em;
+    border: none;
+    border-radius: 5px;
+    margin-top: 20px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+.btn:hover{
+	background-color: skyblue;
+}
+.payment-option{
+	padding: 10p;
+	margin-top: 10px;
+}
