@@ -1,74 +1,60 @@
+* {
+    box-sizing: border-box;
+}
+
 body {
     font-family: Arial, sans-serif;
-    background-color: #f4f4f9;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
     margin: 0;
+    padding: 0;
 }
-.container {
-    background-color: #333;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    padding: 20px;
-    width: 300px;
-}
-.avatar {
-    display: flex;
-    justify-content: center;
-    margin-bottom: 10px;
-}
-.avatar img {
-    width: 120px;
-    height: 120px;
-    border-radius: 50%;
-}
-.title {
-    font-size: 1.6em;
-    text-align: center;
-    color: white;
-}
-.section-title {
-    margin-top: 20px;
-    font-weight: bold;
-    color: white;
-    font-size: 1.3em;
-}
-label {
-    font-size: 0.9em;
-    color: white;
-    font-size: 1.2em;
-    display: block;
-    margin-top: 10px;
-    padding: 8px;
-}
-input[type="number"] {
-    width: 100%;
-    padding: 8px;
-    margin-top: 5px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    box-sizing: border-box;
-    color: 1.0em;
-}
-.minimum-amount {
-    font-size: 1.0em;
-    color: #888;
-    margin-top: 8px;
 
-}
-.btn {
-    display: block;
-    width: 100%;
-    background-color: #28a745;
+.drawer {
+    height: 100%;
+    width: 250px;
+    position: fixed;
+    left: -250px; /* Hide drawer */
+    background-color: #111;
     color: white;
-    padding: 10px;
-    margin-top: 15px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
+    transition: left 0.3s ease;
+    padding: 15px;
 }
-.btn:hover {
-    background-color: #218838;
+
+.drawer h2 {
+    text-align: center;
+}
+
+.drawer ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.drawer ul li {
+    margin: 15px 0;
+}
+
+.drawer ul li a {
+    color: white;
+    text-decoration: none;
+}
+
+.main-content {
+    margin-left: 15px;
+    padding: 20px;
+}
+
+.toggle-button {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    font-size: 24px;
+    background-color: #111;
+    color: white;
+    border: none;
+    cursor: pointer;
+    padding: 10px;
+    z-index: 1;
+}
+
+.toggle-button:hover {
+    background-color: #575757;
 }
