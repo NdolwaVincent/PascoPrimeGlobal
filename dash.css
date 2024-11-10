@@ -39,47 +39,14 @@ body {
   cursor: pointer;
 }
 
+.form button:hover {
+  background-color: #1f6d8c;
+}
+
 .form p {
   text-align: center;
 }
 
 .hidden {
   display: none;
-}
-/* Responsive Design */
-
-/* Tablets */
-@media (max-width: 768px) {
-  .content {
-    margin-left: 0;
-  }
-  #toggle-button {
-    display: block;
-  }
-}
-
-/* Smartphones */
-@media (max-width: 576px) {
-  body {
-    flex-direction: column;
-  }
-  .drawer {
-    width: auto%;
-    height: auto;
-    transform: translateY(-100%);
-  }
-  .drawer.open {
-    transform: translateY(0);
-  }
-  .drawer a {
-    padding: 10px;
-    flex: 1;
-    text-align: center;
-  }
-  .header h1 {
-    font-size: 20px;
-  }
-  .section {
-    padding: 15px;
-  }
 }
