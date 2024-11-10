@@ -16,8 +16,13 @@ const database = firebase.database();
 
 // Toggle between Login and Register forms
 function toggleForms() {
-  document.getElementById('login-form').classList.toggle('hidden');
-  document.getElementById('register-form').classList.toggle('hidden');
+  // Get both form containers
+  const loginForm = document.getElementById('login-form');
+  const registerForm = document.getElementById('register-form');
+  
+  // Toggle the visibility of the forms
+  loginForm.classList.toggle('hidden');
+  registerForm.classList.toggle('hidden');
 }
 
 // Register a new user
