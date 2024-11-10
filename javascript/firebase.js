@@ -1,14 +1,14 @@
 // Firebase configuration (replace with your own Firebase project config)
 const firebaseConfig = {
-    apiKey: "AIzaSyBtB199eH6fONCftI_B6IDP80_0Tv2dFN8",
-    authDomain: "m-sales-45b35.firebaseapp.com",
-    databaseURL: "https://m-sales-45b35-default-rtdb.firebaseio.com",
-    projectId: "m-sales-45b35",
-    storageBucket: "m-sales-45b35.appspot.com",
-    messagingSenderId: "194892525308",
-    appId: "1:194892525308:web:1ed25a30f2759c1a97f179",
-    measurementId: "G-RF5LE4H82E"
-  };
+  apiKey: "AIzaSyBtB199eH6fONCftI_B6IDP80_0Tv2dFN8",
+  authDomain: "m-sales-45b35.firebaseapp.com",
+  databaseURL: "https://m-sales-45b35-default-rtdb.firebaseio.com",
+  projectId: "m-sales-45b35",
+  storageBucket: "m-sales-45b35.appspot.com",
+  messagingSenderId: "194892525308",
+  appId: "1:194892525308:web:1ed25a30f2759c1a97f179",
+  measurementId: "G-RF5LE4H82E"
+};
 
 // Initialize Firebase
 const app = firebase.initializeApp(firebaseConfig);
@@ -16,13 +16,8 @@ const database = firebase.database();
 
 // Toggle between Login and Register forms
 function toggleForms() {
-  // Get both form containers
-  const loginForm = document.getElementById('login-form');
-  const registerForm = document.getElementById('register-form');
-  
-  // Toggle the visibility of the forms
-  loginForm.classList.toggle('hidden');
-  registerForm.classList.toggle('hidden');
+  document.getElementById('login-form').classList.toggle('hidden');
+  document.getElementById('register-form').classList.toggle('hidden');
 }
 
 // Register a new user
@@ -53,6 +48,8 @@ function registerUser() {
         referredBy: referredBy
       }).then(() => {
         alert("Registration successful! Please log in.");
+        // Clear form and switch to login form
+        document.getElementById('registerForm').reset();
         toggleForms(); // Show login form
       }).catch(error => {
         alert("Error: " + error.message);
