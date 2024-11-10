@@ -1,13 +1,5 @@
-<script type="module">
-  // Import the functions you need from the SDKs you need
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
-  import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-analytics.js";
-  // TODO: Add SDKs for Firebase products that you want to use
-  // https://firebase.google.com/docs/web/setup#available-libraries
-
-  // Your web app's Firebase configuration
-  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
-  const firebaseConfig = {
+// Firebase configuration (replace with your own Firebase project config)
+const firebaseConfig = {
     apiKey: "AIzaSyBtB199eH6fONCftI_B6IDP80_0Tv2dFN8",
     authDomain: "m-sales-45b35.firebaseapp.com",
     databaseURL: "https://m-sales-45b35-default-rtdb.firebaseio.com",
@@ -18,109 +10,66 @@
     measurementId: "G-RF5LE4H82E"
   };
 
-  // Initialize Firebase
-  const app = firebase.initializeApp(firebaseConfig);
-const auth = firebase.auth();
-const database = firebase.database(); // Realtime Database reference
+// Initialize Firebase
+const app = firebase.initializeApp(firebaseConfig);
+const database = firebase.database();
 
-// DOM elements
-const registerForm = document.getElementById('register-form');
-const loginForm = document.getElementById('login-form');
-const dashboard = document.getElementById('dashboard');
-const registerName = document.getElementById('register-name');
-const registerEmail = document.getElementById('register-email');
-const registerPassword = document.getElementById('register-password');
-const loginEmail = document.getElementById('login-email');
-const loginPassword = document.getElementById('login-password');
-const logoutBtn = document.getElementById('logout-btn');
-const gotoLogin = document.getElementById('goto-login');
-const gotoRegister = document.getElementById('goto-register');
-
-// Event listeners
-document.getElementById('register-form-element').addEventListener('submit', handleRegister);
-document.getElementById('login-form-element').addEventListener('submit', handleLogin);
-logoutBtn.addEventListener('click', handleLogout);
-gotoLogin.addEventListener('click', showLoginForm);
-gotoRegister.addEventListener('click', showRegisterForm);
-
-// Show Login Form
-function showLoginForm() {
-    registerForm.style.display = 'none';
-    loginForm.style.display = 'block';
+// Toggle between Login and Register forms
+function toggleForms() {
+  document.getElementById('login-form').classList.toggle('hidden');
+  document.getElementById('register-form').classList.toggle('hidden');
 }
 
-// Show Register Form
-function showRegisterForm() {
-    loginForm.style.display = 'none';
-    registerForm.style.display = 'block';
-}
+// Register a new user
+function registerUser() {
+  const username = document.getElementById('registerUsername').value;
+  const email = document.getElementById('registerEmail').value;
+  const phone = document.getElementById('registerPhone').value;
+  const password = document.getElementById('registerPassword').value;
+  const confirmPassword = document.getElementById('registerConfirmPassword').value;
+  const referredBy = document.getElementById('registerReferredBy').value;
 
-// Handle User Registration
-async function handleRegister(event) {
-    event.preventDefault();
-    
-    const name = registerName.value;
-    const email = registerEmail.value;
-    const password = registerPassword.value;
-    
-    try {
-        // Create user with email and password
-        const userCredential = await auth.createUserWithEmailAndPassword(email, password);
-        const user = userCredential.user;
+  // Basic validation
+  if (password !== confirmPassword) {
+    alert("Passwords do not match");
+    return;
+  }
 
-        // Now write the user data to Firebase Realtime Database
-        await database.ref('users/' + user.uid).set({
-            username: name,
-            email: email,
-            createdAt: new Date().toISOString(),
-        });
-
-        alert('User registered and data added to Realtime Database!');
-        showLoginForm();
-    } catch (error) {
-        alert(error.message);
-    }
-}
-
-// Handle User Login
-async function handleLogin(event) {
-    event.preventDefault();
-    
-    const email = loginEmail.value;
-    const password = loginPassword.value;
-    
-    try {
-        await auth.signInWithEmailAndPassword(email, password);
-        alert('Login successful!');
-        showDashboard();
-    } catch (error) {
-        alert(error.message);
-    }
-}
-
-// Show Dashboard after successful login
-function showDashboard() {
-    loginForm.style.display = 'none';
-    dashboard.style.display = 'block';
-}
-
-// Handle Logout
-async function handleLogout() {
-    try {
-        await auth.signOut();
-        alert('Logged out successfully!');
-        window.location.reload();
-    } catch (error) {
-        alert(error.message);
-    }
-}
-
-// Listen for authentication state changes
-auth.onAuthStateChanged(user => {
-    if (user) {
-        showDashboard();
+  // Check if username already exists in the database
+  firebase.database().ref('users/' + username).get().then(snapshot => {
+    if (snapshot.exists()) {
+      alert("Username already exists. Please choose another one.");
     } else {
-        showLoginForm();
+      // Save new user data in Firebase Realtime Database
+      firebase.database().ref('users/' + username).set({
+        email: email,
+        phone: phone,
+        password: password,
+        referredBy: referredBy
+      }).then(() => {
+        alert("Registration successful! Please log in.");
+        toggleForms(); // Show login form
+      }).catch(error => {
+        alert("Error: " + error.message);
+      });
     }
-});
-</script>
+  });
+}
+
+// Login an existing user
+function loginUser() {
+  const username = document.getElementById('loginUsername').value;
+  const password = document.getElementById('loginPassword').value;
+
+  // Check if user exists and password matches
+  firebase.database().ref('users/' + username).get().then(snapshot => {
+    if (snapshot.exists() && snapshot.val().password === password) {
+      alert("Login successful! Redirecting to dashboard...");
+      window.location.href = 'dashboard.html'; // Redirect to dashboard
+    } else {
+      alert("Invalid username or password.");
+    }
+  }).catch(error => {
+    alert("Error: " + error.message);
+  });
+}
