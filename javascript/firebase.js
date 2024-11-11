@@ -1,6 +1,5 @@
-// Firebase configuration (replace with your own Firebase project config)
 const firebaseConfig = {
-  apiKey: "AIzaSyBtB199eH6fONCftI_B6IDP80_0Tv2dFN8",
+    apiKey: "AIzaSyBtB199eH6fONCftI_B6IDP80_0Tv2dFN8",
   authDomain: "m-sales-45b35.firebaseapp.com",
   databaseURL: "https://m-sales-45b35-default-rtdb.firebaseio.com",
   projectId: "m-sales-45b35",
@@ -11,67 +10,130 @@ const firebaseConfig = {
 };
 
 // Initialize Firebase
-const app = firebase.initializeApp(firebaseConfig);
+firebase.initializeApp(firebaseConfig);
 const database = firebase.database();
 
-// Toggle between Login and Register forms
-function toggleForms() {
-  document.getElementById('login-form').classList.toggle('hidden');
-  document.getElementById('register-form').classList.toggle('hidden');
+function toggleForm() {
+    const loginForm = document.getElementById("login-form");
+    const registerForm = document.getElementById("register-form");
+    const formTitle = document.getElementById("form-title");
+
+    if (loginForm.style.display === "none") {
+        loginForm.style.display = "block";
+        registerForm.style.display = "none";
+        formTitle.innerText = "Login";
+    } else {
+        loginForm.style.display = "none";
+        registerForm.style.display = "block";
+        formTitle.innerText = "Register";
+    }
 }
 
-// Register a new user
+function showError(inputId, message) {
+    const errorElement = document.getElementById(inputId + "-error");
+    errorElement.innerText = message;
+}
+
+function clearErrors() {
+    document.querySelectorAll(".error").forEach((element) => {
+        element.innerText = "";
+    });
+}
+
+function validateRegisterForm() {
+    clearErrors();
+    let valid = true;
+
+    const username = document.getElementById("username").value;
+    const email = document.getElementById("email").value;
+    const phone = document.getElementById("phone").value;
+    const password = document.getElementById("password").value;
+    const confirmPassword = document.getElementById("confirm-password").value;
+
+    if (username === "") {
+        showError("username", "Username is required");
+        valid = false;
+    }
+    if (email === "") {
+        showError("email", "Email is required");
+        valid = false;
+    }
+    if (phone === "" || !/^\d{10}$/.test(phone)) {
+        showError("phone", "Valid phone number is required");
+        valid = false;
+    }
+    if (password === "" || password.length < 6) {
+        showError("password", "Password must be at least 6 characters");
+        valid = false;
+    }
+    if (password !== confirmPassword) {
+        showError("confirm-password", "Passwords do not match");
+        valid = false;
+    }
+
+    return valid;
+}
+
+function validateLoginForm() {
+    clearErrors();
+    let valid = true;
+
+    const username = document.getElementById("login-username").value;
+    const password = document.getElementById("login-password").value;
+
+    if (username === "") {
+        showError("login-username", "Username is required");
+        valid = false;
+    }
+    if (password === "") {
+        showError("login-password", "Password is required");
+        valid = false;
+    }
+
+    return valid;
+}
+
 function registerUser() {
-  const username = document.getElementById('registerUsername').value;
-  const email = document.getElementById('registerEmail').value;
-  const phone = document.getElementById('registerPhone').value;
-  const password = document.getElementById('registerPassword').value;
-  const confirmPassword = document.getElementById('registerConfirmPassword').value;
-  const referredBy = document.getElementById('registerReferredBy').value;
+    if (validateRegisterForm()) {
+        const username = document.getElementById("username").value;
+        const email = document.getElementById("email").value;
+        const phone = document.getElementById("phone").value;
+        const password = document.getElementById("password").value;
+        const referredBy = document.getElementById("referred-by").value;
 
-  // Basic validation
-  if (password !== confirmPassword) {
-    alert("Passwords do not match");
-    return;
-  }
-
-  // Check if username already exists in the database
-  firebase.database().ref('users/' + username).get().then(snapshot => {
-    if (snapshot.exists()) {
-      alert("Username already exists. Please choose another one.");
-    } else {
-      // Save new user data in Firebase Realtime Database
-      firebase.database().ref('users/' + username).set({
-        email: email,
-        phone: phone,
-        password: password,
-        referredBy: referredBy
-      }).then(() => {
-        alert("Registration successful! Please log in.");
-        // Clear form and switch to login form
-        document.getElementById('registerForm').reset();
-        toggleForms(); // Show login form
-      }).catch(error => {
-        alert("Error: " + error.message);
-      });
+        firebase.database().ref("users/" + username).set({
+            email: email,
+            phone: phone,
+            password: password,
+            referredBy: referredBy
+        }).then(() => {
+            alert("Registration successful!");
+            toggleForm();
+        }).catch((error) => {
+            alert("Error: " + error.message);
+        });
     }
-  });
 }
 
-// Login an existing user
 function loginUser() {
-  const username = document.getElementById('loginUsername').value;
-  const password = document.getElementById('loginPassword').value;
+    if (validateLoginForm()) {
+        const username = document.getElementById("login-username").value;
+        const password = document.getElementById("login-password").value;
 
-  // Check if user exists and password matches
-  firebase.database().ref('users/' + username).get().then(snapshot => {
-    if (snapshot.exists() && snapshot.val().password === password) {
-      alert("Login successful! Redirecting to dashboard...");
-      window.location.href = 'dashboard.html'; // Redirect to dashboard
-    } else {
-      alert("Invalid username or password.");
+        firebase.database().ref("users/" + username).get().then((snapshot) => {
+            if (snapshot.exists()) {
+                const userData = snapshot.val();
+                if (userData.password === password) {
+                    alert("Login successful!");
+                    // Redirect to dashboard or home page
+                } else {
+                    showError("login-password", "Incorrect password");
+                }
+            } else {
+                showError("login-username", "User does not exist");
+            }
+        }).catch((error) => {
+            alert("Error: " + error.message);
+        });
     }
-  }).catch(error => {
-    alert("Error: " + error.message);
-  });
 }
