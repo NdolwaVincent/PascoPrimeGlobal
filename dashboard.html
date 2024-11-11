@@ -1,36 +1,45 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard with Drawer</title>
-    <link rel="stylesheet" href="Css/styles.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Responsive Dashboard with Toggle Drawer</title>
+  <link rel="stylesheet" href="Css/styles.css">
 </head>
 <body>
 
-    <div class="drawer" id="drawer">
-        <h2>Dashboard</h2>
-        <ul>
-            <li><a href="#" onclick="loadPage('dashboard.html')">Dashboard</a></li>
-            <li><a href="#" onclick="loadPage('deposit.html')">Deposit</a></li>
-            <li><a href="#" onclick="loadPage('index.html')">Packages</a></li>
-            <li><a href="#" onclick="loadPage('academics.html')">Package History</a></li>
-             <li><a href="#" onclick="loadPage('commission.html')">Commisions</a></li>
-              <li><a href="#" onclick="loadPage('withdraw.html')">Withdrawal</a></li>
-               <li><a href="#" onclick="loadPage('bout.html')">About Us</a></li>
-                <li><a href="#" onclick="loadPage('academics.html')">Support</a></li>
-                 <li><a href="#" onclick="loadPage('academics.html')">Profile</a></li>
-                  <li><a href="#" onclick="loadPage('academics.html')">Logout</a></li>
-        </ul>
+  <!-- Toggle Button -->
+  <button id="toggle-button" onclick="toggleDrawer()">☰</button>
+
+  <!-- Sidebar (Drawer) -->
+  <div class="drawer" id="drawer">
+    <a href="#" onclick="showSection('dashboard')">Dashboard</a>
+    <a href="#" onclick="showSection('deposit')">Deposit</a>
+    <a href="#" onclick="showSection('package')">Package</a>
+    <a href="#" onclick="showSection('package-history')">Package History</a>
+    <a href="#" onclick="showSection('commission')">Commission</a>
+    <a href="#" onclick="showSection('withdrawal')">Withdrawal</a>
+    <a href="#" onclick="showSection('about')">About Us</a>
+    <a href="#" onclick="showSection('support')">Support</a>
+    <a href="#" onclick="showSection('profile')">Profile</a>
+    <a href="#" onclick="showSection('logout')">Logout</a>
+  </div>
+
+  <!-- Main content -->
+  <div class="content">
+    <!-- Header -->
+    <div class="header">
+      <h1>Pasco Prime Global</h1>
     </div>
-    <div class="main">
-        <div class="dashboard-container">
+
+    <!-- Sections -->
+    <div id="dashboard" class="section active">
+      <div class="dashboard-container">
         <h1>Dashboard</h1>
         <div class="card-container">
             <div class="whatsapp-group">
         <p><a href="https://wa.me/+1 (840) 20644328" target="_blank">JOIN our WhatsApp group</a></p>
       </div>
-
           <div class="card">
             <h2>USD 0</h2>
             <p>Account Balance</p>
@@ -57,27 +66,157 @@
         
       </div>
     </div>
-    <button class="toggle-button" onclick="toggleDrawer()">☰</button>
-<footer id="footer-container">
-        <div class="footer-section">
-            <h2>Mission</h2>
-            <p>To empower individuals and businesses with tools, resources, and opportunities in global markets, providing a secure, transparent trading experience.</p>
-        
-            
-        </div>
-        <div class="footer-section">
-            <h3>Vision</h3>
-            <p>To be the leading global trading platform that democratizes access, fosters inclusion, and sets new industry standards.</p>
-        </div>
-        <div class="footer-section">
-            <h2>Impact on Society</h2>
-        <ul>
-            <li><strong>Financial Inclusion:</strong> Accessible packages for all backgrounds to build wealth.</li>
-            <li><strong>Educational Initiatives:</strong> Workshops and webinars to boost financial literacy.</li>
-            <li><strong>Sustainable Growth:</strong> Supporting companies driving environmental and social progress.</li>
-            <li><strong>Community Engagement:</strong> Supporting local programs and initiatives.</li>
+    </div>
+    <div id="deposit" class="section">
+      <div class="container">
+  <div class="avatar">
+    <img src="images/logob.PNG">
+
+  </div>
+  <div class="title">Recharge your Account</div>
+  <div class="section-title">Deposit</div>
+  <label for="payment-option">Payment Option</label>
+  <select id="payment-option">
+    <option value="mpesa">MPESA</option>
+    <option value="mpesa">BINANCE</option>
+    <option value="mpesa">PAYPAL</option>
+    <option value="mpesa">PERFECT MONEY</option>
+  </select>
+  <label for="amount">Enter Amount</label>
+  <input type="number" id="amount" placeholder="Amount" oninput="convertToUSD()">
+  <div class="conversion">
+    <span>Converted to USD:</span>
+    <span id="usd-amount">0.00</span>
+  </div>
+  <button class="btn" onclick="submitDeposit()">Submit</button>
+</div>
+    </div>
+    <div id="package" class="section">
+      <h2>Package</h2>
+      <p>This is the package section.</p>
+    </div>
+    <div id="package-history" class="section">
+      <h2>Package History</h2>
+      <p>This is the package history section.</p>
+    </div>
+    <div id="commission" class="section">
+      <h2>Commission</h2>
+      <p>This is the commission section.</p>
+    </div>
+    <div id="withdrawal" class="section">
+      <div class="container">
+    <div class="avatar">
+        <img src="images/logob.PNG" alt="User Avatar">
+    </div>
+    <div class="title">Withdrawal Your Earnings</div>
+
+    <div class="section-title">Withdrawal</div>
+
+    <label for="wallet">Select Wallet</label>
+    <select id="wallet">
+        <option value="main_balance">MAIN BALANCE</option>
+        <!-- Add other wallet options here if needed -->
+    </select>
+
+    <label for="withdraw-amount">Amount (USD)</label>
+    <input type="number" id="withdraw-amount" placeholder="Enter Amount in USD">
+
+    <div class="minimum-amount">
+        Minimum Amount: USD 5
+    </div>
+
+    <button class="btn" onclick="submitWithdrawal()">Withdraw</button>
+</div>
+    </div>
+    <div id="about" class="section">
+        <div class="faq-container">
+    <h1 class="faq-header">Explore more about Pasco Prime Global.</h1>
+    <div class="faq-item">
+      <div class="faq-question" onclick="toggleAnswer('answer1')">
+       Overview and Summary
+      </div>
+      <div id="answer1" class="faq-answer">
+       PascoPrime Global is a premier international trading platform designed to offer individuals and businesses access to global financial markets. Built on transparency, technology, and customer-centric values, we aim to democratize trading and wealth-building opportunities worldwide.
+      </div>
+    </div>
+    
+    <div class="faq-item">
+      <div class="faq-question" onclick="toggleAnswer('answer2')">
+        How It Works
+      </div>
+      <div id="answer2" class="faq-answer">
+        Our platform connects you to global financial markets with an intuitive interface and cutting-edge tools. Choose a package, subscribe, and start trading stocks, commodities, indices, and currencies. Earn 7% daily on your subscribed package for 99 days.
+      </div>
+    </div>
+    
+    <div class="faq-item">
+      <div class="faq-question" onclick="toggleAnswer('answer3')">
+       How you earn
+      </div>
+      <div id="answer3" class="faq-answer">
+       Earn 7% daily on your package and receive 10% commission for referrals. Our platform provides real-time data to inform your trading decisions and help maximize profitability
+      </div>
+    </div>
+    
+    <div class="faq-item">
+      <div class="faq-question" onclick="toggleAnswer('answer4')">
+        How to Cash Out
+      </div>
+      <div id="answer4" class="faq-answer">
+        Withdrawals are simple and secure, with funds sent to your bank or preferred payment method. Minimum cashout is $5.
+      </div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-question" onclick="toggleAnswer('answer5')">
+       Why choose Us?
+      </div>
+      <div id="answer5" class="faq-answer">
+         <ul>
+            <li><strong>Global Reach:</strong> Access diverse international markets for broader investment opportunities.</li>
+            <li><strong>User-Friendly Platform:</strong> Intuitive design and powerful tools for traders of all levels.</li>
+            <li><strong>Advanced Analytics:</strong> Real-time data to optimize trading decisions.</li>
+            <li><strong>Customizable Packages:</strong> Ten packages to fit any financial goal or style.</li>
+            <li><strong>Security & Reliability:</strong> Secure trading environment and asset protection.</li>
+            <li><strong>Dedicated Support:</strong> Expert guidance and personalized support.</li>
         </ul>
-        </div>
+      </div>
+    </div>
+  </div>
+    </div>
+    <div id="support" class="section">
+      <h2>Support</h2>
+      <p>This is the support section.</p>
+    </div>
+    <div id="profile" class="section">
+       <div class="profile-container">
+    <h2>Account</h2>
+    <div class="profile-details">
+      <h3>PROFILE DETAILS</h3>
+      <div class="profile-item">
+        <span class="label">Username:</span>
+        <span class="value">Vincentn</span>
+      </div>
+      <div class="profile-item">
+        <span class="label">Mobile:</span>
+        <span class="value">+254741801299</span>
+      </div>
+      <div class="profile-item">
+        <span class="label">Referred By:</span>
+        <span class="value">Pasco Prime</span>
+      </div>
+      <div class="profile-item">
+        <span class="label">E-mail:</span>
+        <span class="value">ndolwavincent@gmail.com</span>
+      </div>
+    </div>
+  </div>
+    </div>
+    <div id="logout" class="section">
+      <h2>Logout</h2>
+      <p>You have been logged out.</p>
+    </div>
+    <!-- Footer -->
+    <footer id="footer-container">
         <div class="footer-section">
             <h3>Contact US</h3>
             <p>Emal: pascoprimeint@gmail.com</p>
@@ -94,6 +233,10 @@
         </div>
         <p>&copy; 2023 PascoPrime Global. All rights reserved.</p>
     </footer>
-    <script src="javascript/dashb.js"></script>
+
+  <script src="dashb.js"></script>
+  <script src="dep.js"></script>
+   <script src="wid.js"></script>
+   <script src="bout.js"></script>
 </body>
 </html>
