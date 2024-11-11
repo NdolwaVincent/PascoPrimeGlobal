@@ -1,13 +1,13 @@
 const firebaseConfig = {
     apiKey: "AIzaSyBtB199eH6fONCftI_B6IDP80_0Tv2dFN8",
-  authDomain: "m-sales-45b35.firebaseapp.com",
-  databaseURL: "https://m-sales-45b35-default-rtdb.firebaseio.com",
-  projectId: "m-sales-45b35",
-  storageBucket: "m-sales-45b35.appspot.com",
-  messagingSenderId: "194892525308",
-  appId: "1:194892525308:web:1ed25a30f2759c1a97f179",
-  measurementId: "G-RF5LE4H82E"
-};
+    authDomain: "m-sales-45b35.firebaseapp.com",
+    databaseURL: "https://m-sales-45b35-default-rtdb.firebaseio.com",
+    projectId: "m-sales-45b35",
+    storageBucket: "m-sales-45b35.appspot.com",
+    messagingSenderId: "194892525308",
+    appId: "1:194892525308:web:f31b537abce9bda997f179",
+    measurementId: "G-202V5SPE3H"
+  };
 
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
