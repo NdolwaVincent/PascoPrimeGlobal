@@ -1,3 +1,6 @@
+// Import the functions you need from the Firebase SDKs
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js";
+import { getDatabase, ref, set, get, child } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-database.js";
 const firebaseConfig = {
     apiKey: "AIzaSyBtB199eH6fONCftI_B6IDP80_0Tv2dFN8",
     authDomain: "m-sales-45b35.firebaseapp.com",
