@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Payment Page</title>
+  <link rel="stylesheet" href="p.css">
+</head>
+<body>
+  <h1>Complete Your Payment</h1>
+  <div class="container">
+    
+    <p id="packageDetails"></p>
+    <button onclick="proceedWithPayment()">Proceed to Payment</button>
+  </div>
+
+  <script>
+    // Retrieve package details from URL parameters
+    const urlParams = new URLSearchParams(window.location.search);
+    const packageName = urlParams.get('package');
+    const packagePrice = urlParams.get('price');
+
+    // Display package details
+    document.getElementById('packageDetails').innerText = 
+      `You selected: ${packageName} - $${packagePrice}`;
+
+    function proceedWithPayment() {
+      alert('Proceeding to payment for ' + packageName);
+      // Add your payment integration here
+    }
+  </script>
+</body>
+</html>
