@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Responsive Dashboard with Toggle Drawer</title>
-  <link rel="stylesheet" href="Css/styles.css">
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
@@ -91,9 +91,16 @@
   <button class="btn" onclick="submitDeposit()">Submit</button>
 </div>
     </div>
+    <link rel="stylesheet" href="p.css">
     <div id="package" class="section">
-      <h2>Package</h2>
-      <p>This is the package section.</p>
+      <h1>PascoPrime Global Packages</h1>
+  <div class="container">
+    <div class="package-list" id="packageList">
+      <!-- Packages will be generated here by JavaScript -->
+    </div>
+  </div>
+
+  <script src="pc.js"></script>
     </div>
     <div id="package-history" class="section">
       <h2>Package History</h2>
@@ -234,9 +241,9 @@
         <p>&copy; 2023 PascoPrime Global. All rights reserved.</p>
     </footer>
 
-  <script src="javascript/dashb.js"></script>
-  <script src="javascript/dep.js"></script>
-   <script src="javascript/wid.js"></script>
-   <script src="javascript/bout.js"></script>
+  <script src="dashb.js"></script>
+  <script src="dep.js"></script>
+   <script src="wid.js"></script>
+   <script src="bout.js"></script>
 </body>
 </html>
