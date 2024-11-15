@@ -3,7 +3,7 @@ function RegPage(){
 	window.location.href = "Register.html"
 }
 function RegPages(){
-	window.location.href = "Register.html"
+	window.location.href = "dashboard.html"
 }
 let menuBtn = document.querySelector(".menu_btn");
 let navLinks = document.querySelector(".links");
