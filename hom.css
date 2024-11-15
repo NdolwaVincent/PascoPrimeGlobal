@@ -21,12 +21,13 @@ img {
   display: flex;
 }
 
+
 a {
   text-decoration: none;
 }
 
 .header {
-  background: url(images/PP7.jpg);
+  background: url(images/pp7.JPG);
   background-position: center center;
   background-size: cover;
   background-repeat: no-repeat;
