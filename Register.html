@@ -1,35 +1,22 @@
-<!DOCTYPE html>
-<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login & Register</title>
-    <link rel="stylesheet" href="dash.css">
-    <script defer src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js"></script>
-    <script defer src="https://www.gstatic.com/firebasejs/9.0.0/firebase-database.js"></script>
-    
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+  <link rel="stylesheet" href="dash.css" />
+  <script src=
+"https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js">
+    </script>
+  <title>Registration Form</title>
 </head>
+
 <body>
+  <div class="container" id="form-container">
+    <h1>Pasco Prime Global</h1>
+    <h4>Create Account to join our platform</h4>
+    <form action="" method="POST" id="registrationform">
 
-<div class="container" id="form-container">
-    <h2 id="form-title">Login</h2>
-    <form id="login-form">
-        <div class="form-group">
-            <label for="login-username">Username</label>
-            <input type="text" id="login-username" required>
-            <div class="error" id="login-username-error"></div>
-        </div>
-        <div class="form-group">
-            <label for="login-password">Password</label>
-            <input type="password" id="login-password" required>
-            <div class="error" id="login-password-error"></div>
-        </div>
-        <button type="button" class="btn" onclick="loginUser()">Login</button>
-        <span class="toggle-link" onclick="toggleForm()">Don't have an account? Register</span>
-    </form>
-
-    <form id="register-form" style="display: none;">
-        <div class="form-group">
+    <!-- Section 1 -->
+      <div class="form-group">
             <label for="username">Username</label>
             <input type="text" id="username" required>
             <div class="error" id="username-error"></div>
@@ -57,11 +44,106 @@
         <div class="form-group">
             <label for="referred-by">Referred By</label>
             <input type="text" id="referred-by">
-        </div>
-        <button type="button" class="btn" onclick="registerUser()">Register</button>
-        <span class="toggle-link" onclick="toggleForm()">Already have an account? Login</span>
-    </form>
-</div>
-<script defer src="javascript/firebase.js"></script>
+        </div> 
+         <button type="submit" class="btn" sendMessage()>CREATE ACOOUNT</button>
+         <a href="login.html" class="toggle-link">Already have an account? Login</a>
+  </form>
+  </div>
+
+    <!-- section 2 -->
+   <!--  <fieldset>
+      <legend><span class="section">2</span>Profile</legend>
+      <label class="" for="bio">Bio:</label>
+      <textarea name="bio" id="bio" required></textarea>
+
+      <label for="job">Job Role:</label>
+      <select name="job" id="job" required>
+        <optgroup label="Web">
+          <option value="front_end_developer">Frontend Developer</option>
+          <option value="back_end_developer">Backend Developer</option>
+          <option value="fullstack_developer">Fullstack Developer</option>
+        </optgroup>
+        <optgroup label="Mobile">
+          <option value="android">Android</option>
+          <option value="ionic">Ionic</option>
+          <option value="phonegap">PhoneGap</option>
+        </optgroup>
+      </select>
+      <br /><br />
+      <label>Interest:</label>
+
+      <select id="interest" required>
+        <option value="development">Development</option>
+        <option value="design">Design</option>
+        <option value="business">Business</option>
+      </select> -->
+
+     
+
+   <script type="module">
+
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js";
+
+      const firebaseConfig = {
+        apiKey: "AIzaSyD6k4OlLYnotuuChAjLBoHmqfv9-iwrlfY",
+  authDomain: "alfajiri-database.firebaseapp.com",
+  databaseURL: "https://alfajiri-database-default-rtdb.firebaseio.com",
+  projectId: "alfajiri-database",
+  storageBucket: "alfajiri-database.appspot.com",
+  messagingSenderId: "310417854615",
+  appId: "1:310417854615:web:6f65002a119caeaf9119d2",
+  measurementId: "G-21TBZCRBHM"
+      };
+
+      // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+
+    import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-database.js";
+
+
+
+    //listen for submit event//(1)
+    document
+      .getElementById('registrationform')
+      .addEventListener('submit', formSubmit);
+
+    //Submit form(2)
+    function formSubmit(e) {
+      e.preventDefault();
+      // Get Values from the DOM
+      let username = document.querySelector('#username').value;
+      let email = document.querySelector('#email').value;
+      let password = document.querySelector('#password').value;
+      let phone = document.querySelector('#phone').value;
+      let referredby = document.querySelector('#referred-by').value;
+      
+
+      //send message values(3)
+      sendMessage(username, email, phone, password, referredby);
+    }
+
+    //Send Message to Firebase(4)
+    function sendMessage(username, email, phone, password, referredby) {
+      const database = getDatabase();
+
+      set(ref(database, 'users/' + username), {
+        username: username,
+        email: email,
+        phone: phone,
+        password: password,
+        referredby: referredby,
+      }).then(() => {
+          //Show Alert Message(5)
+       alert('Account is created successfully')
+        //Hide Alert Message After Seven Seconds(6)
+       setTimeout(function () {
+       document.querySelector('.alert').style.display = 'none';
+       }, 7000);
+       document.getElementById('registrationform').reset();
+      }).catch((error) => {
+        alert(error)
+      })
+    }
+  </script>
 </body>
 </html>
