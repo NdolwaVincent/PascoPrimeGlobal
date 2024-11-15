@@ -20,7 +20,10 @@ img {
   width: 100%;
   display: flex;
 }
-
+.logo img{
+   width: 30%;
+   height: 30%
+}
 
 a {
   text-decoration: none;
