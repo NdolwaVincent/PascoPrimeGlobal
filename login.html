@@ -1,120 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-  <script src=
-"https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js">
-    </script>
-  <link rel="stylesheet" href="dash.css" />
-  <title>Registration Form</title>
-</head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Login Form</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background-color: #f4f4f4;
+    }
+    .login-container {
+     width: 100%;
+    max-width: 400px;
+    padding: 20px;
+    margin-top: 20px;
+    background-color: #333;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
 
+h1 {
+    text-align: center;
+    color: white;
+}
+h4 {
+    text-align: center;
+    color: white;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+label {
+    display: block;
+    font-size: 14px;
+    margin-bottom: 5px;
+    color: white;
+}
+    .login-container h1 {
+      margin-bottom: 20px;
+      font-size: 24px;
+    }
+    .login-container input {
+      width: 100%;
+      padding: 10px;
+      margin: 5px 0;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    .login-container button {
+      width: 100%;
+      padding: 10px;
+      background: #007bff;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .login-container button:hover {
+      background: #0056b3;
+    }
+    .error {
+      color: red;
+      font-size: 14px;
+    }
+    .toggle-link {
+    display: block;
+    text-align: center;
+    margin-top: 15px;
+    color: #007bff;
+    cursor: pointer;
+    text-decoration: none;
+    text-decoration: underline;
+}
+  </style>
+</head>
 <body>
-  <div class="container" id="form-container">
+  <div class="login-container">
     <h1>Pasco Prime Global</h1>
     <h4>Enter your details and access our platform</h4>
-    <form action="" method="POST" id="registrationform">
-    <div class="form-group">
-            <label for="login-username">Username</label>
-            <input type="text" id="login-username" required>
-            <div class="error" id="login-username-error"></div>
-        </div>
-        <div class="form-group">
-            <label for="login-password">Password</label>
-            <input type="password" id="login-password" required>
-            <div class="error" id="login-password-error"></div>
-        </div>
-        <button type="submit" class="btn" sendMessage()>LOGIN </button>
-         <a href="Register.html" class="toggle-link">Dont have an account? Register here</a>
-  </form>
+    <form id="loginForm">
+      <label for="username">Username</label>
+      <input type="text" id="username" placeholder="Username" required>
+      <label for="password">Password</label>
+      <input type="password" id="password" placeholder="Password" required>
+      <button type="submit">Login</button>
+       <a href="Register.html" class="toggle-link">Don't have an account? Register</a>
+    </form>
+    <p class="error" id="error"></p>
   </div>
 
-    <!-- section 2 -->
-   <!--  <fieldset>
-      <legend><span class="section">2</span>Profile</legend>
-      <label class="" for="bio">Bio:</label>
-      <textarea name="bio" id="bio" required></textarea>
-
-      <label for="job">Job Role:</label>
-      <select name="job" id="job" required>
-        <optgroup label="Web">
-          <option value="front_end_developer">Frontend Developer</option>
-          <option value="back_end_developer">Backend Developer</option>
-          <option value="fullstack_developer">Fullstack Developer</option>
-        </optgroup>
-        <optgroup label="Mobile">
-          <option value="android">Android</option>
-          <option value="ionic">Ionic</option>
-          <option value="phonegap">PhoneGap</option>
-        </optgroup>
-      </select>
-      <br /><br />
-      <label>Interest:</label>
-
-      <select id="interest" required>
-        <option value="development">Development</option>
-        <option value="design">Design</option>
-        <option value="business">Business</option>
-      </select> -->
-
-     
-
-   <script type="module">
-
+  <!-- Firebase SDK -->
+  <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js";
+    import { getDatabase, ref, child, get } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-database.js";
 
-      const firebaseConfig = {
-        apiKey: "AIzaSyD6k4OlLYnotuuChAjLBoHmqfv9-iwrlfY",
-  authDomain: "alfajiri-database.firebaseapp.com",
-  databaseURL: "https://alfajiri-database-default-rtdb.firebaseio.com",
-  projectId: "alfajiri-database",
-  storageBucket: "alfajiri-database.appspot.com",
-  messagingSenderId: "310417854615",
-  appId: "1:310417854615:web:6f65002a119caeaf9119d2",
-  measurementId: "G-21TBZCRBHM"
-      };
+    // Your Firebase configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyD6k4OlLYnotuuChAjLBoHmqfv9-iwrlfY",
+      authDomain: "alfajiri-database.firebaseapp.com",
+      databaseURL: "https://alfajiri-database-default-rtdb.firebaseio.com",
+      projectId: "alfajiri-database",
+      storageBucket: "alfajiri-database.appspot.com",
+      messagingSenderId: "310417854615",
+      appId: "1:310417854615:web:6f65002a119caeaf9119d2",
+      measurementId: "G-21TBZCRBHM"
+    };
 
-      // Initialize Firebase
+    // Initialize Firebase
     const app = initializeApp(firebaseConfig);
+    const database = getDatabase(app);
 
-    import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-database.js";
+    // Login logic
+    const loginForm = document.getElementById('loginForm');
+    const errorElement = document.getElementById('error');
 
-
-
-    //listen for submit event//(1)
-    document
-      .getElementById('registrationform')
-      .addEventListener('submit', formSubmit);
-
-    //Submit form(2)
-    function formSubmit(e) {
+    loginForm.addEventListener('submit', (e) => {
       e.preventDefault();
-      // Get Values from the DOM
-      let username = document.querySelector('#username').value;
-      let password = document.querySelector('#password').value;
-      
-       get(child(dbRef, `users/${username}`))
-                .then((snapshot) => {
-                    if (snapshot.exists()) {
-                        const userData = snapshot.val();
-                        if (userData.password === password) {
-                            // Redirect to the dashboard
-                            window.location.href = "dashboard.html";
-                        } else {
-                            errorMessage.textContent = "Incorrect password. Please try again.";
-                        }
-                    } else {
-                        errorMessage.textContent = "User does not exist.";
-                    }
-                })
-                .catch((error) => {
-                    errorMessage.textContent = "Error: " + error.message;
-                });
+      const username = document.getElementById('username').value;
+      const password = document.getElementById('password').value;
 
-    //Send Message to Firebase(4)
-    
-    }
+      // Reference the user's data in the database
+      const dbRef = ref(database);
+      get(child(dbRef, `users/${username}`))
+        .then((snapshot) => {
+          if (snapshot.exists()) {
+            const dbPassword = snapshot.val().password;
+            if (dbPassword === password) {
+              errorElement.textContent = '';
+              // Redirect to dashboard
+              alert("Logged successfully");
+  window.location.href = `dashboard.html?username=${encodeURIComponent(username)}`;
+            } else {
+              errorElement.textContent = 'Incorrect password!';
+            }
+          } else {
+            errorElement.textContent = 'Username does not exist!';
+          }
+        })
+        .catch((error) => {
+          errorElement.textContent = 'An error occurred. Please try again.';
+          console.error(error);
+        });
+    });
   </script>
 </body>
-
 </html>
