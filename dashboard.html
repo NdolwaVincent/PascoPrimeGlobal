@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Responsive Dashboard with Toggle Drawer</title>
-  <link rel="stylesheet" href="Css/styles.css">
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
@@ -29,13 +29,26 @@
   <div class="content">
     <!-- Header -->
     <div class="header">
-      <h1>Pasco Prime Global</h1>
+      <h2>Welcome To Pasco Prime Global</h2>
+    <p id="profileName">Loading...</p>
+    <script>
+    // Extract username from URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const username = urlParams.get('username');
+
+    // Display username
+    const profileName = document.getElementById('profileName');
+    if (username) {
+      profileName.textContent = `Hello, ${username}!`;
+    } else {
+      profileName.textContent = 'Hello, Guest!';
+    }
+  </script>
     </div>
 
     <!-- Sections -->
     <div id="dashboard" class="section active">
       <div class="dashboard-container">
-        <h1>Dashboard</h1>
         <div class="card-container">
             <div class="whatsapp-group">
         <p><a href="https://wa.me/+1 (840) 20644328" target="_blank">JOIN our WhatsApp group</a></p>
@@ -60,7 +73,7 @@
           <div class="affiliate-container">
           <h3>Affiliate Link</h3>
           <p>This is your invite link.</p>
-          <a href="https://github.com/NdolwaVincent/PascoPrimeGlobal/" target="_blank">https://github.com/NdolwaVincent/PascoPrimeGlobal/</a>
+          <a href="https://petrolwealth.com/register?invite=Vincentn" target="_blank">https://pascoprime.com/register?invite=Vincentn</a>
         </div>
         </div>
         
@@ -93,7 +106,6 @@
     </div>
     <link rel="stylesheet" href="p.css">
     <div id="package" class="section">
-      <p>PascoPrime Global Packages</p>
   <div class="container">
     <div class="package-list" id="packageList">
       <!-- Packages will be generated here by JavaScript -->
@@ -103,11 +115,9 @@
   <script src="pc.js"></script>
     </div>
     <div id="package-history" class="section">
-      <h2>Package History</h2>
       <p>This is the package history section.</p>
     </div>
     <div id="commission" class="section">
-      <h2>Commission</h2>
       <p>This is the commission section.</p>
     </div>
     <div id="withdrawal" class="section">
@@ -129,7 +139,7 @@
     <input type="number" id="withdraw-amount" placeholder="Enter Amount in USD">
 
     <div class="minimum-amount">
-        Minimum Amount: USD 5
+        Minimum Amount: USD 10
     </div>
 
     <button class="btn" onclick="submitWithdrawal()">Withdraw</button>
@@ -191,8 +201,6 @@
   </div>
     </div>
     <div id="support" class="section">
-      <h2>Support</h2>
-      <p>This is the support section.</p>
     </div>
     <div id="profile" class="section">
        <div class="profile-container">
@@ -213,13 +221,12 @@
       </div>
       <div class="profile-item">
         <span class="label">E-mail:</span>
-        <span class="value">ndolwavincent@gmail.com</span>
+        <span class="value">pascoprimeint@gmail.com</span>
       </div>
     </div>
   </div>
     </div>
     <div id="logout" class="section">
-      <h2>Logout</h2>
       <p>You have been logged out.</p>
     </div>
     <!-- Footer -->
