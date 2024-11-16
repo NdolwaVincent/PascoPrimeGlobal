@@ -31,19 +31,7 @@
     <div class="header">
       <h2>Welcome To Pasco Prime Global</h2>
     <p id="profileName">Loading...</p>
-    <script>
-    // Extract username from URL
-    const urlParams = new URLSearchParams(window.location.search);
-    const username = urlParams.get('username');
 
-    // Display username
-    const profileName = document.getElementById('profileName');
-    if (username) {
-      profileName.textContent = `Hello, ${username}!`;
-    } else {
-      profileName.textContent = 'Hello, Guest!';
-    }
-  </script>
     </div>
 
     <!-- Sections -->
@@ -252,5 +240,6 @@
   <script src="dep.js"></script>
    <script src="wid.js"></script>
    <script src="bout.js"></script>
+  <script src="db.js"></script>
 </body>
 </html>
