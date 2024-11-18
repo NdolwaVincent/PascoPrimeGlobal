@@ -12,7 +12,7 @@
   <meta name="description" content="" />
   <meta name="author" content="" />
 
-  <title>Neogym</title>
+  <title>Pasco Prime Global</title>
 
   <!-- slider stylesheet -->
   <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css" />
@@ -30,7 +30,7 @@
   <style>
   
     .container {
-      background-color: #333;
+      background-color: white;
       padding: 20px;
       border-radius: 8px;
       box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -40,7 +40,7 @@
 
     h1 {
       text-align: center;
-      color: white;
+      color: #333;
     }
 
     form {
@@ -75,7 +75,6 @@
     p {
       margin-top: 10px;
       font-size: 16px;
-      color: white;
     }
   </style>
 </head>
@@ -91,63 +90,88 @@
               Pasco Prime Global
             </span>
           </a>
+        
     </header>
     <!-- end header section -->
   </div>
-  <div class="welcome-card">
-           <h1>Welcome</h1>
-  <div id="depositDetails"></div>
-
-  <script>
-    const params = new URLSearchParams(window.location.search);
-    const username = params.get('username');
-
-    if (!username) {
-      alert("Invalid session. Please log in again.");
-      window.location.href = "login.html";
-    } else {
-      document.getElementById('depositDetails').innerHTML = `<p>${username}</p>`;
-    }
-  </script>
-           
+   <div class="welcome-card">
+            <p id="profileName">Loading...</p>
+          </div>
+           <!--  <script>
+    // Extract username from URL
+    const sharedText = localStorage.getItem("sharedText");
+    document.getElementById("profileName").innerText = sharedText || "No text received.";
+  </script> -->
   <div class="container">
-        <div class="logo">Logo</div>
-        <h1>Withdrawal Your Earnings</h1>
-        <form id="withdrawForm">
-            <label for="wallet">Select Wallet</label>
-            <select id="wallet" name="wallet" required>
-                <option value="main_balance">MAIN BALANCE</option>
-                <option value="savings">Savings</option>
-                <option value="rewards">Rewards</option>
-            </select>
+        <!-- Affiliate Program Section -->
+        <div class="affiliate-section">
+            <h1>Affiliate Program</h1>
+            <p>Your Invite Link:</p>
+            <input type="text" value="https://pascoprimeglobal.com/register?invite=Vincentn" readonly>
+            <p class="description">
+                This is your invite link.<br>
+                <strong>Affiliate Barrels Commission:</strong> Get 10% more in the affiliate program when you refer family and friends.
+            </p>
+        </div>
 
-            <label for="amount">Enter Amount in USD</label>
-            <input type="number" id="amount" name="amount" placeholder="Enter Amount" required>
-
-            <p class="note">Minimum Amount: USD 10</p>
-            <button type="submit" id="withdrawBtn">Withdraw</button>
-        </form>
-        <div id="message" class="hidden">
-            <p>Your withdrawal request is being processed. Please wait...</p>
+        <!-- Records Section -->
+        <div class="records-section">
+            <h2>Records</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Affiliate</th>
+                        <th>Barrels Bought</th>
+                        <th>Earned (USD)</th>
+                        <th>Status</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody id="recordsTable">
+                    <!-- Data will be dynamically inserted here -->
+                </tbody>
+            </table>
         </div>
     </div>
+
     <script>
-        document.getElementById('withdrawForm').addEventListener('submit', function (event) {
-            event.preventDefault();
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "YOUR_API_KEY",
+            authDomain: "YOUR_AUTH_DOMAIN",
+            databaseURL: "YOUR_DATABASE_URL",
+            projectId: "YOUR_PROJECT_ID",
+            storageBucket: "YOUR_STORAGE_BUCKET",
+            messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+            appId: "YOUR_APP_ID"
+        };
 
-            const amount = parseFloat(document.getElementById('amount').value);
-            const messageDiv = document.getElementById('message');
+        // Initialize Firebase
+        const app = firebase.initializeApp(firebaseConfig);
+        const database = firebase.database(app);
 
-            if (amount >= 10) {
-                messageDiv.classList.remove('hidden');
-                setTimeout(() => {
-                    alert('Your withdrawal request has been received!');
-                    messageDiv.classList.add('hidden');
-                    document.getElementById('withdrawForm').reset();
-                }, 3000); // Simulates processing time
-            } else {
-                alert('Please enter an amount greater than or equal to USD 10.');
-            }
+        // Reference to the records in Firebase
+        const recordsRef = firebase.database().ref("affiliateRecords");
+
+        // Fetch records from Firebase and display them in the table
+        recordsRef.on("value", (snapshot) => {
+            const recordsTable = document.getElementById("recordsTable");
+            recordsTable.innerHTML = ""; // Clear existing records
+
+            snapshot.forEach((childSnapshot) => {
+                const record = childSnapshot.val();
+
+                // Create a new row for each record
+                const row = document.createElement("tr");
+                row.innerHTML = `
+                    <td>${record.affiliate}</td>
+                    <td>${record.barrelsBought}</td>
+                    <td>${record.earned}</td>
+                    <td>${record.status}</td>
+                    <td>${record.date}</td>
+                `;
+                recordsTable.appendChild(row);
+            });
         });
     </script>
 
@@ -157,7 +181,7 @@
             <h3>Contact US</h3>
             <p>Emal: pascoprimeint@gmail.com</p>
             <p>Phone: +1(840)2064328</p>
-            <p>Address: 54433222 ss</p>
+          <p>Address: 10017</p>
         </div>
         <div class="footer-section social-media">
             <h3>Follow Us</h3>

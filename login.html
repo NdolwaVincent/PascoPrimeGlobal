@@ -115,40 +115,48 @@ label {
 
     // Initialize Firebase
     const app = initializeApp(firebaseConfig);
-    const database = getDatabase(app);
+  const database = getDatabase(app);
 
-    // Login logic
-    const loginForm = document.getElementById('loginForm');
-    const errorElement = document.getElementById('error');
+  const loginForm = document.getElementById('loginForm');
+  const errorElement = document.getElementById('error');
 
-    loginForm.addEventListener('submit', (e) => {
-      e.preventDefault();
-      const username = document.getElementById('username').value;
-      const password = document.getElementById('password').value;
+  loginForm.addEventListener('submit', (e) => {
+    e.preventDefault();
 
-      // Reference the user's data in the database
-      const dbRef = ref(database);
-      get(child(dbRef, `users/${username}`))
-        .then((snapshot) => {
-          if (snapshot.exists()) {
-            const dbPassword = snapshot.val().password;
-            if (dbPassword === password) {
-              errorElement.textContent = '';
-              // Redirect to dashboard
-              alert("Logged successfully");
-  window.location.href = `dashboard.html?username=${encodeURIComponent(username)}`;
-            } else {
-              errorElement.textContent = 'Incorrect password!';
-            }
+    const username = document.getElementById('username').value;
+    const password = document.getElementById('password').value;
+
+    const dbRef = ref(database);
+    get(child(dbRef, `users/${username}`))
+      .then((snapshot) => {
+        if (snapshot.exists()) {
+          const userData = snapshot.val();
+
+          if (userData.password === password) {
+            errorElement.textContent = '';
+
+            const urlParams = new URLSearchParams({
+              username: username,
+              email: userData.email,
+              phone: userData.phone,
+              referredby: userData.referredby,
+            });
+
+            // Redirect to dashboard
+            const dashboardUrl = `dashboard.html?${urlParams.toString()}`;
+            window.location.href = dashboardUrl;
           } else {
-            errorElement.textContent = 'Username does not exist!';
+            errorElement.textContent = 'Incorrect password!';
           }
-        })
-        .catch((error) => {
-          errorElement.textContent = 'An error occurred. Please try again.';
-          console.error(error);
-        });
-    });
+        } else {
+          errorElement.textContent = 'Username does not exist!';
+        }
+      })
+      .catch((error) => {
+        errorElement.textContent = 'An error occurred. Please try again.';
+        console.error(error);
+      });
+  });
   </script>
 </body>
 </html>

@@ -1,35 +1,221 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
+
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Profile - PetroWealth</title>
-  <link rel="stylesheet" href="Css/pro.css">
+  <!-- Basic -->
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <!-- Mobile Metas -->
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+  <!-- Site Metas -->
+  <meta name="keywords" content="" />
+  <meta name="description" content="" />
+  <meta name="author" content="" />
+
+  <title>Pasco Prime Global</title>
+
+  <!-- slider stylesheet -->
+  <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css" />
+
+  <!-- bootstrap core css -->
+  <link rel="stylesheet" type="text/css" href="css/bootstrap.css" />
+
+  <!-- fonts style -->
+  <link href="https://fonts.googleapis.com/css?family=Poppins:400,600,700&display=swap" rel="stylesheet">
+  <!-- Custom styles for this template -->
+  <link href="css/style.css" rel="stylesheet" />
+
+  <!-- responsive style -->
+  <link href="css/responsive.css" rel="stylesheet" />
+  <style>
+  
+    .container {
+      background-color: #333;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      max-width: 400px;
+      width: 100%;
+    }
+
+    h1 {
+      text-align: center;
+      color: white;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+    }
+
+    label {
+      margin-top: 10px;
+      font-weight: bold;
+      color: white;
+    }
+
+    input, select, button {
+      margin-top: 5px;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+
+    button {
+      background-color: #007bff;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    p {
+      margin-top: 10px;
+      font-size: 16px;
+    }
+  </style>
 </head>
-<body>
-  <div class="profile-container">
-    <h2>Account</h2>
-    <div class="profile-details">
-      <h3>PROFILE DETAILS</h3>
+
+<body class="sub_page">
+  <div class="hero_area">
+    <!-- header section strats -->
+    <header class="header_section">
+      <div class="container-fluid">
+        <nav class="navbar navbar-expand-lg custom_nav-container ">
+          <a class="navbar-brand" href="index.html">
+            <span>
+              Pasco Prime Global
+            </span>
+          </a>
+    </header>
+    <!-- end header section -->
+  </div>
+  < <div class="container">
+    <h1>Profile Details</h1>
+    <div id="profileDetails"></div>
+    <div id="editableProfile" class="hidden">
       <div class="profile-item">
-        <span class="label">Username:</span>
-        <span class="value">Vincentn</span>
+        <label for="username">Username</label>
+        <input type="text" id="username" readonly>
       </div>
       <div class="profile-item">
-        <span class="label">Mobile:</span>
-        <span class="value">+254741801299</span>
+        <label for="email">Email</label>
+        <input type="email" id="email" readonly>
       </div>
       <div class="profile-item">
-        <span class="label">Referred By:</span>
-        <span class="value">Pasco Prime</span>
+        <label for="phone">Phone</label>
+        <input type="tel" id="phone" readonly>
       </div>
       <div class="profile-item">
-        <span class="label">E-mail:</span>
-        <span class="value">ndolwavincent@gmail.com</span>
+        <label for="referred">Referred By</label>
+        <input type="text" id="referred" readonly>
+      </div>
+      <div class="buttons">
+        <button class="edit-btn" id="editBtn">Edit</button>
+        <button class="save-btn hidden" id="saveBtn">Save</button>
+        <button class="cancel-btn hidden" id="cancelBtn">Cancel</button>
       </div>
     </div>
   </div>
 
-  <script src="javascript/pro.js"></script>
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const username = params.get('username');
+    const email = params.get('email');
+    const phone = params.get('phone');
+    const referredBy = params.get('referredby');
+
+    const profileDetailsDiv = document.getElementById('profileDetails');
+    const editableProfileDiv = document.getElementById('editableProfile');
+    const editBtn = document.getElementById('editBtn');
+    const saveBtn = document.getElementById('saveBtn');
+    const cancelBtn = document.getElementById('cancelBtn');
+    const inputs = document.querySelectorAll('#editableProfile input');
+
+    if (!username || !email || !phone || !referredBy) {
+      alert("Invalid session or missing details. Redirecting to login.");
+      window.location.href = "login.html";
+    } else {
+      const profileDetails = `
+        <p><strong>Username:</strong> ${username}</p>
+        <p><strong>Email:</strong> ${email}</p>
+        <p><strong>Phone:</strong> ${phone}</p>
+        <p><strong>Referred By:</strong> ${referredBy}</p>
+        <button onclick="showEditableProfile()">Edit Profile</button>
+      `;
+      profileDetailsDiv.innerHTML = profileDetails;
+
+      // Set input values for the editable form
+      document.getElementById('username').value = username;
+      document.getElementById('email').value = email;
+      document.getElementById('phone').value = phone;
+      document.getElementById('referred').value = referredBy;
+    }
+
+    function showEditableProfile() {
+      profileDetailsDiv.classList.add('hidden');
+      editableProfileDiv.classList.remove('hidden');
+    }
+
+    // Enable editing mode
+    editBtn.addEventListener('click', () => {
+      inputs.forEach(input => input.removeAttribute('readonly'));
+      editBtn.classList.add('hidden');
+      saveBtn.classList.remove('hidden');
+      cancelBtn.classList.remove('hidden');
+    });
+
+    // Save changes and disable editing mode
+    saveBtn.addEventListener('click', () => {
+      inputs.forEach(input => input.setAttribute('readonly', true));
+      alert('Profile updated successfully!');
+      toggleButtons();
+    });
+
+    // Cancel changes and revert to original state
+    cancelBtn.addEventListener('click', () => {
+      inputs.forEach(input => {
+        input.value = input.defaultValue; // Reset to initial value
+        input.setAttribute('readonly', true);
+      });
+      toggleButtons();
+    });
+
+    // Helper to toggle button visibility
+    function toggleButtons() {
+      editBtn.classList.remove('hidden');
+      saveBtn.classList.add('hidden');
+      cancelBtn.classList.add('hidden');
+    }
+  </script>
+
+  <!-- footer section -->
+  <footer id="footer-container">
+        <div class="footer-section">
+            <h3>Contact US</h3>
+            <p>Emal: pascoprimeint@gmail.com</p>
+            <p>Phone: +1(840)2064328</p>
+            <p>Address: 54433222 ss</p>
+        </div>
+        <div class="footer-section social-media">
+            <h3>Follow Us</h3>
+
+             <a href="https://facebook.com" target="_blank" class="social-icon">Facebook</a>
+                        <a href="https://twitter.com" target="_blank" class="social-icon">Twitter</a>
+                        <a href="https://instagram.com" target="_blank" class="social-icon">Instagram</a>
+                        <a href="https://linkedin.com" target="_blank" class="social-icon">LinkedIn</a>
+        </div>
+        <p>&copy; 2023 PascoPrime Global. All rights reserved.</p>
+    </footer>
+  <!-- footer section -->
+
+  <script src="js/jquery-3.4.1.min.js"></script>
+  <script src="js/bootstrap.js"></script>
+
 </body>
+
 </html>

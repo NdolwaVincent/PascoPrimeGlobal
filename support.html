@@ -12,7 +12,7 @@
   <meta name="description" content="" />
   <meta name="author" content="" />
 
-  <title>Neogym</title>
+  <title>Pasco Prime Global</title>
 
   <!-- slider stylesheet -->
   <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css" />
@@ -75,7 +75,6 @@
     p {
       margin-top: 10px;
       font-size: 16px;
-      color: white;
     }
   </style>
 </head>
@@ -94,60 +93,63 @@
     </header>
     <!-- end header section -->
   </div>
-  <div class="welcome-card">
-           <h1>Welcome</h1>
-  <div id="depositDetails"></div>
 
-  <script>
-    const params = new URLSearchParams(window.location.search);
-    const username = params.get('username');
+    <main>
+        <section id="faqs">
+            <h2>Frequently Asked Questions</h2>
+            <div class="faq-item">
+                <h3>How do I reset my password?</h3>
+                <p class="answer">Go to the login page, click "Forgot Password," and follow the instructions.</p>
+            </div>
+            <div class="faq-item">
+                <h3>How can I contact support?</h3>
+                <p class="answer">You can use the contact form below or email us at support@example.com.</p>
+            </div>
+        </section>
 
-    if (!username) {
-      alert("Invalid session. Please log in again.");
-      window.location.href = "login.html";
-    } else {
-      document.getElementById('depositDetails').innerHTML = `<p>${username}</p>`;
-    }
-  </script>
-           
-  <div class="container">
-        <div class="logo">Logo</div>
-        <h1>Withdrawal Your Earnings</h1>
-        <form id="withdrawForm">
-            <label for="wallet">Select Wallet</label>
-            <select id="wallet" name="wallet" required>
-                <option value="main_balance">MAIN BALANCE</option>
-                <option value="savings">Savings</option>
-                <option value="rewards">Rewards</option>
-            </select>
-
-            <label for="amount">Enter Amount in USD</label>
-            <input type="number" id="amount" name="amount" placeholder="Enter Amount" required>
-
-            <p class="note">Minimum Amount: USD 10</p>
-            <button type="submit" id="withdrawBtn">Withdraw</button>
-        </form>
-        <div id="message" class="hidden">
-            <p>Your withdrawal request is being processed. Please wait...</p>
-        </div>
-    </div>
+        <section id="contact">
+            <h2>Contact Us</h2>
+            <form id="contactForm">
+                <label for="name">Name:</label>
+                <input type="text" id="name" name="name" required>
+                
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" required>
+                
+                <label for="message">Message:</label>
+                <textarea id="message" name="message" rows="5" required></textarea>
+                
+                <button type="submit">Send Message</button>
+            </form>
+            <p id="formResponse" class="hidden"></p>
+        </section>
+    </main>
     <script>
-        document.getElementById('withdrawForm').addEventListener('submit', function (event) {
-            event.preventDefault();
+        // Toggle FAQ answers
+        document.addEventListener("DOMContentLoaded", () => {
+            const faqItems = document.querySelectorAll(".faq-item h3");
+            faqItems.forEach(item => {
+                item.addEventListener("click", () => {
+                    const answer = item.nextElementSibling;
+                    answer.style.display = answer.style.display === "block" ? "none" : "block";
+                });
+            });
 
-            const amount = parseFloat(document.getElementById('amount').value);
-            const messageDiv = document.getElementById('message');
+            // Handle contact form submission
+            const contactForm = document.getElementById("contactForm");
+            const formResponse = document.getElementById("formResponse");
 
-            if (amount >= 10) {
-                messageDiv.classList.remove('hidden');
-                setTimeout(() => {
-                    alert('Your withdrawal request has been received!');
-                    messageDiv.classList.add('hidden');
-                    document.getElementById('withdrawForm').reset();
-                }, 3000); // Simulates processing time
-            } else {
-                alert('Please enter an amount greater than or equal to USD 10.');
-            }
+            contactForm.addEventListener("submit", (e) => {
+                e.preventDefault();
+
+                // Simulate sending data
+                const name = document.getElementById("name").value;
+                formResponse.textContent = `Thank you for your message, ${name}! We will get back to you shortly.`;
+                formResponse.classList.remove("hidden");
+
+                // Clear the form
+                contactForm.reset();
+            });
         });
     </script>
 

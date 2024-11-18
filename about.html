@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <!-- Basic -->
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <!-- Mobile Metas -->
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+  <!-- Site Metas -->
+  <meta name="keywords" content="" />
+  <meta name="description" content="" />
+  <meta name="author" content="" />
+
+  <title>Pasco Prime Global</title>
+
+  <!-- slider stylesheet -->
+  <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css" />
+
+  <!-- bootstrap core css -->
+  <link rel="stylesheet" type="text/css" href="css/bootstrap.css" />
+
+  <!-- fonts style -->
+  <link href="https://fonts.googleapis.com/css?family=Poppins:400,600,700&display=swap" rel="stylesheet">
+  <!-- Custom styles for this template -->
+  <link href="css/style.css" rel="stylesheet" />
+
+  <!-- responsive style -->
+  <link href="css/responsive.css" rel="stylesheet" />
+  <style>
+  
+    .container {
+      background-color: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      max-width: 400px;
+      width: auto;
+    }
+
+    /*About*/
+.faq-container {
+  width: auto;%;
+  max-width: 600px;
+  align-content: center;
+  background-color: #333;
+  border-radius: 8px;
+
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+}
+
+.faq-header {
+  font-size: 1.5em;
+  margin-bottom: 20px;
+}
+h1{
+  color: white;
+  text-align: center;
+}
+
+.faq-item {
+  margin-bottom: 10px;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 10px;
+}
+
+.faq-question {
+  font-weight: bold;
+  cursor: pointer;
+  font-size: 1.2em;
+  color: gold;
+}
+
+.faq-answer {
+  display: none;
+  margin-top: 5px;
+  color: white;
+}
+  </style>
+</head>
+
+<body class="sub_page">
+  <div class="hero_area">
+    <!-- header section strats -->
+    <header class="header_section">
+      <div class="container-fluid">
+        <nav class="navbar navbar-expand-lg custom_nav-container ">
+          <a class="navbar-brand" href="index.html">
+            <span>
+              Pasco Prime Global
+            </span>
+          </a>
+          
+    </header>
+    <!-- end header section -->
+  </div>
+        <!-- Welcome Section -->
+        <div class="welcome-card">
+            <p id="profileName">Loading...</p>
+          </div>
+  <div id="container">
+    <div id="about" class="section">
+        <div class="faq-container">
+    <h1 class="faq-header">Explore more about Pasco Prime Global.</h1>
+    <div class="faq-item">
+      <div class="faq-question" onclick="toggleAnswer('answer1')">
+       Overview and Summary
+      </div>
+      <div id="answer1" class="faq-answer">
+       PascoPrime Global is a premier international trading platform designed to offer individuals and businesses access to global financial markets. Built on transparency, technology, and customer-centric values, we aim to democratize trading and wealth-building opportunities worldwide.
+      </div>
+    </div>
+    
+    <div class="faq-item">
+      <div class="faq-question" onclick="toggleAnswer('answer2')">
+        How It Works
+      </div>
+      <div id="answer2" class="faq-answer">
+        Our platform connects you to global financial markets with an intuitive interface and cutting-edge tools. Choose a package, subscribe, and start trading stocks, commodities, indices, and currencies. Earn 7% daily on your subscribed package for 99 days.
+      </div>
+    </div>
+    
+    <div class="faq-item">
+      <div class="faq-question" onclick="toggleAnswer('answer3')">
+       How you earn
+      </div>
+      <div id="answer3" class="faq-answer">
+       Earn 7% daily on your package and receive 10% commission for referrals. Our platform provides real-time data to inform your trading decisions and help maximize profitability
+      </div>
+    </div>
+    
+    <div class="faq-item">
+      <div class="faq-question" onclick="toggleAnswer('answer4')">
+        How to Cash Out
+      </div>
+      <div id="answer4" class="faq-answer">
+        Withdrawals are simple and secure, with funds sent to your bank or preferred payment method. Minimum cashout is $5.
+      </div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-question" onclick="toggleAnswer('answer5')">
+       Why choose Us?
+      </div>
+      <div id="answer5" class="faq-answer">
+         <ul>
+            <li><strong>Global Reach:</strong> Access diverse international markets for broader investment opportunities.</li>
+            <li><strong>User-Friendly Platform:</strong> Intuitive design and powerful tools for traders of all levels.</li>
+            <li><strong>Advanced Analytics:</strong> Real-time data to optimize trading decisions.</li>
+            <li><strong>Customizable Packages:</strong> Ten packages to fit any financial goal or style.</li>
+            <li><strong>Security & Reliability:</strong> Secure trading environment and asset protection.</li>
+            <li><strong>Dedicated Support:</strong> Expert guidance and personalized support.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+    </div>
+  </div>
+
+    <script>
+        // Firebase configuration
+        function toggleAnswer(answerId) {
+  const answer = document.getElementById(answerId);
+  answer.style.display = answer.style.display === "none" || answer.style.display === "" ? "block" : "none";
+}
+    </script>
+
+  <!-- footer section -->
+  <footer id="footer-container">
+        <div class="footer-section">
+            <h3>Contact US</h3>
+            <p>Emal: pascoprimeint@gmail.com</p>
+            <p>Phone: +1(840)2064328</p>
+            <p>Address: 10017</p>
+        </div>
+        <div class="footer-section social-media">
+            <h3>Follow Us</h3>
+
+             <a href="https://facebook.com" target="_blank" class="social-icon">Facebook</a>
+                        <a href="https://twitter.com" target="_blank" class="social-icon">Twitter</a>
+                        <a href="https://instagram.com" target="_blank" class="social-icon">Instagram</a>
+                        <a href="https://linkedin.com" target="_blank" class="social-icon">LinkedIn</a>
+        </div>
+        <p>&copy; 2023 PascoPrime Global. All rights reserved.</p>
+    </footer>
+  <!-- footer section -->
+
+  <script src="js/jquery-3.4.1.min.js"></script>
+  <script src="js/bootstrap.js"></script>
+
+</body>
+
+</html>

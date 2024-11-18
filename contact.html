@@ -12,7 +12,7 @@
   <meta name="description" content="" />
   <meta name="author" content="" />
 
-  <title>Neogym</title>
+  <title>Pasco Prime Global</title>
 
   <!-- slider stylesheet -->
   <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css" />
@@ -75,7 +75,6 @@
     p {
       margin-top: 10px;
       font-size: 16px;
-      color: white;
     }
   </style>
 </head>
@@ -91,63 +90,58 @@
               Pasco Prime Global
             </span>
           </a>
+         
     </header>
     <!-- end header section -->
   </div>
-  <div class="welcome-card">
-           <h1>Welcome</h1>
-  <div id="depositDetails"></div>
+ <main>
+        <section id="contact-info">
+            <h2>Our Contact Information</h2>
+            <p>Have questions? Feel free to reach out to us through any of the following ways:</p>
+            <ul>
+                <li>Email: pascoprimeint.com</li>
+                <li>Phone: +8402064328</li>
+                <li>Address: 875 United Nation Plaza</li>
+            </ul>
+        </section>
 
-  <script>
-    const params = new URLSearchParams(window.location.search);
-    const username = params.get('username');
+        <section id="contact-form">
+            <h2>Send Us a Message</h2>
+            <form id="contactForm">
+                <label for="name">Your Name:</label>
+                <input type="text" id="name" name="name" placeholder="Enter your name" required>
 
-    if (!username) {
-      alert("Invalid session. Please log in again.");
-      window.location.href = "login.html";
-    } else {
-      document.getElementById('depositDetails').innerHTML = `<p>${username}</p>`;
-    }
-  </script>
-           
-  <div class="container">
-        <div class="logo">Logo</div>
-        <h1>Withdrawal Your Earnings</h1>
-        <form id="withdrawForm">
-            <label for="wallet">Select Wallet</label>
-            <select id="wallet" name="wallet" required>
-                <option value="main_balance">MAIN BALANCE</option>
-                <option value="savings">Savings</option>
-                <option value="rewards">Rewards</option>
-            </select>
+                <label for="email">Your Email:</label>
+                <input type="email" id="email" name="email" placeholder="Enter your email" required>
 
-            <label for="amount">Enter Amount in USD</label>
-            <input type="number" id="amount" name="amount" placeholder="Enter Amount" required>
+                <label for="message">Your Message:</label>
+                <textarea id="message" name="message" placeholder="Write your message here" rows="5" required></textarea>
 
-            <p class="note">Minimum Amount: USD 10</p>
-            <button type="submit" id="withdrawBtn">Withdraw</button>
-        </form>
-        <div id="message" class="hidden">
-            <p>Your withdrawal request is being processed. Please wait...</p>
-        </div>
-    </div>
+                <button type="submit">Send Message</button>
+            </form>
+            <p id="responseMessage" class="hidden"></p>
+        </section>
+    </main>
+
     <script>
-        document.getElementById('withdrawForm').addEventListener('submit', function (event) {
-            event.preventDefault();
+        // Handle form submission
+        document.addEventListener("DOMContentLoaded", () => {
+            const form = document.getElementById("contactForm");
+            const responseMessage = document.getElementById("responseMessage");
 
-            const amount = parseFloat(document.getElementById('amount').value);
-            const messageDiv = document.getElementById('message');
+            form.addEventListener("submit", (event) => {
+                event.preventDefault();
 
-            if (amount >= 10) {
-                messageDiv.classList.remove('hidden');
-                setTimeout(() => {
-                    alert('Your withdrawal request has been received!');
-                    messageDiv.classList.add('hidden');
-                    document.getElementById('withdrawForm').reset();
-                }, 3000); // Simulates processing time
-            } else {
-                alert('Please enter an amount greater than or equal to USD 10.');
-            }
+                const name = document.getElementById("name").value;
+                const email = document.getElementById("email").value;
+
+                // Display a confirmation message
+                responseMessage.textContent = `Thank you, ${name}! We have received your message and will respond to you at ${email} shortly.`;
+                responseMessage.classList.remove("hidden");
+
+                // Clear the form
+                form.reset();
+            });
         });
     </script>
 
@@ -157,7 +151,7 @@
             <h3>Contact US</h3>
             <p>Emal: pascoprimeint@gmail.com</p>
             <p>Phone: +1(840)2064328</p>
-            <p>Address: 54433222 ss</p>
+            <p>Address: 875 United Nation Plaza</p>
         </div>
         <div class="footer-section social-media">
             <h3>Follow Us</h3>

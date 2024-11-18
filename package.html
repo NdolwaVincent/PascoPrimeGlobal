@@ -12,7 +12,7 @@
   <meta name="description" content="" />
   <meta name="author" content="" />
 
-  <title>Neogym</title>
+  <title>Pasco Prime Global</title>
 
   <!-- slider stylesheet -->
   <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css" />
@@ -30,7 +30,7 @@
   <style>
   
     .container {
-      background-color: #333;
+      background-color: white;
       padding: 20px;
       border-radius: 8px;
       box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -40,7 +40,7 @@
 
     h1 {
       text-align: center;
-      color: white;
+      color: #333;
     }
 
     form {
@@ -75,7 +75,6 @@
     p {
       margin-top: 10px;
       font-size: 16px;
-      color: white;
     }
   </style>
 </head>
@@ -91,64 +90,66 @@
               Pasco Prime Global
             </span>
           </a>
+          
     </header>
     <!-- end header section -->
   </div>
-  <div class="welcome-card">
-           <h1>Welcome</h1>
-  <div id="depositDetails"></div>
-
-  <script>
-    const params = new URLSearchParams(window.location.search);
-    const username = params.get('username');
-
-    if (!username) {
-      alert("Invalid session. Please log in again.");
-      window.location.href = "login.html";
-    } else {
-      document.getElementById('depositDetails').innerHTML = `<p>${username}</p>`;
-    }
-  </script>
-           
   <div class="container">
         <div class="logo">Logo</div>
-        <h1>Withdrawal Your Earnings</h1>
-        <form id="withdrawForm">
-            <label for="wallet">Select Wallet</label>
-            <select id="wallet" name="wallet" required>
-                <option value="main_balance">MAIN BALANCE</option>
-                <option value="savings">Savings</option>
-                <option value="rewards">Rewards</option>
-            </select>
-
-            <label for="amount">Enter Amount in USD</label>
-            <input type="number" id="amount" name="amount" placeholder="Enter Amount" required>
-
-            <p class="note">Minimum Amount: USD 10</p>
-            <button type="submit" id="withdrawBtn">Withdraw</button>
-        </form>
-        <div id="message" class="hidden">
-            <p>Your withdrawal request is being processed. Please wait...</p>
-        </div>
+         <p>PascoPrime Global Packages</p>
+  <div class="container">
+    <div class="package-list" id="packageList">
+      <!-- Packages will be generated here by JavaScript -->
+    </div>
+  </div>
     </div>
     <script>
-        document.getElementById('withdrawForm').addEventListener('submit', function (event) {
-            event.preventDefault();
+        const packages = [
+  { name: "PP Global Elite", price: " Locked" },
+  { name: "PP Global Premier", price: 5 },
+  { name: "PP Global Prestige", price: 10 },
+  { name: "PP Global Executive", price: 25 },
+  { name: "PP Global Platinum", price: 50 },
+  { name: "PP Global Titanium", price: 100 },
+  { name: "PP Global Diamond", price: 250 },
+  { name: "PP Global Sovereign", price: 500 },
+  { name: "PP Global Royal", price: 750 },
+  { name: "PP Global Imperial", price: 1000 }
+];
 
-            const amount = parseFloat(document.getElementById('amount').value);
-            const messageDiv = document.getElementById('message');
+// Function to generate package list
+function generatePackageList() {
+  const packageList = document.getElementById("packageList");
 
-            if (amount >= 10) {
-                messageDiv.classList.remove('hidden');
-                setTimeout(() => {
-                    alert('Your withdrawal request has been received!');
-                    messageDiv.classList.add('hidden');
-                    document.getElementById('withdrawForm').reset();
-                }, 3000); // Simulates processing time
-            } else {
-                alert('Please enter an amount greater than or equal to USD 10.');
-            }
-        });
+  packages.forEach((pkg, index) => {
+    const packageCard = document.createElement("div");
+    packageCard.className = "package-card";
+    packageCard.onclick = () => redirectToPayment(index);
+
+    const title = document.createElement("h2");
+    title.className = "package-title";
+    title.innerText = pkg.name;
+
+    const price = document.createElement("p");
+    price.className = "package-price";
+    price.innerText = `$${pkg.price}`;
+
+    packageCard.appendChild(title);
+    packageCard.appendChild(price);
+    packageList.appendChild(packageCard);
+  });
+}
+
+// Function to redirect to payment page for the selected package
+function redirectToPayment(index) {
+  const selectedPackage = packages[index];
+  const paymentURL = `payment.html?package=${selectedPackage.name}&price=${selectedPackage.price}`;
+  window.location.href = paymentURL;
+}
+
+// Generate the package list on page load
+document.addEventListener("DOMContentLoaded", generatePackageList);
+
     </script>
 
   <!-- footer section -->
@@ -157,7 +158,7 @@
             <h3>Contact US</h3>
             <p>Emal: pascoprimeint@gmail.com</p>
             <p>Phone: +1(840)2064328</p>
-            <p>Address: 54433222 ss</p>
+            <p>Address: 875 United Nation Plaza</p>
         </div>
         <div class="footer-section social-media">
             <h3>Follow Us</h3>
