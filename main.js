@@ -1,6 +1,6 @@
 
 function RegPage(){
-	window.location.href = "Register.html"
+	window.location.href = "login.html"
 }
 function RegPages(){
 	window.location.href = "dashboard.html"
