@@ -3,31 +3,169 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Pasco Prime Global</title>
+  <title>Pasco Prime Global - Payment</title>
   <link rel="stylesheet" href="p.css">
+  <style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f9;
+        color: #333;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+    }
+
+    .payment-container {
+        background: #fff;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        max-width: 400px;
+        width: 100%;
+    }
+
+    .payment-container h1 {
+        font-size: 24px;
+        margin-bottom: 20px;
+        text-align: center;
+    }
+
+    .form-group {
+        margin-bottom: 15px;
+    }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: bold;
+    }
+
+    .form-group input {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+    }
+
+    .form-group button {
+        width: 100%;
+        padding: 10px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+    }
+
+    .form-group button:hover {
+        background-color: #0056b3;
+    }
+
+    .error {
+        color: red;
+        font-size: 14px;
+        margin-top: -10px;
+        margin-bottom: 10px;
+    }
+
+    .container {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+  </style>
 </head>
 <body>
-  
+
+  <!-- Step 1: Show package details -->
   <div class="container">
-    <h2><center>Complete Your Payment</center></h2>
+    <h2>Complete Your Payment</h2>
     <p id="packageDetails"></p>
-    <button onclick="proceedWithPayment()">Proceed to Payment</button>
+    <button onclick="showPaymentForm()">Proceed to Payment</button>
+  </div>
+
+  <!-- Step 2: Show payment form -->
+  <div class="payment-container" id="paymentFormContainer" style="display: none;">
+    <h1>PASCO PRIME GLOBAL</h1>
+    <form id="paymentForm">
+      <div class="form-group">
+        <label for="name">Name</label>
+        <input type="text" id="name" name="name" placeholder="Enter your name" required>
+      </div>
+      <div class="form-group">
+        <label for="phone">Phone Number</label>
+        <input type="text" id="phone" name="phone" placeholder="Enter your phone number" required>
+      </div>
+      <div class="form-group">
+        <label for="amount">Amount (KES)</label>
+        <input type="number" id="amount" name="amount" placeholder="Enter amount" value="" required>
+      </div>
+      <div class="form-group">
+        <button type="submit">Pay Now</button>
+      </div>
+      <p id="errorMessage" class="error" style="display: none;">Please fill all fields correctly.</p>
+    </form>
   </div>
 
   <script>
+    // Conversion rate from USD to KES
+    const conversionRate = 129;
+
     // Retrieve package details from URL parameters
     const urlParams = new URLSearchParams(window.location.search);
     const packageName = urlParams.get('package');
-    const packagePrice = urlParams.get('price');
+    const packagePriceUSD = parseFloat(urlParams.get('price')); // Package price in USD
+
+    // Convert USD to KES
+    const packagePriceKES = packagePriceUSD * conversionRate;
 
     // Display package details
     document.getElementById('packageDetails').innerText = 
-      `You selected: ${packageName} - $${packagePrice}`;
+      `You selected: ${packageName} - $${packagePriceUSD} (KES ${packagePriceKES.toFixed(2)})`;
 
-    function proceedWithPayment() {
-      alert('Proceeding to payment for ' + packageName);
-      // Add your payment integration here
+    // Function to show the payment form
+    function showPaymentForm() {
+      document.querySelector('.container').style.display = 'none';
+      const amountInput = document.getElementById('amount');
+      amountInput.value = packagePriceKES.toFixed(2); // Set the package price in KES as the amount
+      document.getElementById('paymentFormContainer').style.display = 'block';
     }
+
+    document.getElementById("paymentForm").addEventListener("submit", function(event) {
+      event.preventDefault();
+
+      const name = document.getElementById("name").value.trim();
+      const phone = document.getElementById("phone").value.trim();
+      const amount = document.getElementById("amount").value.trim();
+      const errorMessage = document.getElementById("errorMessage");
+
+      // Validate inputs
+      if (!name || !phone || !amount || isNaN(amount) || amount <= 0) {
+        errorMessage.textContent = "Please fill all fields correctly.";
+        errorMessage.style.display = "block";
+        return;
+      }
+
+      // Phone number validation (Kenyan phone format)
+      const phoneRegex = /^(?:07|01)\d{8}$/;
+      if (!phoneRegex.test(phone)) {
+        errorMessage.textContent = "Enter a valid Kenyan phone number.";
+        errorMessage.style.display = "block";
+        return;
+      }
+
+      errorMessage.style.display = "none";
+
+      // Generate Lipwa link with the new URL
+      const lipwaLink = `https://app.payhero.co.ke/lipwa/1068?name=${encodeURIComponent(name)}&phone=${encodeURIComponent(phone)}&amount=${encodeURIComponent(amount)}`;
+
+      // Redirect user to the link
+      window.location.href = lipwaLink;
+    });
   </script>
+
 </body>
 </html>
