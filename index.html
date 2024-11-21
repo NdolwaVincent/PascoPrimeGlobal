@@ -1,34 +1,236 @@
 <!DOCTYPE html>
-<html>
-<head>
-	<meta charset="UTF-8">
-    <meta name="viewport" 
-          content="width=device-width, initial-scale=1.0">
-	<title>Vincent Ndolwa Portfolio</title>
-	<link rel="stylesheet" type="text/css" href="styles.css">
-</head>
-<body>
-	<header>
-		<div class="logo">
-			<h1>My Portfolio</h1>
-		</div>
-		<nav>
-			<ul class="navlinks">
-				<li><a href="#home">Home</a></li>
-				<li><a href="#about">About</a></li>
-				<li><a href="#projects">Projects</a></li>
-				<li><a href="#Services">Services</a></li>
-				<li><a href="#contact">Contact Me</a></li>
-				
-			</ul>
-			<dir class="hamburger" id="hamburger" >
-				<span></span>
-				<span></span>
-				<span></span>
-				<span></span>
-			</dir>
-		</nav>
-	</header>
-	<script src="app.js"></script>
-</body>
+<html lang="en">
+  <!--Created by Vincent-->
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pasco Prime</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    />
+    <script src=
+"https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js">
+    </script>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="header" id="home">
+      <nav>
+        <div class="navbar">
+          <div class="logo">
+            <a href="#">
+              <img src="images/logow.PNG" alt="" />
+            </a>
+          </div>
+
+          <div class="menu_btn">
+            <i class="fas fa-bars"></i>
+          </div>
+        </div>
+
+        <ul class="links">
+          <li><a href="#home">Home</a></li>
+          <li><a href="#about">About</a></li>
+          <li><a href="#popular">Popular</a></li>
+          <li><a href="#explore">Explore</a></li>
+          <li><a href="#contact">Contact</a></li>
+        </ul>
+
+        <button class="btn nav_btn" onclick="RegPage()">Register Now</button>
+      </nav>
+
+      <section class="section header_section">
+        <p>Invest - and - Win</p>
+        <h1>
+          Pasco <br />
+          Prime <span>Global</span>  Love in Every trading <span> View</span>.
+        </h1>
+      </section>
+    </header>
+
+    <section class="section booking_section">
+        <div class="input_box">
+          <span><i class="fas fa-calendar"></i></span>
+        </div>
+        <div class="input_box">
+          <span><i class="fas fa-user"></i></span>
+        </div>
+        <div class="input_box">
+          
+          <button class="btn" onclick="RegPage()">Get Started</button>
+        </div>
+    </section>
+
+    <section class="section about_section" id="about">
+      <div class="about_img">
+        <img src="images/pp4.jpg" alt="" />
+      </div>
+
+      <div class="about_content">
+        <p class="title">ABOUT US</p>
+        <h2 class="tagline">Overview and Summary about Pasco Prime Global</h2>
+        <p class="desc">
+          PascoPrime Global is a premier international trading platform designed to offer individuals and businesses access to global financial markets. Built on transparency, technology, and customer-centric values, we aim to democratize trading and wealth-building opportunities worldwide.
+        </p>
+        <div class="about_btn">
+          <button class="btn">Read More</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="section deal_section">
+      <p class="title">How you Earn in Pasco Prime</p>
+      <h2 class="tagline">Where Winning mentality Meets success.</h2>
+
+      <div class="deal_wrapper">
+        <div class="deal_card">
+          <div class="card_img">
+            <img src="images/pp3.JPG" alt="" />
+            <div class="card_icons">
+              <span><i class="fas fa-heart"></i></span>
+              <span><i class="fas fa-bookmark"></i></span>
+              <span><i class="fas fa-share-nodes"></i></span>
+            </div>
+          </div>
+
+          <div class="card_details">
+            <h4>Earn</h4>
+            <p>
+              Earn 7% daily on your package and receive 10% commission for referrals. Our platform provides real-time data to inform your trading decisions and help maximize profitability.
+            </p>
+            <h5>Starting from a Package of <span>PP Global Premier – $5</span><span> to </span><span>PP Global Imperial – $1000</span></h5>
+            <button class="btn" onclick="RegPage()">Join Now</button>
+          </div>
+        </div>
+        <div class="deal_card">
+          <div class="card_img">
+            <img src="images/pp2.JPG" alt="" />
+            <div class="card_icons">
+              <span><i class="fas fa-heart"></i></span>
+              <span><i class="fas fa-bookmark"></i></span>
+              <span><i class="fas fa-share-nodes"></i></span>
+            </div>
+          </div>
+
+          <div class="card_details">
+            <h4>How to Cash Out</h4>
+            <p>
+              Withdrawals are simple and secure, with funds sent to your bank or preferred payment method. Minimum cashout is $5.
+            </p>
+          </div>
+        </div>
+        <div class="deal_card">
+          <div class="card_img">
+            <img src="images/pp6.JPG" alt="" />
+            <div class="card_icons">
+              <span><i class="fas fa-heart"></i></span>
+              <span><i class="fas fa-bookmark"></i></span>
+              <span><i class="fas fa-share-nodes"></i></span>
+            </div>
+          </div>
+
+          <div class="card_details">
+            <h2>Mission</h2>
+            <p>
+              To empower individuals and businesses with tools, resources, and opportunities in global markets, providing a secure, transparent trading experience.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section class="section banner_section">
+      <div class="banner_content">
+        <div class="banner_card">
+          <h4>10+</h4>
+          <p>Packages Available</p>
+        </div>
+        <div class="banner_card">
+          <h4>$5</h4>
+          <p>Starting Package</p>
+        </div>
+        <div class="banner_card">
+          <h4>$1000</h4>
+          <p>Highest Available Package</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section explore_section" id="explore">
+      <p class="title">EXPLORE</p>
+      <h2 class="tagline">Love in Every Trading View</h2>
+
+      <div class="explore_wrapper">
+        <div class="explore_card">
+          <div class="card_img">
+            <img src="images/pp4.JPG" alt="" />
+            <div class="card_title">Join</div>
+          </div>
+        </div>
+        <div class="explore_card">
+          <div class="card_img">
+            <img src="images/PP6.JPG" alt="" />
+            <div class="card_title">Invest</div>
+          </div>
+        </div>
+        <div class="explore_card">
+          <div class="card_img">
+            <img src="images/pp2.JPG" alt="" />
+            <div class="card_title">Enjoy winnings</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer class="footer" id="contact">
+      <div class="section footer_section">
+        <div class="footer_col">
+          <h1>Vission</h1>
+          <p class="desc">
+            To be the leading global trading platform that democratizes access, fosters inclusion, and sets new industry standards.
+          </p>
+        </div>
+        <div class="footer_col">
+          <h4>COMPANY</h4>
+          <ul class="footer_links">
+            <li><a href="#">About</a></li>
+            <li><a href="#">Careers</a></li>
+            <li><a href="#">Press</a></li>
+            <li><a href="#">Blog</a></li>
+            <li><a href="#">Privacy Policy</a></li>
+          </ul>
+        </div>
+
+        <div class="footer_col">
+          <h4>CONTACT US</h4>
+          <ul class="footer_links">
+
+            <li><h5>Pasco Prime Global Company Ltd</h5></li>
+            <li><h5>875 United Nation Plaza</h5></li>
+            <li><h5>New York</h5></li>
+            <li><h5>10017</h5></li>
+            <li><h5>+1(840)206-4328</h5></li>
+            <li><h5>United States</h5></li>
+            <li><h5>Company Registration No: PP5543428</h5></li>
+            <li><h5>STCA No: GTE557864</h5></li>
+            <li><h5>Email support</h5></li>
+            <li><a href="#">pascoprimeint@gmail.com</a></li>
+          </ul>
+          <div class="footer-section social-media">
+          <h3>Follow Us</h3>
+
+           <a href="https://facebook.com" target="_blank" class="social-icon">Facebook</a>
+                        <a href="https://twitter.com" target="_blank" class="social-icon">Twitter</a>
+                        <a href="https://instagram.com" target="_blank" class="social-icon">Instagram</a>
+                        <a href="https://linkedin.com" target="_blank" class="social-icon">LinkedIn</a>
+        </div>
+        </div>
+      </div>
+      <div class="copyright">
+        &copy; 2023 PascoPrime Global. All rights reserved.
+      </div>
+    </footer>
+
+    <script src="app.js"></script>
+  </body>
 </html>
