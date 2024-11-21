@@ -1,244 +1,532 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="en">
 <head>
-  <!-- Basic -->
-  <meta charset="utf-8" />
-  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <!-- Mobile Metas -->
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-  <!-- Site Metas -->
-  <meta name="keywords" content="" />
-  <meta name="description" content="" />
-  <meta name="author" content="" />
-
-  <title>Pasco Prime Global</title>
-
-  <!-- slider stylesheet -->
-  <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css" />
-
-  <!-- bootstrap core css -->
-  <link rel="stylesheet" type="text/css" href="css/bootstrap.css" />
-
-  <!-- fonts style -->
-  <link href="https://fonts.googleapis.com/css?family=Poppins:400,600,700&display=swap" rel="stylesheet">
-  <!-- Custom styles for this template -->
-  <link href="css/style.css" rel="stylesheet" />
-
-  <!-- responsive style -->
-  <link href="css/responsive.css" rel="stylesheet" />
-
-  <style>
-
-    h1 {
-      text-align: center;
-      color: #333;
-    }
-
-    form {
-      display: flex;
-      flex-direction: column;
-    }
-
-    label {
-      margin-top: 10px;
-      font-weight: bold;
-    }
-
-    input, select, button {
-      margin-top: 5px;
-      padding: 10px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-    }
-
-    button {
-      background-color: #007bff;
-      color: white;
-      font-weight: bold;
-      cursor: pointer;
-      transition: background-color 0.3s ease;
-    }
-
-    button:hover {
-      background-color: #0056b3;
-    }
-
-    p {
-      margin-top: 10px;
-      font-size: 16px;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Responsive Dashboard</title>
+    <link rel="stylesheet" type="text/css" href="styles.css">
 </head>
+<body>
+    <header>
+        <button class="toggle">☰ Menu</button>
+        <h2>PASCO PRIME</h2>
+        <p>Welcome:</p>
+        <p id="profileName">Loading...</p>
+    <script>
+    // Extract username from URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const username = urlParams.get('username');
 
-<body class="sub_page">
-  <div class="hero_area">
-    <!-- header section strats -->
-    <header class="header_section">
-      <div class="container-fluid">
-        <nav class="navbar navbar-expand-lg custom_nav-container ">
-          <a class="navbar-brand" href="index.html">
-            <span>
-              Pasco Prime Global
-            </span>
-          </a>
-          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-          </button>
-
-          <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <div class="d-flex ml-auto flex-column flex-lg-row align-items-center">
-              <ul class="navbar-nav  ">
-                <ul class="navbar-nav  ">
-                <li class="nav-item ">
-                  <a class="nav-link" href="dashboard.html">Dashboard <span class="sr-only">(current)</span></a>
-                </li>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="package.html"> Package</a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="packageh.html"> Package History</a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="commission.html">Commission</a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="about.html">About Us</a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="support.html">Support</a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="contact.html">Logout</a>
-                </li>
-              </ul>
-              <div class="user_option">
-                <form class="form-inline my-2 my-lg-0 ml-0 ml-lg-4 mb-3 mb-lg-0">
-                  <button class="btn  my-2 my-sm-0 nav_search-btn" type="submit"></button>
-                </form>
-              </div>
-            </div>
-          </div>
-        </nav>
-      </div>
-    </header>
-    <!-- end header section -->
-  </div>
-  <div class="welcome-card">
-            <h1>Welcome To Pasco Prime Global</h1>
-            <div id="dashboardLinks"></div>
-          </div>
-
-  <script>
-    const params = new URLSearchParams(window.location.search);
-    const username = params.get('username');
-    const email = params.get('email');
-    const phone = params.get('phone');
-    const referredBy = params.get('referredby');
-
-    if (!username) {
-      alert("Invalid session. Please log in again.");
-      window.location.href = "login.html";
+    // Display username
+    const profileName = document.getElementById('profileName');
+    if (username) {
+      profileName.textContent = `${username}`;
     } else {
-      const links = `
-        <p>Welcome, <strong>${username}</strong>!</p>
-       <p> <a href="profile.html?username=${encodeURIComponent(username)}&email=${encodeURIComponent(email)}&phone=${encodeURIComponent(phone)}&referredby=${encodeURIComponent(referredBy)}">Profile</a>
-        <br></p>
-        <a href="withdraw.html?username=${encodeURIComponent(username)}">Withdraw</a>
-        <br>
-        <a href="deposit.html?username=${encodeURIComponent(username)}">Deposit</a>
-      `;
-      document.getElementById('dashboardLinks').innerHTML = links;
+      profileName.textContent = 'Guest!';
     }
   </script>
+    </header>
+    <div class="dashboard">
+        <div class="drawer">
+            <a href="#" data-target="dashboards" class="active">Dashboard</a>
+            <a href="#" data-target="deposit">Deposit</a>
+            <a href="#" data-target="package">Packages</a>
+            <a href="#" data-target="history">Package History</a>
+            <a href="#" data-target="comm">Commissions</a>
+            <a href="#" data-target="withdraw">Withdrawal</a>
+            <a href="#" data-target="about">About Us</a>
+            <a href="#" data-target="support">Support</a>
+            <a href="#" data-target="myprofile">Profile</a>
+            <a href="#" data-target="logout">Logout</a>
+        </div>
+        <div class="content">
+            <div id="dashboards" class="section active">
+                <h1>Account Dashboard</h1>
   <div class="container">
-        <!-- Welcome Section -->
-        
-  <!-- <script >
-    const sharedusername = document.getElementById('profileName').value;
-      // Store the text in local storage
-    localStorage.setItem("sharedusername", sharedusername);
-    // Initialize or increment the navigation counter
-    let navCount = localStorage.getItem("navCount");
-    navCount = navCount ? parseInt(navCount) + 1 : 1;
-    localStorage.setItem("navCount", navCount);
-
-    // Determine the next page based on the navigation count
-    let nextPage = "";
-    if (navCount === 1) {
-      nextPage = "about.html";
-    } else if (navCount === 2) {
-      nextPage = "commission.html";
-    }
-    else if (navCount === 3) {
-      nextPage = "contact.html";
-    } 
-    else if (navCount === 4) {
-      nextPage = "deposit.html";
-    }
-    else if (navCount === 5) {
-      nextPage = "package.html";
-    }
-    else if (navCount === 6) {
-      nextPage = "profile.html";
-    }
-    else if (navCount === 7) {
-      nextPage = "withdraw.html";
-    }else {
-      return; // Redirect to page4.html for subsequent visits
-    }
-
-    // Redirect to the determined page
-    window.location.href = nextPage;
-  </script> -->
-            <a href="https://chat.whatsapp.com/" target="_blank" class="join-btn">JOIN our WhatsApp group</a>
-        </div>
-
-        <!-- Cards Section -->
-        <div class="cards">
-            <div class="card">
-                <h2>Account Balance</h2>
-                <p>USD <span>0</span></p>
-            </div>
-
-            <div class="card">
-                <h2>Deposit Balance</h2>
-                <p>USD <span>0</span></p>
-                <!-- <button class="action-btn" onclick="redirectToDeposit()">Deposit Now</button> -->
-            </div>
-
-            <div class="card">
-                <h2>Total Withdrawn</h2>
-                <p>USD <span>0</span></p>
-            </div>
-
-            <div class="card">
-                <h2>Affiliate Commission</h2>
-                <p>USD <span>0</span></p>
-            </div>
-        </div>
-
-        <!-- Affiliate Section -->
-        <div class="affiliate-card">
-            <h2>Affiliate Link</h2>
-            <p>This is your invite link:</p>
-            <input type="text" value="https://pascoprime.com/register?invite=Vincentn" readonly>
-        </div>
+    <div class="card">
+      <h3>USD 0</h3>
+      <p>Account Balance</p>
     </div>
 
-    <script>
+    <div class="card">
+      <h3>USD 0</h3>
+      <p>Deposit Balance</p>
+    </div>
 
-        // Redirect to the deposit page
-        function redirectToDeposit() {
+    <div class="card">
+      <h3>USD 0</h3>
+      <p>Total Withdrawn</p>
+    </div>
 
-           
-             // Replace with the actual deposit page URL
-        }
+    <div class="card">
+      <h3>USD 0</h3>
+      <p>Affiliate Commission</p>
+    </div>
+
+    <div class="card">
+      <h3>Affiliate Link</h3>
+      <p>This is your invite link:</p>
+      <p><a href="https://pascoprime.com/register?invite=Vincentn" target="_blank">https://pascoprime.com/register?invite=Vincentn</a></p>
+    </div>
+  </div>
+
+  <a href="https://chat.whatsapp.com/EY4XBBRiFTh40eFcGsXNh0" class="button">JOIN our WhatsApp group</a>
+            </div>
+            <div id="deposit" class="section" >
+                <h1 >Recharge Your Account</h1>
+               <div class="container">
+  <form id="rechargeForm">
+    <label for="amount">Enter Amount (KES):</label>
+    <input type="number" id="amount" placeholder="Enter amount in KES" required>
+    
+    <p>Converted to USD: <span id="convertedAmount">0.00</span></p>
+
+    <label for="paymentOption">Payment Option:</label>
+    <select id="paymentOption" required>
+      <option value="mpesa">M-Pesa</option>
+      <option value="paypal">PayPal</option>
+      <option value="binance">Binance</option>
+    </select>
+
+    <button type="submit">Submit</button>
+  </form>
+</div>
+
+<script>
+  // Conversion rate (Example: 1 KES = 0.007 USD)
+  const conversionRate = 0.00772;
+
+  document.getElementById('amount').addEventListener('input', function () {
+    const amountKES = parseFloat(this.value) || 0;
+    const convertedAmount = (amountKES * conversionRate).toFixed(2);
+    document.getElementById('convertedAmount').textContent = convertedAmount;
+  });
+
+  document.getElementById('rechargeForm').addEventListener('submit', function (event) {
+    event.preventDefault();
+
+    const amountKES = parseFloat(document.getElementById('amount').value);
+    const convertedAmount = (amountKES * conversionRate).toFixed(2);
+    const paymentOption = document.getElementById('paymentOption').value;
+
+    if (!amountKES || amountKES <= 0) {
+      alert('Please enter a valid amount.');
+      return;
+    }
+
+    if (paymentOption === 'mpesa') {
+      // Redirect to M-Pesa processing function
+      processMpesaPayment(amountKES);
+    } else if (paymentOption === 'paypal') {
+      // Redirect to PayPal processing function
+      processPayPalPayment(convertedAmount);
+    } else if (paymentOption === 'binance') {
+      // Handle Binance payment (implement as needed)
+      processBinancePayment(amountKES);
+    }
+  });
+
+  function processMpesaPayment(amount) {
+    alert(`Processing M-Pesa payment for KES ${amount}`);
+    // Generate Lipwa link with the new URL
+      const lipwaLink = `https://app.payhero.co.ke/lipwa/1068?name=${encodeURIComponent(name)}&amount=${encodeURIComponent(amount)}`;
+
+      // Redirect user to the link
+      window.location.href = lipwaLink;
+  }
+
+  function processPayPalPayment(amountUSD) {
+    alert(`Redirecting to PayPal for $${amountUSD}`);
+    // Add your PayPal API integration logic here
+    // Example: Redirect to PayPal payment page
+    /*window.location.href = `https://www.paypal.com/pay?amount=${amountUSD}`;*/
+    const paypalURL = `https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=YOUR_PAYPAL_BUSINESS_EMAIL&item_name=Payment&amount=${encodeURIComponent(amountUSD)}&currency_code=USD&return=https://www.yoursite.com/success&cancel_return=https://www.yoursite.com/cancel`;
+    window.location.href = paypalURL;
+  }
+
+  function processBinancePayment(amount) {
+    alert(`Processing Binance payment for KES ${amount}`);
+    // Add your Binance API integration logic here
+  }
+</script>
+
+            </div>
+            <div id="package" class="section">
+                <h1>Package</h1>
+                <div class="container">
+                  <div class="package-list" id="packageList">
+                  
+                </div>
+                </div>
+                <script>
+        const packages = [
+  { name: "PP Global Elite", price: " Locked" },
+  { name: "PP Global Premier", price: 5 },
+  { name: "PP Global Prestige", price: 10 },
+  { name: "PP Global Executive", price: 25 },
+  { name: "PP Global Platinum", price: 50 },
+  { name: "PP Global Titanium", price: 100 },
+  { name: "PP Global Diamond", price: 250 },
+  { name: "PP Global Sovereign", price: 500 },
+  { name: "PP Global Royal", price: 750 },
+  { name: "PP Global Imperial", price: 1000 }
+];
+
+// Function to generate package list
+function generatePackageList() {
+  const packageList = document.getElementById("packageList");
+
+  packages.forEach((pkg, index) => {
+    const packageCard = document.createElement("div");
+    packageCard.className = "package-card";
+    packageCard.onclick = () => redirectToPayment(index);
+
+    const title = document.createElement("h2");
+    title.className = "package-title";
+    title.innerText = pkg.name;
+
+    const price = document.createElement("p");
+    price.className = "package-price";
+    price.innerText = `$${pkg.price}`;
+
+    packageCard.appendChild(title);
+    packageCard.appendChild(price);
+    packageList.appendChild(packageCard);
+  });
+}
+
+// Function to redirect to payment page for the selected package
+function redirectToPayment(index) {
+  const selectedPackage = packages[index];
+  const paymentURL = `payment.html?package=${selectedPackage.name}&price=${selectedPackage.price}`;
+  window.location.href = paymentURL;
+}
+
+// Generate the package list on page load
+document.addEventListener("DOMContentLoaded", generatePackageList);
+
     </script>
+            </div>
+            <div id="history" class="section">
+                <h1>Package Hostory</h1>
+                <p>Welcome to Section 3 of the dashboard!</p>
+            </div>
+            <div id="comm" class="section">
+                <div class="table-container">
+    <h1>Affiliate Earnings</h1>
+    <table id="affiliateTable">
+      <thead>
+        <tr>
+          <th>Affiliate</th>
+          <th>Package Bought</th>
+          <th>Earned</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Data will be dynamically inserted here -->
+      </tbody>
+    </table>
+  </div>
 
-  <!-- footer section -->
-  <footer id="footer-container">
+  <script>
+    // Firebase configuration
+    const firebaseConfig = {
+      apiKey: "YOUR_API_KEY",
+      authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+      databaseURL: "https://YOUR_PROJECT_ID.firebaseio.com",
+      projectId: "YOUR_PROJECT_ID",
+      storageBucket: "YOUR_PROJECT_ID.appspot.com",
+      messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+      appId: "YOUR_APP_ID"
+    };
+
+    // Initialize Firebase
+    const app = firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
+    // Reference to the data node in your database
+    const dataRef = db.ref("affiliates");
+
+    // Fetch data and populate table
+    const tableBody = document.querySelector("#affiliateTable tbody");
+
+    dataRef.on("value", (snapshot) => {
+      tableBody.innerHTML = ""; // Clear table before adding new data
+      const data = snapshot.val();
+
+      if (data) {
+        Object.keys(data).forEach((key) => {
+          const { affiliate, packageBought, earned, status } = data[key];
+
+          const row = `
+            <tr>
+              <td>${affiliate || "N/A"}</td>
+              <td>${packageBought || "N/A"}</td>
+              <td>${earned || "N/A"}</td>
+              <td>${status || "N/A"}</td>
+            </tr>
+          `;
+          tableBody.innerHTML += row;
+        });
+      } else {
+        tableBody.innerHTML = `<tr><td colspan="4">No data available</td></tr>`;
+      }
+    });
+  </script>
+            </div>
+            <div id="withdraw" class="section">
+                <h1>Withdraw</h1>
+                 <div class="container">
+    <div class="logo">Pasco Prime Global</div>
+    <h1>Withdraw Your Earnings</h1>
+    <form id="withdrawForm">
+      <label for="wallet">SELECT WALLET</label>
+      <select id="wallet" name="wallet" required>
+        <option value="main_balance">MAIN BALANCE</option>
+        <option value="savings">Commission</option>
+      </select>
+
+      <label for="amount">Enter Amount in USD</label>
+      <input type="number" id="amounts" name="amounts" placeholder="Enter Amount" required>
+
+      <p class="note">Minimum Amount: USD 10</p>
+      <button type="submit" id="withdrawBtn">Withdraw</button>
+    </form>
+    <div id="message" class="hidden">
+      <p>Your withdrawal request is being processed. Please wait...</p>
+    </div>
+  </div>
+  <script>
+    document.getElementById('withdrawForm').addEventListener('submit', function (event) {
+      event.preventDefault();
+
+      const amounts = parseFloat(document.getElementById('amounts').value);
+      const messageDiv = document.getElementById('message');
+
+      if (amounts >= 10) {
+        messageDiv.style.display = "block"; // Show the message
+        setTimeout(() => {
+          alert('Your withdrawal request has been received!');
+          messageDiv.style.display = "none"; // Hide the message
+          document.getElementById('withdrawForm').reset(); // Reset the form
+        }, 3000); // Simulates processing time
+      } else {
+        alert('Please enter an amount greater than or equal to USD 10.');
+      }
+    });
+  </script>
+            </div>
+            <div id="about" class="section">
+                <h1>About</h1>
+                <div class="bout">
+                  <div class="faq-container">
+        <h1 class="faq-header">Explore more about Pasco Prime Global</h1>
+
+        <div class="faq-item">
+          <div class="faq-question" onclick="toggleAnswer('answer1')">
+            Overview and Summary
+            <span>+</span>
+          </div>
+          <div id="answer1" class="faq-answer">
+            PascoPrime Global is a premier international trading platform designed to offer individuals and businesses access to global financial markets. Built on transparency, technology, and customer-centric values, we aim to democratize trading and wealth-building opportunities worldwide.
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question" onclick="toggleAnswer('answer2')">
+            How It Works
+            <span>+</span>
+          </div>
+          <div id="answer2" class="faq-answer">
+            Our platform connects you to global financial markets with an intuitive interface and cutting-edge tools. Choose a package, subscribe, and start trading stocks, commodities, indices, and currencies. Earn 7% daily on your subscribed package for 99 days.
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question" onclick="toggleAnswer('answer3')">
+            How You Earn
+            <span>+</span>
+          </div>
+          <div id="answer3" class="faq-answer">
+            Earn 7% daily on your package and receive 10% commission for referrals. Our platform provides real-time data to inform your trading decisions and help maximize profitability.
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question" onclick="toggleAnswer('answer4')">
+            How to Cash Out
+            <span>+</span>
+          </div>
+          <div id="answer4" class="faq-answer">
+            Withdrawals are simple and secure, with funds sent to your bank or preferred payment method. Minimum cashout is $10.
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question" onclick="toggleAnswer('answer5')">
+            Why Choose Us?
+            <span>+</span>
+          </div>
+          <div id="answer5" class="faq-answer">
+            <ul>
+              <li><strong>Global Reach:</strong> Access diverse international markets for broader investment opportunities.</li>
+              <li><strong>User-Friendly Platform:</strong> Intuitive design and powerful tools for traders of all levels.</li>
+              <li><strong>Advanced Analytics:</strong> Real-time data to optimize trading decisions.</li>
+              <li><strong>Customizable Packages:</strong> Ten packages to fit any financial goal or style.</li>
+              <li><strong>Security & Reliability:</strong> Secure trading environment and asset protection.</li>
+              <li><strong>Dedicated Support:</strong> Expert guidance and personalized support.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+                </div>
+                <script>
+    // Toggle FAQ answers
+    function toggleAnswer(answerId) {
+      const answer = document.getElementById(answerId);
+      const isVisible = answer.style.display === "block";
+
+      // Collapse all answers
+      document.querySelectorAll(".faq-answer").forEach((el) => (el.style.display = "none"));
+
+      // Toggle selected answer
+      answer.style.display = isVisible ? "none" : "block";
+    }
+  </script>
+            </div>
+            <div id="support" class="section">
+                <h1>Support</h1>
+                <div class="containers">
+        <h1>Contact Us on WhatsApp</h1>
+        <p>Click the button below to chat with us on WhatsApp:</p>
+        <button id="whatsappBtn">Chat Now</button>
+    </div>
+    <script>
+        document.getElementById('whatsappBtn').addEventListener('click', function () {
+            const whatsappLink = 'https://wa.me/qr/Z6VQETQE32LGD1';
+            window.location.href = whatsappLink;
+        });
+    </script>
+            </div>
+            <div id="myprofile" class="section">
+              <div class="dashboard-container">
+    <h1>Profile Details</h1>
+    <div class="profile-section">
+      <h3>Your Profile</h3>
+      <div class="profile-details">
+        <label for="email">Email:</label>
+        <input type="email" id="email" value="" readonly>
+      </div>
+      <div class="profile-details">
+        <label for="username">Username:</label>
+        <input type="text" id="username" value="" readonly>
+      </div>
+      <div class="profile-details">
+        <label for="phone">Phone:</label>
+        <input type="text" id="phone" value="">
+      </div>
+      <div class="profile-details">
+        <label for="referredby">Referred By:</label>
+        <input type="text" id="referredby" value="">
+      </div>
+      <div class="actions">
+        <button class="save-btn" id="saveBtn">Save Changes</button>
+        <button class="cancel-btn" id="cancelBtn">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Firebase SDK -->
+  <script type="module">
+    import { getDatabase, ref, update } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-database.js";
+
+    // Extract URL parameters
+    const urlParams = new URLSearchParams(window.location.search);
+
+    // Populate the profile section
+    document.getElementById('email').value = urlParams.get('email') || 'Not provided';
+    document.getElementById('username').value = urlParams.get('username') || 'Not provided';
+    document.getElementById('phone').value = urlParams.get('phone') || '';
+    document.getElementById('referredby').value = urlParams.get('referredby') || '';
+
+    // Handle save changes
+    const saveBtn = document.getElementById('saveBtn');
+    const cancelBtn = document.getElementById('cancelBtn');
+    const database = getDatabase();
+
+    saveBtn.addEventListener('click', () => {
+      const username = document.getElementById('username').value;
+      const email = document.getElementById('email').value;
+      const phone = document.getElementById('phone').value;
+      const referredby = document.getElementById('referredby').value;
+
+      // Update data in Firebase
+      const userRef = ref(database, `users/${username}`);
+      update(userRef, { email, phone, referredby })
+        .then(() => {
+          alert('Profile updated successfully!');
+        })
+        .catch((error) => {
+          console.error('Error updating profile:', error);
+          alert('Failed to update profile. Please try again.');
+        });
+    });
+
+    // Handle cancel changes
+    cancelBtn.addEventListener('click', () => {
+      // Reset fields to original values
+      document.getElementById('email').value = urlParams.get('email') || 'Not provided';
+      document.getElementById('username').value = urlParams.get('username') || 'Not provided';
+      document.getElementById('phone').value = urlParams.get('phone') || '';
+      document.getElementById('referredby').value = urlParams.get('referredby') || '';
+    });
+  </script>
+            </div>
+            <div id="logout" class="section">
+                <div class="container" id="logoutContainer">
+    <p id="welcomeMessage"></p>
+    <button id="logoutButton">Logout</button>
+  </div>
+
+  <script>
+    // Simulating user login status using localStorage
+    const user = {
+      username: "JohnDoe",
+      loggedIn: true
+    };
+
+    // Save user to localStorage (this would typically happen during login)
+    if (!localStorage.getItem("user")) {
+      localStorage.setItem("user", JSON.stringify(user));
+    }
+
+    // Get user data from localStorage
+    const storedUser = JSON.parse(localStorage.getItem("user"));
+
+    // Welcome message
+    const welcomeMessage = document.getElementById("welcomeMessage");
+    if (storedUser && storedUser.loggedIn) {
+      welcomeMessage.textContent = `Welcome, ${storedUser.username}!`;
+    } else {
+      window.location.href = "login.html"; // Redirect to login page if not logged in
+    }
+
+    // Logout logic
+    const logoutButton = document.getElementById("logoutButton");
+    logoutButton.addEventListener("click", () => {
+      // Clear user data from localStorage
+      localStorage.removeItem("user");
+
+      // Redirect to login page
+      alert("You have successfully logged out!");
+      window.location.href = "login.html"; // Replace with your login page URL
+    });
+  </script>
+            </div>
+        </div>
+    </div>
+    <footer id="footer-container">
         <div class="footer-section">
             <h3>Contact US</h3>
             <p>Emal: pascoprimeint@gmail.com</p>
@@ -255,11 +543,37 @@
         </div>
         <p>&copy; 2023 PascoPrime Global. All rights reserved.</p>
     </footer>
-  <!-- footer section -->
 
-  <script src="js/jquery-3.4.1.min.js"></script>
-  <script src="js/bootstrap.js"></script>
 
+    <script>
+        const toggle = document.querySelector('.toggle');
+        const drawer = document.querySelector('.drawer');
+        const links = document.querySelectorAll('.drawer a');
+        const sections = document.querySelectorAll('.section');
+
+        // Toggle drawer visibility
+        toggle.addEventListener('click', () => {
+            drawer.classList.toggle('open');
+        });
+
+        // Section navigation
+        links.forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const target = e.target.getAttribute('data-target');
+
+                sections.forEach(section => section.classList.remove('active'));
+                links.forEach(link => link.classList.remove('active'));
+
+                document.getElementById(target).classList.add('active');
+                e.target.classList.add('active');
+
+                // Close drawer on mobile
+                if (window.innerWidth <= 768) {
+                    drawer.classList.remove('open');
+                }
+            });
+        });
+    </script>
 </body>
-
 </html>
