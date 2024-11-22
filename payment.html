@@ -73,8 +73,8 @@
     }
 
     .container {
-      text-align: center;
-      margin-bottom: 20px;
+        text-align: center;
+        margin-bottom: 20px;
     }
   </style>
 </head>
@@ -101,36 +101,37 @@
       </div>
       <div class="form-group">
         <label for="amount">Amount (KES)</label>
-        <input type="number" id="amount" name="amount" placeholder="Enter amount" value="" required>
+        <input type="number" id="amount" name="amount" placeholder="Enter amount" readonly required>
       </div>
       <div class="form-group">
         <button type="submit">Pay Now</button>
       </div>
       <p id="errorMessage" class="error" style="display: none;">Please fill all fields correctly.</p>
     </form>
+    <div id="payHero"></div>
   </div>
-
+<script src="https://raw.githack.com/PAY-HERO-KENYA/payment_button/main/sdk.js"></script>
   <script>
     // Conversion rate from USD to KES
     const conversionRate = 129;
 
     // Retrieve package details from URL parameters
     const urlParams = new URLSearchParams(window.location.search);
-    const packageName = urlParams.get('package');
-    const packagePriceUSD = parseFloat(urlParams.get('price')); // Package price in USD
+    const packageName = urlParams.get('package') || "Unknown Package";
+    const packagePriceUSD = parseFloat(urlParams.get('price')) || 0; // Default price if not provided
 
     // Convert USD to KES
-    const packagePriceKES = packagePriceUSD * conversionRate;
+    const packagePriceKES = (packagePriceUSD * conversionRate).toFixed(2);
 
     // Display package details
     document.getElementById('packageDetails').innerText = 
-      `You selected: ${packageName} - $${packagePriceUSD} (KES ${packagePriceKES.toFixed(2)})`;
+      `You selected: ${packageName} - $${packagePriceUSD} (KES ${packagePriceKES})`;
 
     // Function to show the payment form
     function showPaymentForm() {
       document.querySelector('.container').style.display = 'none';
       const amountInput = document.getElementById('amount');
-      amountInput.value = packagePriceKES.toFixed(2); // Set the package price in KES as the amount
+      amountInput.value = packagePriceKES; // Set the package price in KES as the amount
       document.getElementById('paymentFormContainer').style.display = 'block';
     }
 
@@ -139,12 +140,12 @@
 
       const name = document.getElementById("name").value.trim();
       const phone = document.getElementById("phone").value.trim();
-      const amount = document.getElementById("amount").value.trim();
+      const amount = parseFloat(document.getElementById("amount").value.trim());
       const errorMessage = document.getElementById("errorMessage");
 
       // Validate inputs
-      if (!name || !phone || !amount || isNaN(amount) || amount <= 0) {
-        errorMessage.textContent = "Please fill all fields correctly.";
+      if (!name || !phone || isNaN(amount) || amount <= 0) {
+        errorMessage.textContent = "Please fill all fields correctly or Selected package is locked.";
         errorMessage.style.display = "block";
         return;
       }
@@ -159,13 +160,29 @@
 
       errorMessage.style.display = "none";
 
-      // Generate Lipwa link with the new URL
-      const lipwaLink = `https://app.payhero.co.ke/lipwa/1068?name=${encodeURIComponent(name)}&phone=${encodeURIComponent(phone)}&amount=${encodeURIComponent(amount)}`;
+      // Clear the PayHero container before initializing
+      document.getElementById("payHero").innerHTML = "";
 
-      // Redirect user to the link
-      window.location.href = lipwaLink;
+      // Initialize PayHero payment widget
+      PayHero.init({
+        paymentUrl: "https://app.payhero.co.ke/lipwa/1068", // Your PayHero Lipwa link
+        width: "100%",
+        height: "100%",
+        containerId: "payHero",
+        channelID: 1084, // Your payment channel ID
+        amount: amount, 
+        phone: phone, 
+        reference: name, 
+        buttonName: "Pay Now",
+        buttonColor: "#00a884",
+        successUrl: "https://payherokenya.com/",
+        failedUrl: "login.html"
+      });
     });
   </script>
+
+  <!-- Ensure you add PayHero's JavaScript library -->
+  <script src="https://path-to-payhero-library.js"></script>
 
 </body>
 </html>
