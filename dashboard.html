@@ -5,11 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Responsive Dashboard</title>
     <link rel="stylesheet" type="text/css" href="styles.css">
+    <script src=
+"https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js">
+    </script>
 </head>
 <body>
     <header>
         <button class="toggle">☰ Menu</button>
-        <h2>PASCO PRIME</h2>
         <p>Welcome:</p>
         <p id="profileName">Loading...</p>
     <script>
@@ -41,8 +43,9 @@
         </div>
         <div class="content">
             <div id="dashboards" class="section active">
-                <h1>Account Dashboard</h1>
-  <div class="container">
+                <h1>WELCOME TO PASCO PRIME GLOBAL</h1>
+                <div class="container">
+                  <div class="container">
     <div class="card">
       <h3>USD 0</h3>
       <p>Account Balance</p>
@@ -71,6 +74,7 @@
   </div>
 
   <a href="https://chat.whatsapp.com/EY4XBBRiFTh40eFcGsXNh0" class="button">JOIN our WhatsApp group</a>
+                </div>
             </div>
             <div id="deposit" class="section" >
                 <h1 >Recharge Your Account</h1>
@@ -78,7 +82,13 @@
   <form id="rechargeForm">
     <label for="amount">Enter Amount (KES):</label>
     <input type="number" id="amount" placeholder="Enter amount in KES" required>
-    
+
+    <label for="phone">Phone Number:</label>
+    <input type="tel" id="phone" placeholder="Enter your phone number" required>
+
+    <label for="name">Your Name:</label>
+    <input type="text" id="name" placeholder="Enter your name" required>
+
     <p>Converted to USD: <span id="convertedAmount">0.00</span></p>
 
     <label for="paymentOption">Payment Option:</label>
@@ -90,10 +100,30 @@
 
     <button type="submit">Submit</button>
   </form>
+  <div id="payHero" style="display: none;"></div>
 </div>
+<script src="https://raw.githack.com/PAY-HERO-KENYA/payment_button/main/sdk.js"></script>
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+  import { getDatabase, ref, set, push } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
 
-<script>
-  // Conversion rate (Example: 1 KES = 0.007 USD)
+  // Firebase Configuration
+  const firebaseConfig = {
+    apiKey: "AIzaSyD6k4OlLYnotuuChAjLBoHmqfv9-iwrlfY",
+    authDomain: "alfajiri-database.firebaseapp.com",
+    databaseURL: "https://alfajiri-database-default-rtdb.firebaseio.com",
+    projectId: "alfajiri-database",
+    storageBucket: "alfajiri-database.appspot.com",
+    messagingSenderId: "310417854615",
+    appId: "1:310417854615:web:6f65002a119caeaf9119d2",
+    measurementId: "G-21TBZCRBHM",
+  };
+
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  const database = getDatabase(app);
+
+  // Conversion rate
   const conversionRate = 0.00772;
 
   document.getElementById('amount').addEventListener('input', function () {
@@ -106,49 +136,82 @@
     event.preventDefault();
 
     const amountKES = parseFloat(document.getElementById('amount').value);
-    const convertedAmount = (amountKES * conversionRate).toFixed(2);
+    const phone = document.getElementById('phone').value.trim();
+    const name = document.getElementById('name').value.trim();
     const paymentOption = document.getElementById('paymentOption').value;
 
-    if (!amountKES || amountKES <= 0) {
-      alert('Please enter a valid amount.');
+    if (!amountKES || amountKES <= 0 || !phone || !name) {
+      alert('Please fill in all required fields.');
       return;
     }
 
     if (paymentOption === 'mpesa') {
-      // Redirect to M-Pesa processing function
-      processMpesaPayment(amountKES);
+      processMpesaPayment(amountKES, phone, name);
     } else if (paymentOption === 'paypal') {
-      // Redirect to PayPal processing function
+      const convertedAmount = (amountKES * conversionRate).toFixed(2);
       processPayPalPayment(convertedAmount);
     } else if (paymentOption === 'binance') {
-      // Handle Binance payment (implement as needed)
       processBinancePayment(amountKES);
     }
   });
 
-  function processMpesaPayment(amount) {
-    alert(`Processing M-Pesa payment for KES ${amount}`);
-    // Generate Lipwa link with the new URL
-      const lipwaLink = `https://app.payhero.co.ke/lipwa/1068?name=${encodeURIComponent(name)}&amount=${encodeURIComponent(amount)}`;
+  function processMpesaPayment(amount, phone, name) {
+    alert(`Redirecting to PayHero for M-Pesa payment of KES ${amount}.`);
 
-      // Redirect user to the link
-      window.location.href = lipwaLink;
+    document.getElementById('payHero').style.display = 'block';
+
+    PayHero.init({
+      paymentUrl: "https://app.payhero.co.ke/lipwa/1068",
+      width: "100%",
+      height: "100%",
+      containerId: "payHero",
+      channelID: 1084,
+      amount: parseFloat(amount),
+      phone: phone,
+      reference: name,
+      buttonName: "Complete Payment",
+      buttonColor: "#00a884",
+      successUrl: "https://payherokenya.com/",
+      failedUrl: "login.html/",
+      onSuccess: function () {
+        alert(`Payment of KES ${amount} was successful!`);
+        savePaymentData(phone, name, amount);
+      },
+      onFailure: function () {
+        alert("Payment failed. Please try again.");
+      }
+    });
+  }
+
+  function savePaymentData(phone, name, amount) {
+    /*const paymentsRef = ref(database, 'payments');
+    const paymentData = {
+      phone,
+      name,
+      amount,
+      timestamp: new Date().toISOString(),
+    };
+
+    push(paymentsRef, paymentData)
+      .then(() => {
+        alert("Payment data saved successfully!");
+      })
+      .catch((error) => {
+        alert(`Error saving payment data: ${error.message}`);
+      });*/
   }
 
   function processPayPalPayment(amountUSD) {
     alert(`Redirecting to PayPal for $${amountUSD}`);
-    // Add your PayPal API integration logic here
-    // Example: Redirect to PayPal payment page
-    /*window.location.href = `https://www.paypal.com/pay?amount=${amountUSD}`;*/
     const paypalURL = `https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=YOUR_PAYPAL_BUSINESS_EMAIL&item_name=Payment&amount=${encodeURIComponent(amountUSD)}&currency_code=USD&return=https://www.yoursite.com/success&cancel_return=https://www.yoursite.com/cancel`;
     window.location.href = paypalURL;
   }
 
   function processBinancePayment(amount) {
     alert(`Processing Binance payment for KES ${amount}`);
-    // Add your Binance API integration logic here
   }
 </script>
+
 
             </div>
             <div id="package" class="section">
