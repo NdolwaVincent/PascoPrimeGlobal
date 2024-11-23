@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Responsive Dashboard</title>
     <link rel="stylesheet" type="text/css" href="styles.css">
     <script src=
@@ -20,6 +21,8 @@
     const username = urlParams.get('username');
 
     // Display username
+
+
     const profileName = document.getElementById('profileName');
     if (username) {
       profileName.textContent = `${username}`;
@@ -31,6 +34,7 @@
     <div class="dashboard">
         <div class="drawer">
             <a href="#" data-target="dashboards" class="active">Dashboard</a>
+            
             <a href="#" data-target="deposit">Deposit</a>
             <a href="#" data-target="package">Packages</a>
             <a href="#" data-target="history">Package History</a>
@@ -41,41 +45,53 @@
             <a href="#" data-target="myprofile">Profile</a>
             <a href="#" data-target="logout">Logout</a>
         </div>
-        <div class="content">
-            <div id="dashboards" class="section active">
-                <h1>WELCOME TO PASCO PRIME GLOBAL</h1>
-                <div class="container">
-                  <div class="container">
-    <div class="card">
-      <h3>USD 0</h3>
-      <p>Account Balance</p>
-    </div>
-
-    <div class="card">
-      <h3>USD 0</h3>
-      <p>Deposit Balance</p>
-    </div>
-
-    <div class="card">
-      <h3>USD 0</h3>
-      <p>Total Withdrawn</p>
-    </div>
-
-    <div class="card">
-      <h3>USD 0</h3>
-      <p>Affiliate Commission</p>
-    </div>
-
-    <div class="card">
-      <h3>Affiliate Link</h3>
+        <<div class="content">
+          <div id="dashboards" class="section active">
+            <h1 >Account Details</h1>
+            <div class="dashboard-container">
+    <h1>YOUR PASCO PRIME GLOBAL ACCOUNT</h1>
+    <a href="https://chat.whatsapp.com/EY4XBBRiFTh40eFcGsXNh0" class="button">JOIN our WhatsApp group</a>
+    <div class="card-container">
+      <div class="card">
+        <h3 id="balance">USD 0</h3>
+        <p>Account Balance</p>
+      </div>
+      <div class="card">
+        <h3 id="deposits">USD 0</h3>
+        <p>Deposit Balance</p>
+      </div>
+      <div class="card">
+        <h3 id="withdra">USD 0</h3>
+        <p>Total Withdrawn</p>
+      </div>
+      <div class="card">
+        <h3 id="comms">USD 0</h3>
+        <p>Affiliate Commission</p>
+      </div>
+      <div class="card">
+        <h3>Affiliate Link</h3>
       <p>This is your invite link:</p>
-      <p><a href="https://pascoprime.com/register?invite=Vincentn" target="_blank">https://pascoprime.com/register?invite=Vincentn</a></p>
+      <p><a href="https://ndolwavincent.github.io/PascoPrimeGlobal/" target="_blank">https://ndolwavincent.github.io/PascoPrimeGlobal/</a></p>
+      </div>
     </div>
   </div>
 
-  <a href="https://chat.whatsapp.com/EY4XBBRiFTh40eFcGsXNh0" class="button">JOIN our WhatsApp group</a>
-                </div>
-            </div>
+ <script type="module">
+    import { getDatabase, ref, update } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-database.js";
+
+    // Extract URL parameters
+    const urlParams = new URLSearchParams(window.location.search);
+
+    // Populate the profile section with values
+    document.getElementById('comms').textContent = urlParams.get('comm') || 'Not provided';
+    document.getElementById('withdra').textContent = urlParams.get('wid') || 'Not provided';
+    document.getElementById('deposits').textContent = urlParams.get('deposit') || 'USD 0';
+    document.getElementById('balance').textContent = urlParams.get('balance') || 'Not provided';
+  </script>
+            
+          </div>
+
+
             <div id="deposit" class="section" >
                 <h1 >Recharge Your Account</h1>
                <div class="container">
@@ -277,7 +293,78 @@ document.addEventListener("DOMContentLoaded", generatePackageList);
             </div>
             <div id="history" class="section">
                 <h1>Package Hostory</h1>
-                <p>Welcome to Section 3 of the dashboard!</p>
+                <div class="container">
+        <h1>Package Purchase Details</h1>
+        <table>
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Time</th>
+                    <th>Amount</th>
+                    <th>Package Name</th>
+                </tr>
+            </thead>
+            <tbody id="packageTable">
+                <!-- Rows will be added here dynamically -->
+            </tbody>
+        </table>
+    </div>
+    <script>
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "YOUR_API_KEY",
+            authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+            databaseURL: "https://YOUR_PROJECT_ID.firebaseio.com",
+            projectId: "YOUR_PROJECT_ID",
+            storageBucket: "YOUR_PROJECT_ID.appspot.com",
+            messagingSenderId: "YOUR_SENDER_ID",
+            appId: "YOUR_APP_ID"
+        };
+
+        // Initialize Firebase
+        const app = firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+
+        // Fetch data from Firebase and display it
+        const packageTable = document.getElementById("packageTable");
+
+        firebase.database().ref("packages").on("value", (snapshot) => {
+            packageTable.innerHTML = ""; // Clear table
+            const data = snapshot.val();
+
+            if (data) {
+                Object.values(data).forEach((packageData) => {
+                    const row = document.createElement("tr");
+
+                    const dateCell = document.createElement("td");
+                    dateCell.textContent = packageData.date;
+
+                    const timeCell = document.createElement("td");
+                    timeCell.textContent = packageData.time;
+
+                    const amountCell = document.createElement("td");
+                    amountCell.textContent = packageData.amount;
+
+                    const nameCell = document.createElement("td");
+                    nameCell.textContent = packageData.packageName;
+
+                    row.appendChild(dateCell);
+                    row.appendChild(timeCell);
+                    row.appendChild(amountCell);
+                    row.appendChild(nameCell);
+
+                    packageTable.appendChild(row);
+                });
+            } else {
+                const row = document.createElement("tr");
+                const cell = document.createElement("td");
+                cell.setAttribute("colspan", 4);
+                cell.textContent = "No packages found.";
+                row.appendChild(cell);
+                packageTable.appendChild(row);
+            }
+        });
+    </script>
             </div>
             <div id="comm" class="section">
                 <div class="table-container">
@@ -491,8 +578,8 @@ document.addEventListener("DOMContentLoaded", generatePackageList);
         <input type="text" id="username" value="" readonly>
       </div>
       <div class="profile-details">
-        <label for="phone">Phone:</label>
-        <input type="text" id="phone" value="">
+        <label for="phones">Phone:</label>
+        <input type="text" id="phones" value="">
       </div>
       <div class="profile-details">
         <label for="referredby">Referred By:</label>
@@ -515,7 +602,7 @@ document.addEventListener("DOMContentLoaded", generatePackageList);
     // Populate the profile section
     document.getElementById('email').value = urlParams.get('email') || 'Not provided';
     document.getElementById('username').value = urlParams.get('username') || 'Not provided';
-    document.getElementById('phone').value = urlParams.get('phone') || '';
+    document.getElementById('phones').value = urlParams.get('phones') || '';
     document.getElementById('referredby').value = urlParams.get('referredby') || '';
 
     // Handle save changes
@@ -551,16 +638,17 @@ document.addEventListener("DOMContentLoaded", generatePackageList);
     });
   </script>
             </div>
+            
             <div id="logout" class="section">
                 <div class="container" id="logoutContainer">
     <p id="welcomeMessage"></p>
     <button id="logoutButton">Logout</button>
   </div>
 
-  <script>
+ <script>
     // Simulating user login status using localStorage
     const user = {
-      username: "JohnDoe",
+      username: "Pasco Pime User",
       loggedIn: true
     };
 
@@ -643,5 +731,6 @@ document.addEventListener("DOMContentLoaded", generatePackageList);
             });
         });
     </script>
+    </div>
 </body>
 </html>
