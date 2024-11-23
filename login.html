@@ -135,12 +135,17 @@ label {
           if (userData.password === password) {
             errorElement.textContent = '';
 
-            const urlParams = new URLSearchParams({
-              username: username,
-              email: userData.email,
-              phone: userData.phone,
-              referredby: userData.referredby,
-            });
+             const urlParams = new URLSearchParams({
+                username: username,
+                email: userData.email || '',
+                phone: userData.phone || '',
+                referredby: userData.referredby || '',
+                balance: userData.balance || '',
+                comm: userData.comm || '',
+                deposit: userData.deposit || '',
+                wid: userData.wid || '',
+                account: userData.account || ''
+              });
 
             // Redirect to dashboard
             const dashboardUrl = `dashboard.html?${urlParams.toString()}`;
