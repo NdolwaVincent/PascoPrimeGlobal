@@ -45,7 +45,7 @@
             <a href="#" data-target="myprofile">Profile</a>
             <a href="#" data-target="logout">Logout</a>
         </div>
-        <<div class="content">
+        <div class="content">
           <div id="dashboards" class="section active">
             <h1 >Account Details</h1>
             <div class="dashboard-container">
@@ -68,26 +68,98 @@
         <h3 id="comms">USD 0</h3>
         <p>Affiliate Commission</p>
       </div>
-      <div class="card">
+      <div class="card"> 
         <h3>Affiliate Link</h3>
-      <p>This is your invite link:</p>
-      <p><a href="https://ndolwavincent.github.io/PascoPrimeGlobal/" target="_blank">https://ndolwavincent.github.io/PascoPrimeGlobal/</a></p>
-      </div>
+        <p>Enter your username to generate your personalized invite link:</p>
+        <input type="text" id="usernames" placeholder="Enter your username">
+        <button class="button" onclick="generateLink()">Generate Link</button>
+        <p id="link">Your link will appear here.</p>
+        <button class="button" onclick="copyLink()" disabled id="copyButton">Copy Link</button>
+        <button class="button" onclick="shareLink()" disabled id="shareButton">Share Link</button>
+    </div>
+
+    <script>
+        const baseUrl = "https://pascoprime.com/Register.html";
+
+        function generateLink() {
+            const username = document.getElementById("usernames").value.trim();
+
+            if (!username) {
+                alert("Please enter a username!");
+                return;
+            }
+
+            // Append username as a query parameter
+            const personalizedLink = `${baseUrl}?ref=${encodeURIComponent(username)}`;
+            const linkElement = document.getElementById("link");
+
+            // Update the link display
+            linkElement.textContent = personalizedLink;
+            linkElement.style.color = "#007BFF";
+            linkElement.style.textDecoration = "underline";
+
+            // Enable buttons
+            document.getElementById("copyButton").disabled = false;
+            document.getElementById("shareButton").disabled = false;
+        }
+
+        function copyLink() {
+            const link = document.getElementById("link").textContent;
+
+            navigator.clipboard.writeText(link).then(() => {
+                alert("Link copied to clipboard!");
+            }).catch(err => {
+                console.error("Failed to copy: ", err);
+                alert("Failed to copy the link.");
+            });
+        }
+
+        function shareLink() {
+            const link = document.getElementById("link").textContent;
+
+            if (navigator.share) {
+                navigator.share({
+                    title: 'Affiliate Invite Link',
+                    text: 'Check out this invite link for Pasco Prime:',
+                    url: link
+                }).then(() => {
+                    console.log("Link shared successfully.");
+                }).catch(err => {
+                    console.error("Error sharing the link: ", err);
+                });
+            } else {
+                alert("Sharing is not supported on this browser.");
+            }
+        }
+    </script>
     </div>
   </div>
 
  <script type="module">
     import { getDatabase, ref, update } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-database.js";
 
+    // Conversion rate from local currency to USD
+    const conversionRate = 129.5;
+
     // Extract URL parameters
     const urlParams = new URLSearchParams(window.location.search);
 
-    // Populate the profile section with values
-    document.getElementById('comms').textContent = urlParams.get('comm') || 'Not provided';
-    document.getElementById('withdra').textContent = urlParams.get('wid') || 'Not provided';
-    document.getElementById('deposits').textContent = urlParams.get('deposit') || 'USD 0';
-    document.getElementById('balance').textContent = urlParams.get('balance') || 'Not provided';
-  </script>
+    // Function to convert amount to USD and format
+    function convertToUSD(amount) {
+        if (!isNaN(amount)) {
+            return `$${(parseFloat(amount) / conversionRate).toFixed(2)}`;
+        } else {
+            return 'USD 0'; // Default value if amount is not a number
+        }
+    }
+
+    // Populate fields with converted values
+    document.getElementById('comms').textContent = convertToUSD(urlParams.get('comm') || '0');
+    document.getElementById('withdra').textContent = convertToUSD(urlParams.get('wid') || '0');
+    document.getElementById('deposits').textContent = convertToUSD(urlParams.get('deposit') || '0');
+    document.getElementById('balance').textContent = convertToUSD(urlParams.get('balance') || '0');
+</script>
+
             
           </div>
 
