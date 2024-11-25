@@ -86,22 +86,26 @@ label {
     <h1>Pasco Prime Global</h1>
     <h4>Enter your details and access our platform</h4>
     <form id="loginForm">
-      <label for="username">Username</label>
-      <input type="text" id="username" placeholder="Username" required>
-      <label for="password">Password</label>
-      <input type="password" id="password" placeholder="Password" required>
+      <div class="form-group">
+        <label for="username">Username</label>
+        <input type="text" id="username" placeholder="Username" required>
+      </div>
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" id="password" placeholder="Password" required>
+      </div>
       <button type="submit">Login</button>
-       <a href="Register.html" class="toggle-link">Don't have an account? Register</a>
+      <a href="Register.html" class="toggle-link">Don't have an account? Register</a>
     </form>
     <p class="error" id="error"></p>
   </div>
 
-  <!-- Firebase SDK -->
+  <!-- Firebase SDK and Custom Script -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js";
     import { getDatabase, ref, child, get } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-database.js";
 
-    // Your Firebase configuration
+    // Firebase Configuration
     const firebaseConfig = {
       apiKey: "AIzaSyD6k4OlLYnotuuChAjLBoHmqfv9-iwrlfY",
       authDomain: "alfajiri-database.firebaseapp.com",
@@ -115,53 +119,60 @@ label {
 
     // Initialize Firebase
     const app = initializeApp(firebaseConfig);
-  const database = getDatabase(app);
+    const database = getDatabase(app);
 
-  const loginForm = document.getElementById('loginForm');
-  const errorElement = document.getElementById('error');
+    const loginForm = document.getElementById('loginForm');
+    const errorElement = document.getElementById('error');
 
-  loginForm.addEventListener('submit', (e) => {
-    e.preventDefault();
+    loginForm.addEventListener('submit', (e) => {
+      e.preventDefault();
 
-    const username = document.getElementById('username').value;
-    const password = document.getElementById('password').value;
+      const username = document.getElementById('username').value.trim();
+      const password = document.getElementById('password').value;
 
-    const dbRef = ref(database);
-    get(child(dbRef, `users/${username}`))
-      .then((snapshot) => {
-        if (snapshot.exists()) {
-          const userData = snapshot.val();
+      if (!username || !password) {
+        errorElement.textContent = "Please fill in all fields.";
+        return;
+      }
 
-          if (userData.password === password) {
-            errorElement.textContent = '';
+      const dbRef = ref(database);
+      get(child(dbRef, `users/${username}`))
+        .then((snapshot) => {
+          if (snapshot.exists()) {
+            const userData = snapshot.val();
 
-             const urlParams = new URLSearchParams({
+            if (userData.password === password) {
+              errorElement.textContent = '';
+
+              // Prepare URL parameters with additional fields
+              const urlParams = new URLSearchParams({
                 username: username,
                 email: userData.email || '',
                 phone: userData.phone || '',
                 referredby: userData.referredby || '',
                 balance: userData.balance || '',
-                comm: userData.comm || '',
-                deposit: userData.deposit || '',
-                wid: userData.wid || '',
-                account: userData.account || ''
+                account: userData.account || '',
+                depo: userData.depo || '',
+                account: userData.account || '',
+                wid: userData.wid || '0',
+      
               });
 
-            // Redirect to dashboard
-            const dashboardUrl = `dashboard.html?${urlParams.toString()}`;
-            window.location.href = dashboardUrl;
+              // Redirect to dashboard
+              const dashboardUrl = `dashboard.html?${urlParams.toString()}`;
+              window.location.href = dashboardUrl;
+            } else {
+              errorElement.textContent = 'Incorrect password!';
+            }
           } else {
-            errorElement.textContent = 'Incorrect password!';
+            errorElement.textContent = 'Username does not exist!';
           }
-        } else {
-          errorElement.textContent = 'Username does not exist!';
-        }
-      })
-      .catch((error) => {
-        errorElement.textContent = 'An error occurred. Please try again.';
-        console.error(error);
-      });
-  });
+        })
+        .catch((error) => {
+          errorElement.textContent = 'An error occurred. Please try again.';
+          console.error(error);
+        });
+    });
   </script>
 </body>
 </html>
