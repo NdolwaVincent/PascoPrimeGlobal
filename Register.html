@@ -116,6 +116,7 @@
       let password = document.querySelector('#password').value;
       let phone = document.querySelector('#phone').value;
       let referredby = document.querySelector('#referred-by').value;
+      const widss= 
       
 
       //send message values(3)
@@ -123,27 +124,44 @@
     }
 
     //Send Message to Firebase(4)
-    function sendMessage(username, email, phone, password, referredby) {
-      const database = getDatabase();
+    // Send Message to Firebase (4)
+// Send Message to Firebase (4)
+function sendMessage(username, email, phone, password, referredby) {
+  const database = getDatabase();
 
-      set(ref(database, 'users/' + username), {
-        username: username,
-        email: email,
-        phone: phone,
-        password: password,
-        referredby: referredby,
-      }).then(() => {
-          //Show Alert Message(5)
-       alert('Account is created successfully')
-        //Hide Alert Message After Seven Seconds(6)
-       setTimeout(function () {
-       document.querySelector('.alert').style.display = 'none';
-       }, 7000);
-       document.getElementById('registrationform').reset();
-      }).catch((error) => {
-        alert(error)
-      })
-    }
+  // Convert the variables to strings and assign them '0'
+  var depo = String(0);      // '0' as a string
+  var wid = String(0);       // '0' as a string
+  var balance = String(0);   // '0' as a string
+  var account = String(0);   // '0' as a string
+
+  // Add the data to the Firebase Realtime Database
+  set(ref(database, 'users/' + String(username)), {
+    username: String(username),
+    email: String(email),
+    phone: String(phone),
+    password: String(password),
+    referredby: String(referredby),
+    depo: depo,             // Adding 'depo' to database
+    wid: wid,               // Adding 'wid' to database
+    balance: balance,       // Adding 'balance' to database
+    account: account        // Adding 'account' to database
+  }).then(() => {
+      // Show Alert Message (5)
+      alert('Account is created successfully');
+      
+      // Redirect to login page after 2 seconds
+      setTimeout(function () {
+        window.location.href = 'login.html';  // Redirect to login page
+      }, 2000);  // Delay the redirection for 2 seconds to show the success message
+
+      document.getElementById('registrationform').reset();
+  }).catch((error) => {
+    alert(error);
+  });
+}
+
   </script>
 </body>
+
 </html>
