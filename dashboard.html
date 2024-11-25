@@ -154,9 +154,9 @@
     }
 
     // Populate fields with converted values
-    document.getElementById('comms').textContent = convertToUSD(urlParams.get('comm') || '0');
+    document.getElementById('comms').textContent = convertToUSD(urlParams.get('account') || '0');
     document.getElementById('withdra').textContent = convertToUSD(urlParams.get('wid') || '0');
-    document.getElementById('deposits').textContent = convertToUSD(urlParams.get('deposit') || '0');
+    document.getElementById('deposits').textContent = convertToUSD(urlParams.get('depo') || '0');
     document.getElementById('balance').textContent = convertToUSD(urlParams.get('balance') || '0');
 </script>
 
