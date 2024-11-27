@@ -48,7 +48,7 @@
         <div class="content">
           <div id="dashboards" class="section active">
             <h1 >Account Details</h1>
-            <div class="dashboard-container">
+            <div class="pcontainer">
     <h1>YOUR PASCO PRIME GLOBAL ACCOUNT</h1>
     <a href="https://chat.whatsapp.com/EY4XBBRiFTh40eFcGsXNh0" class="button">JOIN our WhatsApp group</a>
     <div class="card-container">
@@ -365,80 +365,89 @@ document.addEventListener("DOMContentLoaded", generatePackageList);
             </div>
             <div id="history" class="section">
                 <h1>Package Hostory</h1>
-                <div class="container">
-        <h1>Package Purchase Details</h1>
-        <table>
-            <thead>
-                <tr>
-                    <th>Date</th>
-                    <th>Time</th>
-                    <th>Amount</th>
-                    <th>Package Name</th>
-                </tr>
-            </thead>
-            <tbody id="packageTable">
-                <!-- Rows will be added here dynamically -->
-            </tbody>
-        </table>
-    </div>
-    <script>
-        // Firebase configuration
-        const firebaseConfig = {
-            apiKey: "YOUR_API_KEY",
-            authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-            databaseURL: "https://YOUR_PROJECT_ID.firebaseio.com",
-            projectId: "YOUR_PROJECT_ID",
-            storageBucket: "YOUR_PROJECT_ID.appspot.com",
-            messagingSenderId: "YOUR_SENDER_ID",
-            appId: "YOUR_APP_ID"
-        };
+                <div class="pcontainer">
+  <p id="emptyMessage" class="empty-message" style="display: none;">No data found!</p>
+  <table>
+    <thead>
+      <tr>
+        <th>Username</th>
+        <th>Package Name</th>
+        <th>Date</th>
+        <th>Daily Earnings (USD)</th>
+      </tr>
+    </thead>
+    <tbody id="tableBody">
+      <tr>
+        <td colspan="4" class="empty-message">Loading...</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.21.0/firebase-app.js";
+  import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/9.21.0/firebase-database.js";
 
-        // Initialize Firebase
-        const app = firebase.initializeApp(firebaseConfig);
-        const database = firebase.database();
+  // Firebase configuration
+  const firebaseConfig = {
+    apiKey: "AIzaSyD6k4OlLYnotuuChAjLBoHmqfv9-iwrlfY",
+    authDomain: "alfajiri-database.firebaseapp.com",
+    databaseURL: "https://alfajiri-database-default-rtdb.firebaseio.com",
+    projectId: "alfajiri-database",
+    storageBucket: "alfajiri-database.appspot.com",
+    messagingSenderId: "310417854615",
+    appId: "1:310417854615:web:6f65002a119caeaf9119d2",
+    measurementId: "G-21TBZCRBHM",
+  };
 
-        // Fetch data from Firebase and display it
-        const packageTable = document.getElementById("packageTable");
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  const database = getDatabase(app);
 
-        firebase.database().ref("packages").on("value", (snapshot) => {
-            packageTable.innerHTML = ""; // Clear table
-            const data = snapshot.val();
+  // Conversion rate
+  const conversionRate = 129.5;
 
-            if (data) {
-                Object.values(data).forEach((packageData) => {
-                    const row = document.createElement("tr");
+  // Automatically pick the username from the header (this can be dynamically set)
+   // Replace with the actual username logic
 
-                    const dateCell = document.createElement("td");
-                    dateCell.textContent = packageData.date;
+  // Fetch data for the selected username
+  document.addEventListener("DOMContentLoaded", () => {
+    const tableBody = document.getElementById("tableBody");
+    const emptyMessage = document.getElementById("emptyMessage");
+    const userRef = ref(database, "packages/" + username);
 
-                    const timeCell = document.createElement("td");
-                    timeCell.textContent = packageData.time;
+    get(userRef)
+      .then((snapshot) => {
+        if (snapshot.exists()) {
+          const userPackage = snapshot.val();
+          tableBody.innerHTML = ""; // Clear previous data
+          emptyMessage.style.display = "none"; // Hide empty message
 
-                    const amountCell = document.createElement("td");
-                    amountCell.textContent = packageData.amount;
+          // Calculate daily earnings in USD
+          const dailyEarningsUSD = (userPackage.dailyEarnings / conversionRate).toFixed(2);
 
-                    const nameCell = document.createElement("td");
-                    nameCell.textContent = packageData.packageName;
-
-                    row.appendChild(dateCell);
-                    row.appendChild(timeCell);
-                    row.appendChild(amountCell);
-                    row.appendChild(nameCell);
-
-                    packageTable.appendChild(row);
-                });
-            } else {
-                const row = document.createElement("tr");
-                const cell = document.createElement("td");
-                cell.setAttribute("colspan", 4);
-                cell.textContent = "No packages found.";
-                row.appendChild(cell);
-                packageTable.appendChild(row);
-            }
-        });
-    </script>
-            </div>
-            <div id="comm" class="section">
+          // Create table row for the user package data
+          const row = document.createElement("tr");
+          row.innerHTML = `
+            <td>${username}</td>
+            <td>${userPackage.packageName}</td>
+            <td>${userPackage.date}</td>
+            <td>${dailyEarningsUSD} USD</td>
+          `;
+          tableBody.appendChild(row);
+        } else {
+          emptyMessage.style.display = "block"; // Show empty message if no data
+          emptyMessage.textContent = "No package data found for this username.";
+        }
+      })
+      .catch((error) => {
+        console.error("Error fetching data:", error);
+        emptyMessage.style.display = "block"; // Show error message
+        emptyMessage.textContent = "Error fetching data. Please check the console.";
+      });
+  });
+</script>
+                </div>
+<div id="comm" class="section">
                 <div class="table-container">
     <h1>Affiliate Earnings</h1>
     <table id="affiliateTable">
@@ -720,7 +729,7 @@ document.addEventListener("DOMContentLoaded", generatePackageList);
  <script>
     // Simulating user login status using localStorage
     const user = {
-      username: "Pasco Pime User",
+      username: "Pasco Prime User",
       loggedIn: true
     };
 
