@@ -32,9 +32,9 @@
             color: var(--primary-color);
             border: none;
             border-radius: 5px;
-            padding: 10px;
+            padding: 7px;
             cursor: pointer;
-            font-size: 16px;
+            font-size: 14px;
         }
 
         .dashboard {
@@ -45,7 +45,7 @@
         .drawer {
             background-color: #621c0c;
             color: var(--text-color);
-            width: 250px;
+            width: auto;
             padding: 15px;
             display: flex;
             flex-direction: column;
@@ -119,13 +119,13 @@
 
     .card h3 {
       margin: 10px 0;
-      color: #333;
+      color: green;
     }
 
     .card p {
       font-size: 18px;
       margin: 10px 0;
-      color: #555;
+      color: black;
     }
 
     .button {
@@ -502,25 +502,24 @@ p {
       margin-top: 20px;
     }
 
-    thead th {
-      background-color: #007BFF;
-      color: white;
+    table th, table td {
       padding: 10px;
+      border: 1px solid #ddd;
       text-align: left;
     }
 
-    tbody td {
-      padding: 10px;
-      border: 1px solid #ddd;
-      color: gold;
+    table th {
+      background-color: #f2f2f2;
+      color: #333;
     }
 
-    tbody tr:nth-child(even) {
-      background-color: #f9f9f9;
+    table td {
+      background-color: #fafafa;
     }
 
-    tbody tr:hover {
-      background-color: #f1f1f1;
+    .empty-message {
+      text-align: center;
+      color: #888;
     }
 
 footer {
@@ -571,3 +570,45 @@ footer {
     color: #fff;
     
 }
+/*package h*/
+.pcontainer {
+      background: #333;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      max-width: 800px;
+      width: 100%;
+    }
+ table th, table td {
+      padding: 10px;
+      border: 1px solid #ddd;
+      text-align: left;
+      word-wrap: break-word; /* Ensures long data fits within cell */
+      max-width: 250px; /* Limit the width of cells */
+    }
+
+    table th {
+      background-color: #f2f2f2;
+      color: #333;
+    }
+
+    table td {
+      background-color: #fafafa;
+    }
+
+    .empty-message {
+      text-align: center;
+      color: #888;
+    }
+
+    /* Responsiveness: Ensures the table scrolls horizontally on small screens */
+    @media (max-width: 768px) {
+      table {
+        width: 100%;
+      }
+
+      table th, table td {
+        padding: 8px;
+        font-size: 14px;
+      }
+    }
