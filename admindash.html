@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f7fc;
+      color: #333;
+    }
+
+    h1 {
+      text-align: center;
+      color: white;
+      padding: 20px;
+      font-size: 2rem;
+      background-color: #3498db;
+      margin: 0;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px auto;
+      font-size: 16px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    th, td {
+      border: 1px solid #ddd;
+      padding: 12px 20px;
+      text-align: left;
+    }
+
+    th {
+      background-color: #3498db;
+      color: white;
+      text-transform: uppercase;
+    }
+
+    tr:nth-child(even) {
+      background-color: #f9f9f9;
+    }
+
+    tr:hover {
+      background-color: #f1f1f1;
+      cursor: pointer;
+    }
+
+    .edit-btn, .save-btn {
+      cursor: pointer;
+      color: white;
+      background-color: #007bff;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 5px;
+      font-size: 14px;
+      transition: background-color 0.3s ease;
+    }
+
+    .save-btn {
+      background-color: #28a745;
+    }
+
+    .edit-btn:hover, .save-btn:hover {
+      background-color: #0056b3;
+    }
+
+    /* Loading overlay styles */
+    .loading-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+      display: none; /* Hidden by default */
+    }
+
+    .loading-spinner {
+      width: 50px;
+      height: 50px;
+      border: 5px solid #f3f3f3;
+      border-top: 5px solid #3498db;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% {
+        transform: rotate(0deg);
+      }
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+
+    /* Responsive styles */
+    @media (max-width: 768px) {
+      table {
+        font-size: 14px;
+      }
+
+      th, td {
+        padding: 8px;
+      }
+
+      .edit-btn, .save-btn {
+        font-size: 12px;
+        padding: 4px 8px;
+      }
+
+      .container {
+        padding: 15px;
+        max-width: 90%;
+      }
+
+      input, select, button {
+        font-size: 14px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .container {
+        padding: 10px;
+        max-width: 95%;
+      }
+
+      h1 {
+        font-size: 22px;
+      }
+
+      label {
+        font-size: 14px;
+      }
+
+      input, select, button {
+        font-size: 14px;
+      }
+
+      button {
+        padding: 12px;
+      }
+
+      #statusMessage {
+        font-size: 14px;
+      }
+
+      table {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+      }
+
+      th, td {
+        white-space: nowrap;
+      }
+    }
+  </style>
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.16.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.16.0/firebase-database.js"></script>
+</head>
+<body>
+
+  <div class="loading-overlay" id="loading-overlay">
+    <div class="loading-spinner"></div>
+  </div>
+
+  <h1>PASCO PRIME GLOBAL ADMIN DASHBOARD</h1>
+
+  <div style="overflow-x:auto;">
+    <table>
+      <thead>
+        <tr>
+          <th>Username</th>
+          <th>Phone</th>
+          <th>Deposit</th>
+          <th>Balance</th>
+          <th>Account</th>
+          <th>Withdraw</th>
+          <th>Referred By</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody id="users-container">
+        <!-- Data will be inserted here -->
+      </tbody>
+    </table>
+    <div class="container">
+    <h1>Package Registration</h1>
+    <form id="packageForm">
+      <label for="username">Username:</label>
+      <select id="username" required>
+        <option value="" disabled selected>Select a username</option>
+        <!-- Usernames will be loaded here dynamically -->
+      </select>
+
+      <label for="packageName">Package Name:</label>
+      <select id="packageName" required>
+        <option value="Global-Elite">PP GLOBAL ELITE</option>
+        <option value="Global-Premier">PP GLOBAL PREMIER</option>
+        <option value="Global-Executive">PP GLOBAL EXECUTIVE</option>
+        <option value="Global-Platinum">PP GLOBAL PLATINUM</option>
+        <option value="Global-Titanium">PP GLOBAL TITANIUM</option>
+        <option value="Global-Diamond">PP GLOBAL DIAMOND</option>
+        <option value="Global-Sovereign">PP GLOBAL SOVEREIGN</option>
+        <option value="Global-Prestige">PP GLOBAL PRESTIGE</option>
+        <option value="Global-Royal">PP GLOBAL ROYAL</option>
+        <option value="Global-Imperial">PP GLOBAL IMPERIAL</option>
+      </select>
+
+      <label for="dailyEarnings">Daily Earnings:</label>
+      <input type="number" id="dailyEarnings" placeholder="Enter daily earnings" required />
+
+      <button type="submit">Save Package</button>
+    </form>
+    <p id="statusMessage"></p>
+    <div id="loadingBar"></div>
+  </div>
+
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js";
+    import { getDatabase, ref, query, limitToFirst, get, update } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-database.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyD6k4OlLYnotuuChAjLBoHmqfv9-iwrlfY",
+      authDomain: "alfajiri-database.firebaseapp.com",
+      databaseURL: "https://alfajiri-database-default-rtdb.firebaseio.com",
+      projectId: "alfajiri-database",
+      storageBucket: "alfajiri-database.appspot.com",
+      messagingSenderId: "310417854615",
+      appId: "1:310417854615:web:6f65002a119caeaf9119d2",
+      measurementId: "G-21TBZCRBHM",
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const database = getDatabase(app);
+
+    const usersContainer = document.getElementById('users-container');
+    const loadingOverlay = document.getElementById('loading-overlay');
+
+    async function fetchUsers() {
+      showLoading();
+
+      const usersRef = ref(database, 'users');
+      const usersQuery = query(usersRef, limitToFirst(10));
+
+      try {
+        const snapshot = await get(usersQuery);
+        if (snapshot.exists()) {
+          const users = snapshot.val();
+          Object.keys(users).forEach((key) => {
+            const user = users[key];
+            const row = document.createElement('tr');
+            row.setAttribute('data-key', key);
+            row.innerHTML = ` 
+              <td contenteditable="false" class="editable" data-field="username">${user.username || ''}</td>
+              <td contenteditable="false" class="editable" data-field="phone">${user.phone || ''}</td>
+              <td contenteditable="false" class="editable" data-field="depo">${user.depo || ''}</td>
+              <td contenteditable="false" class="editable" data-field="balance">${user.balance || ''}</td>
+              <td contenteditable="false" class="editable" data-field="account">${user.account || ''}</td>
+              <td contenteditable="false" class="editable" data-field="wid">${user.wid || ''}</td>
+              <td contenteditable="false" class="editable" data-field="referredby">${user.referredby || ''}</td>
+              <td>
+                <button class="edit-btn">Edit</button>
+                <button class="save-btn" style="display:none;">Save</button>
+              </td>
+            `;
+            usersContainer.appendChild(row);
+          });
+
+          addEventListeners();
+        } else {
+          const row = document.createElement('tr');
+          row.innerHTML = '<td colspan="8">No users found.</td>';
+          usersContainer.appendChild(row);
+        }
+      } catch (error) {
+        console.error('Error fetching users:', error);
+        const row = document.createElement('tr');
+        row.innerHTML = '<td colspan="8">Error fetching users.</td>';
+        usersContainer.appendChild(row);
+      } finally {
+        hideLoading();
+      }
+    }
+
+    function showLoading() {
+      loadingOverlay.style.display = 'flex';
+    }
+
+    function hideLoading() {
+      loadingOverlay.style.display = 'none';
+    }
+
+    function addEventListeners() {
+      document.querySelectorAll('.edit-btn').forEach((button) => {
+        button.addEventListener('click', handleEdit);
+      });
+
+      document.querySelectorAll('.save-btn').forEach((button) => {
+        button.addEventListener('click', handleSave);
+      });
+    }
+
+    function handleEdit(event) {
+      const row = event.target.closest('tr');
+      row.querySelectorAll('.editable').forEach((cell) => {
+        cell.contentEditable = "true";
+      });
+      row.querySelector('.edit-btn').style.display = "none";
+      row.querySelector('.save-btn').style.display = "inline-block";
+    }
+
+    async function handleSave(event) {
+      const row = event.target.closest('tr');
+      const key = row.getAttribute('data-key');
+      const updates = {};
+
+      row.querySelectorAll('.editable').forEach((cell) => {
+        const field = cell.getAttribute('data-field');
+        updates[field] = cell.textContent.trim();
+        cell.contentEditable = "false";
+      });
+
+      try {
+        await update(ref(database, `users/${key}`), updates);
+        alert('User updated successfully!');
+      } catch (error) {
+        console.error('Error updating user:', error);
+        alert('Error updating user.');
+      }
+
+      row.querySelector('.edit-btn').style.display = "inline-block";
+      row.querySelector('.save-btn').style.display = "none";
+    }
+
+    fetchUsers();
+  </script>
+  <script type="module">
+    // Import Firebase modules
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.21.0/firebase-app.js";
+    import { getDatabase, ref, get, set } from "https://www.gstatic.com/firebasejs/9.21.0/firebase-database.js";
+
+    // Firebase configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyD6k4OlLYnotuuChAjLBoHmqfv9-iwrlfY",
+      authDomain: "alfajiri-database.firebaseapp.com",
+      databaseURL: "https://alfajiri-database-default-rtdb.firebaseio.com",
+      projectId: "alfajiri-database",
+      storageBucket: "alfajiri-database.appspot.com",
+      messagingSenderId: "310417854615",
+      appId: "1:310417854615:web:6f65002a119caeaf9119d2",
+      measurementId: "G-21TBZCRBHM",
+    };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const database = getDatabase(app);
+
+    // Show loading bar and start fetching usernames
+    function loadUsernames() {
+      const usersRef = ref(database, 'users');  // Reference to "users" in your database
+      const loadingBar = document.getElementById("loadingBar");
+      const statusMessage = document.getElementById("statusMessage");
+
+      // Show loading bar
+      loadingBar.style.width = "50%";
+
+      get(usersRef)
+        .then((snapshot) => {
+          loadingBar.style.width = "100%";  // Fill the progress bar once data is loaded
+
+          if (snapshot.exists()) {
+            const usernames = snapshot.val();  // This assumes users data is a key-value pair (username -> data)
+            const usernameSelect = document.getElementById("username");
+            // Populate the select dropdown with usernames
+            for (const username in usernames) {
+              const option = document.createElement("option");
+              option.value = username;
+              option.textContent = username;
+              usernameSelect.appendChild(option);
+            }
+          } else {
+            statusMessage.textContent = "No usernames found.";
+          }
+        })
+        .catch((error) => {
+          loadingBar.style.width = "0%";  // Reset progress bar on error
+          console.error("Error fetching usernames:", error);
+          statusMessage.textContent = "Error fetching data. Please check your internet connection.";
+        })
+        .finally(() => {
+          // Hide the loading bar after a delay
+          setTimeout(() => {
+            loadingBar.style.display = "none";
+          }, 500);
+        });
+    }
+
+    // Check for internet connection
+    function checkInternetConnection() {
+      if (!navigator.onLine) {
+        document.getElementById("statusMessage").textContent = "No internet connection. Please check your connection.";
+      }
+    }
+
+    // Form submission
+    document.addEventListener("DOMContentLoaded", () => {
+      // Check for internet connection on page load
+      checkInternetConnection();
+
+      // Load the usernames into the select dropdown when the page loads
+      loadUsernames();
+
+      // Listen for internet connection changes
+      window.addEventListener('online', () => {
+        document.getElementById("statusMessage").textContent = "";
+        loadUsernames();
+      });
+
+      window.addEventListener('offline', () => {
+        document.getElementById("statusMessage").textContent = "You are offline. Please check your internet connection.";
+      });
+
+      document.getElementById("packageForm").addEventListener("submit", (e) => {
+        e.preventDefault();
+
+        const username = document.getElementById("username").value.trim();
+        const packageName = document.getElementById("packageName").value;
+        const dailyEarnings = parseFloat(document.getElementById("dailyEarnings").value);
+        const currentDate = new Date().toISOString().split("T")[0]; // Automatically picks the date
+
+        if (!username || isNaN(dailyEarnings)) {
+          document.getElementById("statusMessage").textContent = "Please fill in all fields.";
+          return;
+        }
+
+        // Save data to Firebase
+        const userRef = ref(database, `packages/${username}`);
+        set(userRef, {
+          packageName: packageName,
+          date: currentDate,
+          dailyEarnings: dailyEarnings
+        })
+          .then(() => {
+            document.getElementById("statusMessage").textContent = "Package saved successfully!";
+            document.getElementById("packageForm").reset();
+          })
+          .catch((error) => {
+            console.error("Error saving data:", error);
+            document.getElementById("statusMessage").textContent = "Error saving data. Please try again.";
+          });
+      });
+    });
+  </script>
+</body>
+</html>
