@@ -15,34 +15,35 @@
       background-color: #f4f4f4;
     }
     .login-container {
-     width: 100%;
-    max-width: 400px;
-    padding: 20px;
-    margin-top: 20px;
-    background-color: #333;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 400px;
+      padding: 20px;
+      margin-top: 20px;
+      background-color: #333;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     }
 
-h1 {
-    text-align: center;
-    color: white;
-}
-h4 {
-    text-align: center;
-    color: white;
-}
+    h1 {
+      text-align: center;
+      color: white;
+    }
+    h4 {
+      text-align: center;
+      color: white;
+    }
 
-.form-group {
-    margin-bottom: 15px;
-}
+    .form-group {
+      margin-bottom: 15px;
+    }
 
-label {
-    display: block;
-    font-size: 14px;
-    margin-bottom: 5px;
-    color: white;
-}
+    label {
+      display: block;
+      font-size: 14px;
+      margin-bottom: 5px;
+      color: white;
+    }
+
     .login-container h1 {
       margin-bottom: 20px;
       font-size: 24px;
@@ -71,14 +72,14 @@ label {
       font-size: 14px;
     }
     .toggle-link {
-    display: block;
-    text-align: center;
-    margin-top: 15px;
-    color: #007bff;
-    cursor: pointer;
-    text-decoration: none;
-    text-decoration: underline;
-}
+      display: block;
+      text-align: center;
+      margin-top: 15px;
+      color: #007bff;
+      cursor: pointer;
+      text-decoration: none;
+      text-decoration: underline;
+    }
   </style>
 </head>
 <body>
@@ -127,22 +128,29 @@ label {
     loginForm.addEventListener('submit', (e) => {
       e.preventDefault();
 
+      const admins = "adminxxx"; // Admin username
+      const adpass = "pasco98";  // Admin password
       const username = document.getElementById('username').value.trim();
       const password = document.getElementById('password').value;
 
-      if (!username || !password) {
-        errorElement.textContent = "Please fill in all fields.";
+      // Check if entered details match admin credentials
+      if (username === admins && password === adpass) {
+        // Redirect to admin dashboard
+        const dashboardUrl = "admindash.html"; // Replace with your actual admin dashboard URL
+        window.location.href = dashboardUrl;
         return;
       }
 
+      // Firebase user verification
       const dbRef = ref(database);
       get(child(dbRef, `users/${username}`))
         .then((snapshot) => {
           if (snapshot.exists()) {
             const userData = snapshot.val();
 
+            // Check if user credentials are valid
             if (userData.password === password) {
-              errorElement.textContent = '';
+              errorElement.textContent = ''; // Clear error message
 
               // Prepare URL parameters with additional fields
               const urlParams = new URLSearchParams({
@@ -153,12 +161,10 @@ label {
                 balance: userData.balance || '',
                 account: userData.account || '',
                 depo: userData.depo || '',
-                account: userData.account || '',
                 wid: userData.wid || '0',
-      
               });
 
-              // Redirect to dashboard
+              // Redirect to user dashboard
               const dashboardUrl = `dashboard.html?${urlParams.toString()}`;
               window.location.href = dashboardUrl;
             } else {
