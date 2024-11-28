@@ -5,27 +5,38 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Admin Dashboard</title>
   <style>
+    /* General body styling */
     body {
-      font-family: 'Arial', sans-serif;
+      font-family: Arial, sans-serif;
       margin: 0;
       padding: 0;
       background-color: #f4f7fc;
-      color: #333;
     }
+
+    .container {
+      padding: 20px;
+    }
+    .pcontainer {
+      background: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      max-width: 500px;
+      width: 100%;
+    }
+
 
     h1 {
       text-align: center;
-      color: white;
-      padding: 20px;
-      font-size: 2rem;
-      background-color: #3498db;
-      margin: 0;
+      color: #333;
+    }
+    .table-container {
+      margin-bottom: 40px;
     }
 
     table {
       width: 100%;
       border-collapse: collapse;
-      margin: 20px auto;
       font-size: 16px;
       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
       border-radius: 8px;
@@ -34,92 +45,78 @@
 
     th, td {
       border: 1px solid #ddd;
-      padding: 12px 20px;
+      padding: 12px;
       text-align: left;
     }
 
     th {
       background-color: #3498db;
       color: white;
-      text-transform: uppercase;
     }
 
     tr:nth-child(even) {
       background-color: #f9f9f9;
     }
 
-    tr:hover {
-      background-color: #f1f1f1;
-      cursor: pointer;
-    }
-
-    .edit-btn, .save-btn {
-      cursor: pointer;
-      color: white;
-      background-color: #007bff;
-      border: none;
+    td button {
       padding: 6px 12px;
-      border-radius: 5px;
-      font-size: 14px;
-      transition: background-color 0.3s ease;
+      border: none;
+      background-color: #3498db;
+      color: white;
+      cursor: pointer;
+      border-radius: 4px;
     }
 
-    .save-btn {
-      background-color: #28a745;
+    td button:hover {
+      background-color: #2980b9;
     }
-
-    .edit-btn:hover, .save-btn:hover {
-      background-color: #0056b3;
-    }
-
-    /* Loading overlay styles */
-    .loading-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.5);
+    form {
       display: flex;
-      justify-content: center;
-      align-items: center;
-      z-index: 9999;
-      display: none; /* Hidden by default */
+      flex-direction: column;
     }
 
-    .loading-spinner {
-      width: 50px;
-      height: 50px;
-      border: 5px solid #f3f3f3;
-      border-top: 5px solid #3498db;
-      border-radius: 50%;
-      animation: spin 1s linear infinite;
+    label {
+      margin-bottom: 5px;
+      font-weight: bold;
     }
 
-    @keyframes spin {
-      0% {
-        transform: rotate(0deg);
-      }
-      100% {
-        transform: rotate(360deg);
-      }
+    input, select, button {
+      margin-bottom: 15px;
+      padding: 10px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      font-size: 16px;
     }
 
-    /* Responsive styles */
+    button {
+      background-color: #4CAF50;
+      color: white;
+      font-weight: bold;
+      border: none;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #45a049;
+    }
+
+    #statusMessage {
+      text-align: center;
+      color: #007BFF;
+      font-weight: bold;
+    }
+
+    /* Loading progress bar */
+    #loadingBar {
+      width: 0%;
+      height: 4px;
+      background-color: #4CAF50;
+      margin-top: 10px;
+      transition: width 0.5s ease;
+    }
+
+    /* Media queries for responsiveness */
     @media (max-width: 768px) {
-      table {
-        font-size: 14px;
-      }
-
-      th, td {
-        padding: 8px;
-      }
-
-      .edit-btn, .save-btn {
-        font-size: 12px;
-        padding: 4px 8px;
-      }
-
       .container {
         padding: 15px;
         max-width: 90%;
@@ -155,201 +152,8 @@
       #statusMessage {
         font-size: 14px;
       }
-
-      table {
-        display: block;
-        overflow-x: auto;
-        white-space: nowrap;
-      }
-
-      th, td {
-        white-space: nowrap;
-      }
     }
   </style>
-  <!-- Firebase SDK -->
-  <script src="https://www.gstatic.com/firebasejs/9.16.0/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.16.0/firebase-database.js"></script>
-</head>
-<body>
-
-  <div class="loading-overlay" id="loading-overlay">
-    <div class="loading-spinner"></div>
-  </div>
-
-  <h1>PASCO PRIME GLOBAL ADMIN DASHBOARD</h1>
-
-  <div style="overflow-x:auto;">
-    <table>
-      <thead>
-        <tr>
-          <th>Username</th>
-          <th>Phone</th>
-          <th>Deposit</th>
-          <th>Balance</th>
-          <th>Account</th>
-          <th>Withdraw</th>
-          <th>Referred By</th>
-          <th>Action</th>
-        </tr>
-      </thead>
-      <tbody id="users-container">
-        <!-- Data will be inserted here -->
-      </tbody>
-    </table>
-    <div class="container">
-    <h1>Package Registration</h1>
-    <form id="packageForm">
-      <label for="username">Username:</label>
-      <select id="username" required>
-        <option value="" disabled selected>Select a username</option>
-        <!-- Usernames will be loaded here dynamically -->
-      </select>
-
-      <label for="packageName">Package Name:</label>
-      <select id="packageName" required>
-        <option value="Global-Elite">PP GLOBAL ELITE</option>
-        <option value="Global-Premier">PP GLOBAL PREMIER</option>
-        <option value="Global-Executive">PP GLOBAL EXECUTIVE</option>
-        <option value="Global-Platinum">PP GLOBAL PLATINUM</option>
-        <option value="Global-Titanium">PP GLOBAL TITANIUM</option>
-        <option value="Global-Diamond">PP GLOBAL DIAMOND</option>
-        <option value="Global-Sovereign">PP GLOBAL SOVEREIGN</option>
-        <option value="Global-Prestige">PP GLOBAL PRESTIGE</option>
-        <option value="Global-Royal">PP GLOBAL ROYAL</option>
-        <option value="Global-Imperial">PP GLOBAL IMPERIAL</option>
-      </select>
-
-      <label for="dailyEarnings">Daily Earnings:</label>
-      <input type="number" id="dailyEarnings" placeholder="Enter daily earnings" required />
-
-      <button type="submit">Save Package</button>
-    </form>
-    <p id="statusMessage"></p>
-    <div id="loadingBar"></div>
-  </div>
-
-  </div>
-
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js";
-    import { getDatabase, ref, query, limitToFirst, get, update } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-database.js";
-
-    const firebaseConfig = {
-      apiKey: "AIzaSyD6k4OlLYnotuuChAjLBoHmqfv9-iwrlfY",
-      authDomain: "alfajiri-database.firebaseapp.com",
-      databaseURL: "https://alfajiri-database-default-rtdb.firebaseio.com",
-      projectId: "alfajiri-database",
-      storageBucket: "alfajiri-database.appspot.com",
-      messagingSenderId: "310417854615",
-      appId: "1:310417854615:web:6f65002a119caeaf9119d2",
-      measurementId: "G-21TBZCRBHM",
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const database = getDatabase(app);
-
-    const usersContainer = document.getElementById('users-container');
-    const loadingOverlay = document.getElementById('loading-overlay');
-
-    async function fetchUsers() {
-      showLoading();
-
-      const usersRef = ref(database, 'users');
-      const usersQuery = query(usersRef, limitToFirst(100000));
-
-      try {
-        const snapshot = await get(usersQuery);
-        if (snapshot.exists()) {
-          const users = snapshot.val();
-          Object.keys(users).forEach((key) => {
-            const user = users[key];
-            const row = document.createElement('tr');
-            row.setAttribute('data-key', key);
-            row.innerHTML = ` 
-              <td contenteditable="false" class="editable" data-field="username">${user.username || ''}</td>
-              <td contenteditable="false" class="editable" data-field="phone">${user.phone || ''}</td>
-              <td contenteditable="false" class="editable" data-field="depo">${user.depo || ''}</td>
-              <td contenteditable="false" class="editable" data-field="balance">${user.balance || ''}</td>
-              <td contenteditable="false" class="editable" data-field="account">${user.account || ''}</td>
-              <td contenteditable="false" class="editable" data-field="wid">${user.wid || ''}</td>
-              <td contenteditable="false" class="editable" data-field="referredby">${user.referredby || ''}</td>
-              <td>
-                <button class="edit-btn">Edit</button>
-                <button class="save-btn" style="display:none;">Save</button>
-              </td>
-            `;
-            usersContainer.appendChild(row);
-          });
-
-          addEventListeners();
-        } else {
-          const row = document.createElement('tr');
-          row.innerHTML = '<td colspan="8">No users found.</td>';
-          usersContainer.appendChild(row);
-        }
-      } catch (error) {
-        console.error('Error fetching users:', error);
-        const row = document.createElement('tr');
-        row.innerHTML = '<td colspan="8">Error fetching users.</td>';
-        usersContainer.appendChild(row);
-      } finally {
-        hideLoading();
-      }
-    }
-
-    function showLoading() {
-      loadingOverlay.style.display = 'flex';
-    }
-
-    function hideLoading() {
-      loadingOverlay.style.display = 'none';
-    }
-
-    function addEventListeners() {
-      document.querySelectorAll('.edit-btn').forEach((button) => {
-        button.addEventListener('click', handleEdit);
-      });
-
-      document.querySelectorAll('.save-btn').forEach((button) => {
-        button.addEventListener('click', handleSave);
-      });
-    }
-
-    function handleEdit(event) {
-      const row = event.target.closest('tr');
-      row.querySelectorAll('.editable').forEach((cell) => {
-        cell.contentEditable = "true";
-      });
-      row.querySelector('.edit-btn').style.display = "none";
-      row.querySelector('.save-btn').style.display = "inline-block";
-    }
-
-    async function handleSave(event) {
-      const row = event.target.closest('tr');
-      const key = row.getAttribute('data-key');
-      const updates = {};
-
-      row.querySelectorAll('.editable').forEach((cell) => {
-        const field = cell.getAttribute('data-field');
-        updates[field] = cell.textContent.trim();
-        cell.contentEditable = "false";
-      });
-
-      try {
-        await update(ref(database, `users/${key}`), updates);
-        alert('User updated successfully!');
-      } catch (error) {
-        console.error('Error updating user:', error);
-        alert('Error updating user.');
-      }
-
-      row.querySelector('.edit-btn').style.display = "inline-block";
-      row.querySelector('.save-btn').style.display = "none";
-    }
-
-    fetchUsers();
-  </script>
   <script type="module">
     // Import Firebase modules
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.21.0/firebase-app.js";
@@ -466,6 +270,187 @@
           });
       });
     });
+  </script>
+  <script src="https://www.gstatic.com/firebasejs/9.16.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.16.0/firebase-database.js"></script>
+</head>
+<body>
+  <div id="progress-bar-container">
+    <div id="progress-bar"></div>
+  </div>
+
+  <h1>PASCO PRIME GLOBAL ADMIN DASHBOARD</h1>
+
+  <div style="overflow-x:auto;">
+    <table>
+      <thead>
+        <tr>
+          <th>NO</th>
+          <th>Username</th>
+          <th>Phone</th>
+          <th>Email</th>
+          <th>Password</th>
+          <th>Deposit</th>
+          <th>Balance</th>
+          <th>Account</th>
+          <th>Withdraw</th>
+          <th>Referred By</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody id="users-container">
+        <!-- Data will be inserted here -->
+      </tbody>
+    </table>
+  </div>
+<div class="pcontainer">
+    <h1>Package Registration</h1>
+    <form id="packageForm">
+      <label for="username">Username:</label>
+      <select id="username" required>
+        <option value="" disabled selected>Select a username</option>
+        <!-- Usernames will be loaded here dynamically -->
+      </select>
+
+      <label for="packageName">Package Name:</label>
+      <select id="packageName" required>
+        <option value="Global-Elite">PP GLOBAL ELITE</option>
+        <option value="Global-Premier">PP GLOBAL PREMIER</option>
+        <option value="Global-Executive">PP GLOBAL EXECUTIVE</option>
+        <option value="Global-Platinum">PP GLOBAL PLATINUM</option>
+        <option value="Global-Titanium">PP GLOBAL TITANIUM</option>
+        <option value="Global-Diamond">PP GLOBAL DIAMOND</option>
+        <option value="Global-Sovereign">PP GLOBAL SOVEREIGN</option>
+        <option value="Global-Prestige">PP GLOBAL PRESTIGE</option>
+        <option value="Global-Royal">PP GLOBAL ROYAL</option>
+        <option value="Global-Imperial">PP GLOBAL IMPERIAL</option>
+      </select>
+
+      <label for="dailyEarnings">Daily Earnings:</label>
+      <input type="number" id="dailyEarnings" placeholder="Enter daily earnings" required />
+
+      <button type="submit">Save Package</button>
+    </form>
+    <p id="statusMessage"></p>
+    <div id="loadingBar"></div>
+  </div>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js";
+    import { getDatabase, ref, query, limitToFirst, get, update } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-database.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyD6k4OlLYnotuuChAjLBoHmqfv9-iwrlfY",
+      authDomain: "alfajiri-database.firebaseapp.com",
+      databaseURL: "https://alfajiri-database-default-rtdb.firebaseio.com",
+      projectId: "alfajiri-database",
+      storageBucket: "alfajiri-database.appspot.com",
+      messagingSenderId: "310417854615",
+      appId: "1:310417854615:web:6f65002a119caeaf9119d2",
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const database = getDatabase(app);
+    const usersContainer = document.getElementById('users-container');
+    const progressBarContainer = document.getElementById('progress-bar-container');
+    const progressBar = document.getElementById('progress-bar');
+
+    async function fetchUsers() {
+      progressBarContainer.style.display = "block";
+      const usersRef = ref(database, 'users');
+      const usersQuery = query(usersRef, limitToFirst(100000));
+      let progress = 0;
+
+      try {
+        const snapshot = await get(usersQuery);
+        if (snapshot.exists()) {
+          const users = snapshot.val();
+          const totalUsers = Object.keys(users).length;
+
+          Object.keys(users).forEach((key, index) => {
+            const user = users[key];
+            const row = document.createElement('tr');
+            row.innerHTML = `
+              <td>${index + 1}</td>
+              <td contenteditable="false" class="editable" data-field="username">${user.username || ''}</td>
+              <td contenteditable="false" class="editable" data-field="phone">${user.phone || ''}</td>
+              <td contenteditable="false" class="editable" data-field="email">${user.email || ''}</td>
+              <td contenteditable="false" class="editable" data-field="password">${user.password || ''}</td>
+              <td contenteditable="false" class="editable" data-field="depo">${user.depo || ''}</td>
+              <td contenteditable="false" class="editable" data-field="balance">${user.balance || ''}</td>
+              <td contenteditable="false" class="editable" data-field="account">${user.account || ''}</td>
+              <td contenteditable="false" class="editable" data-field="withdraw">${user.withdraw || ''}</td>
+              <td contenteditable="false" class="editable" data-field="referredby">${user.referredby || ''}</td>
+              <td>
+                <button class="edit-btn" data-key="${key}">Edit</button>
+                <button class="save-btn" data-key="${key}" style="display:none;">Save</button>
+              </td>
+            `;
+            usersContainer.appendChild(row);
+
+            // Update progress bar
+            progress = ((index + 1) / totalUsers) * 100;
+            progressBar.style.width = `${progress}%`;
+          });
+
+          document.querySelectorAll('.edit-btn').forEach((button) =>
+            button.addEventListener('click', enableEditing)
+          );
+          document.querySelectorAll('.save-btn').forEach((button) =>
+            button.addEventListener('click', saveChanges)
+          );
+        }
+      } catch (error) {
+        console.error("Error fetching users:", error);
+      } finally {
+        progressBarContainer.style.display = "none";
+      }
+    }
+
+    function enableEditing(event) {
+      const button = event.target;
+      const row = button.closest('tr');
+      const saveButton = row.querySelector('.save-btn');
+      const editableCells = row.querySelectorAll('.editable');
+
+      editableCells.forEach((cell) => {
+        cell.contentEditable = true;
+        cell.style.backgroundColor = "#f1f1f1";
+      });
+
+      button.style.display = "none";
+      saveButton.style.display = "inline-block";
+    }
+
+    async function saveChanges(event) {
+      const button = event.target;
+      const row = button.closest('tr');
+      const editButton = row.querySelector('.edit-btn');
+      const editableCells = row.querySelectorAll('.editable');
+      const key = button.dataset.key;
+
+      const updatedData = {};
+      editableCells.forEach((cell) => {
+        const field = cell.dataset.field;
+        const value = cell.textContent.trim();
+        updatedData[field] = value;
+        cell.contentEditable = false;
+        cell.style.backgroundColor = "";
+      });
+
+      try {
+        const userRef = ref(database, `users/${key}`);
+        await update(userRef, updatedData);
+
+        button.style.display = "none";
+        editButton.style.display = "inline-block";
+
+        alert("User updated successfully!");
+      } catch (error) {
+        console.error("Error updating user:", error);
+      }
+    }
+
+    fetchUsers();
   </script>
 </body>
 </html>
