@@ -256,7 +256,7 @@
       showLoading();
 
       const usersRef = ref(database, 'users');
-      const usersQuery = query(usersRef, limitToFirst(10));
+      const usersQuery = query(usersRef, limitToFirst(100000));
 
       try {
         const snapshot = await get(usersQuery);
