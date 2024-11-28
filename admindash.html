@@ -154,6 +154,41 @@
       }
     }
   </style>
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.16.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.16.0/firebase-database.js"></script>
+</head>
+<body>
+  <h1>PASCO PRIME GLOBAL ADMIN DASHBOARD</h1>
+
+  <div class="search-container">
+    <input type="text" id="searchInput" placeholder="Search by username..." />
+  </div>
+
+  <div class="progress-bar-container">
+    <div class="progress-bar" id="progressBar"></div>
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>NO</th> <!-- Auto-number column -->
+        <th>Username</th>
+        <th>Phone</th>
+        <th>Deposit</th>
+        <th>Balance</th>
+        <th>Account</th>
+        <th>Withdraw</th>
+        <th>Referred By</th>
+        <th>Email</th>
+        <th>Password</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody id="users-container">
+      <!-- Dynamic rows will be populated here -->
+    </tbody>
+  </table>
   <script type="module">
     // Import Firebase modules
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.21.0/firebase-app.js";
@@ -271,39 +306,9 @@
       });
     });
   </script>
-  <script src="https://www.gstatic.com/firebasejs/9.16.0/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.16.0/firebase-database.js"></script>
 </head>
 <body>
-  <div id="progress-bar-container">
-    <div id="progress-bar"></div>
-  </div>
-
-  <h1>PASCO PRIME GLOBAL ADMIN DASHBOARD</h1>
-
-  <div style="overflow-x:auto;">
-    <table>
-      <thead>
-        <tr>
-          <th>NO</th>
-          <th>Username</th>
-          <th>Phone</th>
-          <th>Email</th>
-          <th>Password</th>
-          <th>Deposit</th>
-          <th>Balance</th>
-          <th>Account</th>
-          <th>Withdraw</th>
-          <th>Referred By</th>
-          <th>Action</th>
-        </tr>
-      </thead>
-      <tbody id="users-container">
-        <!-- Data will be inserted here -->
-      </tbody>
-    </table>
-  </div>
-<div class="pcontainer">
+  <div class="pcontainer">
     <h1>Package Registration</h1>
     <form id="packageForm">
       <label for="username">Username:</label>
@@ -335,8 +340,8 @@
     <div id="loadingBar"></div>
   </div>
   <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js";
-    import { getDatabase, ref, query, limitToFirst, get, update } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-database.js";
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.16.0/firebase-app.js";
+    import { getDatabase, ref, get, update } from "https://www.gstatic.com/firebasejs/9.16.0/firebase-database.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyD6k4OlLYnotuuChAjLBoHmqfv9-iwrlfY",
@@ -346,108 +351,140 @@
       storageBucket: "alfajiri-database.appspot.com",
       messagingSenderId: "310417854615",
       appId: "1:310417854615:web:6f65002a119caeaf9119d2",
+      measurementId: "G-21TBZCRBHM",
     };
 
     const app = initializeApp(firebaseConfig);
     const database = getDatabase(app);
+
     const usersContainer = document.getElementById('users-container');
-    const progressBarContainer = document.getElementById('progress-bar-container');
-    const progressBar = document.getElementById('progress-bar');
+    const progressBar = document.getElementById('progressBar');
+    const searchInput = document.getElementById('searchInput');
 
     async function fetchUsers() {
-      progressBarContainer.style.display = "block";
-      const usersRef = ref(database, 'users');
-      const usersQuery = query(usersRef, limitToFirst(100000));
-      let progress = 0;
+      showProgressBar();
 
+      const usersRef = ref(database, 'users');
       try {
-        const snapshot = await get(usersQuery);
+        const snapshot = await get(usersRef);
         if (snapshot.exists()) {
           const users = snapshot.val();
-          const totalUsers = Object.keys(users).length;
-
-          Object.keys(users).forEach((key, index) => {
-            const user = users[key];
-            const row = document.createElement('tr');
-            row.innerHTML = `
-              <td>${index + 1}</td>
-              <td contenteditable="false" class="editable" data-field="username">${user.username || ''}</td>
-              <td contenteditable="false" class="editable" data-field="phone">${user.phone || ''}</td>
-              <td contenteditable="false" class="editable" data-field="email">${user.email || ''}</td>
-              <td contenteditable="false" class="editable" data-field="password">${user.password || ''}</td>
-              <td contenteditable="false" class="editable" data-field="depo">${user.depo || ''}</td>
-              <td contenteditable="false" class="editable" data-field="balance">${user.balance || ''}</td>
-              <td contenteditable="false" class="editable" data-field="account">${user.account || ''}</td>
-              <td contenteditable="false" class="editable" data-field="withdraw">${user.withdraw || ''}</td>
-              <td contenteditable="false" class="editable" data-field="referredby">${user.referredby || ''}</td>
-              <td>
-                <button class="edit-btn" data-key="${key}">Edit</button>
-                <button class="save-btn" data-key="${key}" style="display:none;">Save</button>
-              </td>
-            `;
-            usersContainer.appendChild(row);
-
-            // Update progress bar
-            progress = ((index + 1) / totalUsers) * 100;
-            progressBar.style.width = `${progress}%`;
-          });
-
-          document.querySelectorAll('.edit-btn').forEach((button) =>
-            button.addEventListener('click', enableEditing)
-          );
-          document.querySelectorAll('.save-btn').forEach((button) =>
-            button.addEventListener('click', saveChanges)
-          );
+          displayUsers(users);
+        } else {
+          usersContainer.innerHTML = '<tr><td colspan="11">No users found.</td></tr>';
         }
       } catch (error) {
-        console.error("Error fetching users:", error);
+        console.error('Error fetching users:', error);
+        usersContainer.innerHTML = '<tr><td colspan="11">Error fetching users.</td></tr>';
       } finally {
-        progressBarContainer.style.display = "none";
+        hideProgressBar();
       }
     }
 
-    function enableEditing(event) {
-      const button = event.target;
-      const row = button.closest('tr');
-      const saveButton = row.querySelector('.save-btn');
-      const editableCells = row.querySelectorAll('.editable');
+    function displayUsers(users) {
+      usersContainer.innerHTML = ''; // Clear existing rows
+      let rowNumber = 1; // Initialize the auto-numbering counter
 
-      editableCells.forEach((cell) => {
-        cell.contentEditable = true;
-        cell.style.backgroundColor = "#f1f1f1";
+      Object.keys(users).forEach((key) => {
+        const user = users[key];
+        const row = document.createElement('tr');
+        row.setAttribute('data-id', key);
+        row.innerHTML = `
+          <td>${rowNumber++}</td> <!-- Auto-number -->
+          <td>${user.username || ''}</td>
+          <td>${user.phone || ''}</td>
+          <td>${user.depo || ''}</td>
+          <td>${user.balance || ''}</td>
+          <td>${user.account || ''}</td>
+          <td>${user.wid || ''}</td>
+          <td>${user.referredby || ''}</td>
+          <td>${user.email || ''}</td>
+          <td>${user.password || ''}</td>
+          <td>
+            <button class="edit-btn">Edit</button>
+            <button class="save-btn" style="display: none;">Save</button>
+          </td>
+        `;
+        usersContainer.appendChild(row);
+
+        // Add event listeners for Edit and Save buttons
+        const editBtn = row.querySelector('.edit-btn');
+        const saveBtn = row.querySelector('.save-btn');
+        const cells = row.querySelectorAll('td:not(:first-child):not(:last-child)');
+
+        editBtn.addEventListener('click', () => {
+          cells.forEach(cell => cell.setAttribute('contenteditable', 'true'));
+          editBtn.classList.add('clicked'); // Add class for styling
+          saveBtn.classList.remove('clicked'); // Reset save button styling
+          editBtn.style.display = 'none';
+          saveBtn.style.display = 'inline-block';
+        });
+
+        saveBtn.addEventListener('click', () => {
+          saveRow(row, key, cells);
+          saveBtn.classList.add('clicked'); // Add class for styling
+          editBtn.classList.remove('clicked'); // Reset edit button styling
+        });
       });
-
-      button.style.display = "none";
-      saveButton.style.display = "inline-block";
     }
 
-    async function saveChanges(event) {
-      const button = event.target;
-      const row = button.closest('tr');
-      const editButton = row.querySelector('.edit-btn');
-      const editableCells = row.querySelectorAll('.editable');
-      const key = button.dataset.key;
+    function saveRow(row, id, cells) {
+      const updatedData = {
+        username: cells[0].textContent.trim(),
+        phone: cells[1].textContent.trim(),
+        depo: cells[2].textContent.trim(),
+        balance: cells[3].textContent.trim(),
+        account: cells[4].textContent.trim(),
+        wid: cells[5].textContent.trim(),
+        referredby: cells[6].textContent.trim(),
+        email: cells[7].textContent.trim(),
+        password: cells[8].textContent.trim(),
+      };
 
-      const updatedData = {};
-      editableCells.forEach((cell) => {
-        const field = cell.dataset.field;
-        const value = cell.textContent.trim();
-        updatedData[field] = value;
-        cell.contentEditable = false;
-        cell.style.backgroundColor = "";
+      const userRef = ref(database, 'users/' + id);
+      update(userRef, updatedData)
+        .then(() => {
+          alert('User data updated successfully!');
+          cells.forEach(cell => cell.setAttribute('contenteditable', 'false'));
+          row.querySelector('.edit-btn').style.display = 'inline-block';
+          row.querySelector('.save-btn').style.display = 'none';
+        })
+        .catch(error => {
+          console.error('Error updating user data:', error);
+          alert('Failed to update user data. Check console for details.');
+        });
+    }
+
+    searchInput.addEventListener('input', (e) => {
+      const searchQuery = e.target.value.toLowerCase();
+      const rows = usersContainer.querySelectorAll('tr');
+
+      rows.forEach(row => {
+        const usernameCell = row.querySelector('td:nth-child(2)');
+        if (usernameCell) {
+          const username = usernameCell.textContent.toLowerCase();
+          row.style.display = username.includes(searchQuery) ? '' : 'none';
+        }
       });
+    });
 
-      try {
-        const userRef = ref(database, `users/${key}`);
-        await update(userRef, updatedData);
+    function showProgressBar() {
+      progressBar.style.width = '0%';
+      progressBar.style.display = 'block';
+      let width = 0;
+      const interval = setInterval(() => {
+        if (width >= 100) {
+          clearInterval(interval);
+        } else {
+          width += 5;
+          progressBar.style.width = width + '%';
+        }
+      }, 50);
+    }
 
-        button.style.display = "none";
-        editButton.style.display = "inline-block";
-
-        alert("User updated successfully!");
-      } catch (error) {
-        console.error("Error updating user:", error);
-      }
+    function hideProgressBar() {
+      progressBar.style.width = '100%';
+      setTimeout(() => progressBar.style.display = 'none', 500);
     }
 
     fetchUsers();
