@@ -1,18 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>Login Form</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      display: flex;
-      justify-content: center;
-      align-items: center;<!DOCTYPE html>
-<html lang="en">
-<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
@@ -124,7 +112,7 @@
 <body>
 
 <div class="login-container">
-    <img src="logob.PNG" alt="Logo">
+    <img src="logob.PNG">
     <h2>PASCO PRIME GLOBAL</h2>
     <h4>Welcome back! Please enter your details to log in.</h4>
 
@@ -227,177 +215,5 @@
     });
 </script>
 
-</body>
-</html>
-
-      height: 100vh;
-      background-color: #f4f4f4;
-    }
-    .login-container {
-      width: 100%;
-      max-width: 400px;
-      padding: 20px;
-      margin-top: 20px;
-      background-color: #333;
-      border-radius: 8px;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    }
-
-    h1 {
-      text-align: center;
-      color: white;
-    }
-    h4 {
-      text-align: center;
-      color: white;
-    }
-
-    .form-group {
-      margin-bottom: 15px;
-    }
-
-    label {
-      display: block;
-      font-size: 14px;
-      margin-bottom: 5px;
-      color: white;
-    }
-
-    .login-container h1 {
-      margin-bottom: 20px;
-      font-size: 24px;
-    }
-    .login-container input {
-      width: 100%;
-      padding: 10px;
-      margin: 5px 0;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-    }
-    .login-container button {
-      width: 100%;
-      padding: 10px;
-      background: #007bff;
-      color: #fff;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-    }
-    .login-container button:hover {
-      background: #0056b3;
-    }
-    .error {
-      color: red;
-      font-size: 14px;
-    }
-    .toggle-link {
-      display: block;
-      text-align: center;
-      margin-top: 15px;
-      color: #007bff;
-      cursor: pointer;
-      text-decoration: none;
-      text-decoration: underline;
-    }
-  </style>
-</head>
-<body>
-  <div class="login-container">
-    <h1>Pasco Prime Global</h1>
-    <h4>Enter your details and access our platform</h4>
-    <form id="loginForm">
-      <div class="form-group">
-        <label for="username">Username</label>
-        <input type="text" id="username" placeholder="Username" required>
-      </div>
-      <div class="form-group">
-        <label for="password">Password</label>
-        <input type="password" id="password" placeholder="Password" required>
-      </div>
-      <button type="submit">Login</button>
-      <a href="Register.html" class="toggle-link">Don't have an account? Register</a>
-    </form>
-    <p class="error" id="error"></p>
-  </div>
-
-  <!-- Firebase SDK and Custom Script -->
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js";
-    import { getDatabase, ref, child, get } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-database.js";
-
-    // Firebase Configuration
-    const firebaseConfig = {
-      apiKey: "AIzaSyD6k4OlLYnotuuChAjLBoHmqfv9-iwrlfY",
-      authDomain: "alfajiri-database.firebaseapp.com",
-      databaseURL: "https://alfajiri-database-default-rtdb.firebaseio.com",
-      projectId: "alfajiri-database",
-      storageBucket: "alfajiri-database.appspot.com",
-      messagingSenderId: "310417854615",
-      appId: "1:310417854615:web:6f65002a119caeaf9119d2",
-      measurementId: "G-21TBZCRBHM"
-    };
-
-    // Initialize Firebase
-    const app = initializeApp(firebaseConfig);
-    const database = getDatabase(app);
-
-    const loginForm = document.getElementById('loginForm');
-    const errorElement = document.getElementById('error');
-
-    loginForm.addEventListener('submit', (e) => {
-      e.preventDefault();
-
-      const admins = "adminxxx"; // Admin username
-      const adpass = "pasco98";  // Admin password
-      const username = document.getElementById('username').value.trim();
-      const password = document.getElementById('password').value;
-
-      // Check if entered details match admin credentials
-      if (username === admins && password === adpass) {
-        // Redirect to admin dashboard
-        const dashboardUrl = "admindash.html"; // Replace with your actual admin dashboard URL
-        window.location.href = dashboardUrl;
-        return;
-      }
-
-      // Firebase user verification
-      const dbRef = ref(database);
-      get(child(dbRef, `users/${username}`))
-        .then((snapshot) => {
-          if (snapshot.exists()) {
-            const userData = snapshot.val();
-
-            // Check if user credentials are valid
-            if (userData.password === password) {
-              errorElement.textContent = ''; // Clear error message
-
-              // Prepare URL parameters with additional fields
-              const urlParams = new URLSearchParams({
-                username: username,
-                email: userData.email || '',
-                phone: userData.phone || '',
-                referredby: userData.referredby || '',
-                balance: userData.balance || '',
-                account: userData.account || '',
-                depo: userData.depo || '',
-                wid: userData.wid || '0',
-              });
-
-              // Redirect to user dashboard
-              const dashboardUrl = `dashboard.html?${urlParams.toString()}`;
-              window.location.href = dashboardUrl;
-            } else {
-              errorElement.textContent = 'Incorrect password!';
-            }
-          } else {
-            errorElement.textContent = 'Username does not exist!';
-          }
-        })
-        .catch((error) => {
-          errorElement.textContent = 'An error occurred. Please try again.';
-          console.error(error);
-        });
-    });
-  </script>
 </body>
 </html>
