@@ -2,15 +2,157 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-  <link rel="stylesheet" href="dash.css" />
+  
   <script src=
 "https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js">
     </script>
   <title>Registration Form</title>
+  <style>
+    /* General Reset */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    /* Body Styling */
+    body {
+      font-family: 'Arial', sans-serif;
+      background: white;
+      color: #333;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    /* Container */
+    .container {
+      background: #333;
+      border-radius: 10px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      padding: 30px;
+      max-width: 400px;
+      width: 100%;
+      text-align: center;
+    }
+
+    .container h1 {
+      font-size: 2rem;
+      margin-bottom: 10px;
+      color: white;
+    }
+
+    .container h4 {
+      font-size: 1rem;
+      margin-bottom: 20px;
+      color: white;
+    }
+    .container  label {
+      display: block;
+      font-size: 14px;
+      margin-bottom: 5px;
+      color: white;
+    }
+    img{
+            width: 80px;
+            height: 80px;
+            padding: 5px;
+        }
+
+    /* Form Styling */
+    form {
+      width: 100%;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+      text-align: left;
+    }
+
+    .form-group label {
+      display: block;
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid green;
+      border-radius: 5px;
+      font-size: 1rem;
+    }
+
+    .form-group input:focus {
+      border-color: green;
+      outline: none;
+      box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+    }
+
+    .error {
+      color: red;
+      font-size: 0.875rem;
+      margin-top: 5px;
+    }
+
+    /* Button Styling */
+    .btn {
+      width: 100%;
+      padding: 10px;
+      background: #007bff;
+      color: #fff;
+      font-size: 1rem;
+      font-weight: bold;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    .btn:hover {
+      background: #0056b3;
+    }
+
+    /* Link Styling */
+    .toggle-link {
+      display: block;
+      margin-top: 15px;
+      font-size: 0.875rem;
+      color: #007bff;
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+
+    .toggle-link:hover {
+      color: #0056b3;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 480px) {
+      .container {
+        padding: 20px;
+      }
+
+      .container h1 {
+        font-size: 1.5rem;
+      }
+
+      .container h4 {
+        font-size: 0.875rem;
+      }
+
+      .btn {
+        font-size: 0.875rem;
+      }
+    }
+  </style>
 </head>
 
 <body>
   <div class="container" id="form-container">
+    <img src="logob.PNG">
     <h1>Pasco Prime Global</h1>
     <h4>Create Account to join our platform</h4>
     <form action="" method="POST" id="registrationform">
@@ -43,7 +185,7 @@
         </div>
         <div class="form-group">
             <label for="referred-by">Referred By</label>
-            <input type="text" id="referred-by">
+            <input type="text" id="referred-by" required="">
         </div> 
          <button type="submit" class="btn" sendMessage()>CREATE ACOOUNT</button>
          <a href="login.html" class="toggle-link">Already have an account? Login</a>
@@ -99,13 +241,32 @@
     const app = initializeApp(firebaseConfig);
 
     import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-database.js";
+     // Check connection status on page load
+    window.addEventListener('load', function () {
+      if (!navigator.onLine) {
+        alert('You are currently offline. Some features may not work.');
+      }
+    });
 
+    // Listen for connection status changes
+    window.addEventListener('online', () => {
+      alert('You are back online.');
+    });
 
+    window.addEventListener('offline', () => {
+      alert('You have lost internet connection.');
+    });
 
     //listen for submit event//(1)
-    document
-      .getElementById('registrationform')
-      .addEventListener('submit', formSubmit);
+     document.getElementById('registrationform').addEventListener('submit', function (e) {
+      if (!navigator.onLine) {
+        e.preventDefault();
+        alert('No internet connection. Please check your connection and try again.');
+        return;
+      }
+
+      formSubmit(e);
+    });
 
     //Submit form(2)
     function formSubmit(e) {
