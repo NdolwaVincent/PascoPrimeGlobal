@@ -367,85 +367,92 @@ document.addEventListener("DOMContentLoaded", generatePackageList);
                 <h1>Package Hostory</h1>
                 <div class="pcontainer">
   <p id="emptyMessage" class="empty-message" style="display: none;">No data found!</p>
-  <table>
+  <table id="packagesTable">
     <thead>
       <tr>
         <th>Username</th>
         <th>Package Name</th>
         <th>Date</th>
-        <th>Daily Earnings (USD)</th>
+        <th>Daily Earnings</th>
       </tr>
     </thead>
-    <tbody id="tableBody">
-      <tr>
-        <td colspan="4" class="empty-message">Loading...</td>
-      </tr>
+    <tbody>
+      <!-- Rows will be dynamically added here -->
     </tbody>
   </table>
 </div>
 <script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.21.0/firebase-app.js";
-  import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/9.21.0/firebase-database.js";
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js";
+    import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-database.js";
 
-  // Firebase configuration
-  const firebaseConfig = {
-    apiKey: "AIzaSyD6k4OlLYnotuuChAjLBoHmqfv9-iwrlfY",
-    authDomain: "alfajiri-database.firebaseapp.com",
-    databaseURL: "https://alfajiri-database-default-rtdb.firebaseio.com",
-    projectId: "alfajiri-database",
-    storageBucket: "alfajiri-database.appspot.com",
-    messagingSenderId: "310417854615",
-    appId: "1:310417854615:web:6f65002a119caeaf9119d2",
-    measurementId: "G-21TBZCRBHM",
-  };
+    // Firebase configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyD6k4OlLYnotuuChAjLBoHmqfv9-iwrlfY",
+      authDomain: "alfajiri-database.firebaseapp.com",
+      databaseURL: "https://alfajiri-database-default-rtdb.firebaseio.com",
+      projectId: "alfajiri-database",
+      storageBucket: "alfajiri-database.appspot.com",
+      messagingSenderId: "310417854615",
+      appId: "1:310417854615:web:6f65002a119caeaf9119d2",
+      measurementId: "G-21TBZCRBHM"
+    };
 
-  // Initialize Firebase
-  const app = initializeApp(firebaseConfig);
-  const database = getDatabase(app);
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    
+    document.addEventListener("DOMContentLoaded", function () {
+      const database = getDatabase();
+      const tableBody = document.querySelector("#packagesTable tbody");
 
-  // Conversion rate
-  const conversionRate = 129.5;
+      const currentDate = new Date().toISOString().slice(0, 10);
+      const timeString = Date.now();
+      
+      fetchPackages(username);
 
-  // Automatically pick the username from the header (this can be dynamically set)
-   // Replace with the actual username logic
+      function fetchPackages(username) {
+        const userPackagesRef = ref(database, `packages/${username}`);
+        onValue(userPackagesRef, (snapshot) => {
+          tableBody.innerHTML = "";
 
-  // Fetch data for the selected username
-  document.addEventListener("DOMContentLoaded", () => {
-    const tableBody = document.getElementById("tableBody");
-    const emptyMessage = document.getElementById("emptyMessage");
-    const userRef = ref(database, "packages/" + username);
+          if (snapshot.exists()) {
+            const data = snapshot.val();
+            for (const timeKey in data) {
+              const packageData = data[timeKey];
 
-    get(userRef)
-      .then((snapshot) => {
-        if (snapshot.exists()) {
-          const userPackage = snapshot.val();
-          tableBody.innerHTML = ""; // Clear previous data
-          emptyMessage.style.display = "none"; // Hide empty message
+              const row = document.createElement("tr");
+              const usernameCell = document.createElement("td");
+              usernameCell.textContent = username;
 
-          // Calculate daily earnings in USD
-          const dailyEarningsUSD = (userPackage.dailyEarnings / conversionRate).toFixed(2);
+              const packageNameCell = document.createElement("td");
+              packageNameCell.textContent = packageData.packageName;
 
-          // Create table row for the user package data
-          const row = document.createElement("tr");
-          row.innerHTML = `
-            <td>${username}</td>
-            <td>${userPackage.packageName}</td>
-            <td>${userPackage.date}</td>
-            <td>${dailyEarningsUSD} USD</td>
-          `;
-          tableBody.appendChild(row);
-        } else {
-          emptyMessage.style.display = "block"; // Show empty message if no data
-          emptyMessage.textContent = "No package data found for this username.";
-        }
-      })
-      .catch((error) => {
-        console.error("Error fetching data:", error);
-        emptyMessage.style.display = "block"; // Show error message
-        emptyMessage.textContent = "Error fetching data. Please check the console.";
-      });
-  });
+              const dateCell = document.createElement("td");
+              dateCell.textContent = packageData.date;
+
+              const dailyEarningsCell = document.createElement("td");
+              const earningsInUSD = packageData.dailyEarnings / 129; // Convert to USD
+              dailyEarningsCell.textContent = `$${earningsInUSD.toFixed(2)}`; // Format to 2 decimal places
+
+              row.appendChild(usernameCell);
+              row.appendChild(packageNameCell);
+              row.appendChild(dateCell);
+              row.appendChild(dailyEarningsCell);
+
+              tableBody.appendChild(row);
+            }
+          } else {
+            const row = document.createElement("tr");
+            const cell = document.createElement("td");
+            cell.textContent = "No packages found.";
+            cell.colSpan = 4;
+            row.appendChild(cell);
+            tableBody.appendChild(row);
+          }
+        });
+      }
+    });
 </script>
+
                 </div>
 <div id="comm" class="section">
                 <div class="table-container">
