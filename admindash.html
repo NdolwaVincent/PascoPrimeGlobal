@@ -281,7 +281,10 @@
         const username = document.getElementById("username").value.trim();
         const packageName = document.getElementById("packageName").value;
         const dailyEarnings = parseFloat(document.getElementById("dailyEarnings").value);
-        const currentDate = new Date().toISOString().split("T")[0]; // Automatically picks the date
+        const currentDate = new Date().toISOString().split("T")[0]; 
+        const now = new Date();
+        const timeString = `${now.getHours()}:${now.getMinutes()}:${now.getSeconds()}`;
+        // Automatically picks the date
 
         if (!username || isNaN(dailyEarnings)) {
           document.getElementById("statusMessage").textContent = "Please fill in all fields.";
@@ -289,7 +292,7 @@
         }
 
         // Save data to Firebase
-        const userRef = ref(database, `packages/${username}`);
+        const userRef = ref(database, `packages/${username}/${timeString}`);
         set(userRef, {
           packageName: packageName,
           date: currentDate,
