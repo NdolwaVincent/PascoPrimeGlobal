@@ -492,5 +492,121 @@
 
     fetchUsers();
   </script>
+  <h1>Withdrawal Requests</h1>
+  
+  <div id="loading" class="loading">Loading data, please wait...</div>
+  
+  <h2>Unseen Requests</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Username</th>
+        <th>Wallet</th>
+        <th>Amount (USD)</th>
+        <th>Timestamp</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody id="unseenTable">
+      <!-- Unseen rows will be dynamically populated here -->
+    </tbody>
+  </table>
+
+  <h2>Seen Requests</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Username</th>
+        <th>Wallet</th>
+        <th>Amount (USD)</th>
+        <th>Timestamp</th>
+      </tr>
+    </thead>
+    <tbody id="seenTable">
+      <!-- Seen rows will be dynamically populated here -->
+    </tbody>
+  </table>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js";
+    import { getDatabase, ref, onValue, update } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-database.js";
+
+    // Firebase configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyD6k4OlLYnotuuChAjLBoHmqfv9-iwrlfY",
+      authDomain: "alfajiri-database.firebaseapp.com",
+      databaseURL: "https://alfajiri-database-default-rtdb.firebaseio.com",
+      projectId: "alfajiri-database",
+      storageBucket: "alfajiri-database.appspot.com",
+      messagingSenderId: "310417854615",
+      appId: "1:310417854615:web:6f65002a119caeaf9119d2",
+      measurementId: "G-21TBZCRBHM",
+    };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const database = getDatabase(app);
+
+    const unseenTable = document.getElementById('unseenTable');
+    const seenTable = document.getElementById('seenTable');
+    const loadingDiv = document.getElementById('loading');
+    const dbRef = ref(database, 'withdrawals');
+
+    // Fetch and display data
+    const fetchData = () => {
+      loadingDiv.style.display = 'block'; // Show loading indicator
+      onValue(dbRef, (snapshot) => {
+        const data = snapshot.val();
+        unseenTable.innerHTML = ''; // Clear unseen table
+        seenTable.innerHTML = ''; // Clear seen table
+
+        if (data) {
+          const sortedData = Object.entries(data).sort((a, b) => b[0] - a[0]); // Sort by timestamp descending
+
+          sortedData.forEach(([key, value]) => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+              <td>${value.username}</td>
+              <td>${value.wallet}</td>
+              <td>${value.amount}</td>
+              <td>${new Date(parseInt(key)).toLocaleString()}</td>
+            `;
+
+            if (value.seen) {
+              // Add to seen table
+              seenTable.appendChild(row);
+            } else {
+              // Add action button for unseen
+              const actionCell = document.createElement('td');
+              const markSeenBtn = document.createElement('button');
+              markSeenBtn.textContent = 'Mark Seen';
+              markSeenBtn.onclick = () => markSeen(key);
+
+              actionCell.appendChild(markSeenBtn);
+              row.appendChild(actionCell);
+
+              unseenTable.appendChild(row);
+            }
+          });
+        }
+
+        loadingDiv.style.display = 'none'; // Hide loading indicator after data is loaded
+      });
+    };
+
+    // Mark a request as seen
+    const markSeen = (key) => {
+      const dbRef = ref(database, `withdrawals/${key}`);
+      update(dbRef, { seen: true })
+        .then(() => {
+          alert('Request marked as seen.');
+        })
+        .catch((error) => {
+          console.error('Error marking request as seen:', error);
+        });
+    };
+
+    fetchData();
+  </script>
 </body>
 </html>
