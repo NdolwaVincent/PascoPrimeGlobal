@@ -472,21 +472,25 @@ document.addEventListener("DOMContentLoaded", generatePackageList);
     </table>
   </div>
 
-  <script>
+  <script type="module">
+    // Firebase configuration
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js";
+    import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-database.js";
+
     // Firebase configuration
     const firebaseConfig = {
-      apiKey: "YOUR_API_KEY",
-      authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-      databaseURL: "https://YOUR_PROJECT_ID.firebaseio.com",
-      projectId: "YOUR_PROJECT_ID",
-      storageBucket: "YOUR_PROJECT_ID.appspot.com",
-      messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-      appId: "YOUR_APP_ID"
+      apiKey: "AIzaSyD6k4OlLYnotuuChAjLBoHmqfv9-iwrlfY",
+      authDomain: "alfajiri-database.firebaseapp.com",
+      databaseURL: "https://alfajiri-database-default-rtdb.firebaseio.com",
+      projectId: "alfajiri-database",
+      storageBucket: "alfajiri-database.appspot.com",
+      messagingSenderId: "310417854615",
+      appId: "1:310417854615:web:6f65002a119caeaf9119d2",
+      measurementId: "G-21TBZCRBHM"
     };
 
     // Initialize Firebase
-    const app = firebase.initializeApp(firebaseConfig);
-    const db = firebase.database();
+    const app = initializeApp(firebaseConfig);
 
     // Reference to the data node in your database
     const dataRef = db.ref("affiliates");
@@ -527,35 +531,73 @@ document.addEventListener("DOMContentLoaded", generatePackageList);
       <label for="wallet">SELECT WALLET</label>
       <select id="wallet" name="wallet" required>
         <option value="main_balance">MAIN BALANCE</option>
-        <option value="savings">Commission</option>
+        <option value="Commission">Commission</option>
       </select>
 
       <label for="amount">Enter Amount in USD</label>
       <input type="number" id="amounts" name="amounts" placeholder="Enter Amount" required>
 
-      <p class="note">Minimum Amount: USD 10</p>
+      <p class="note">Minimum Amount: $ 1</p>
       <button type="submit" id="withdrawBtn">Withdraw</button>
     </form>
     <div id="message" class="hidden">
       <p>Your withdrawal request is being processed. Please wait...</p>
     </div>
   </div>
-  <script>
+  <script type="module">
+    // Import Firebase modules
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js";
+    import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-database.js";
+
+    // Firebase configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyD6k4OlLYnotuuChAjLBoHmqfv9-iwrlfY",
+      authDomain: "alfajiri-database.firebaseapp.com",
+      databaseURL: "https://alfajiri-database-default-rtdb.firebaseio.com",
+      projectId: "alfajiri-database",
+      storageBucket: "alfajiri-database.appspot.com",
+      messagingSenderId: "310417854615",
+      appId: "1:310417854615:web:6f65002a119caeaf9119d2",
+      measurementId: "G-21TBZCRBHM",
+    };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const database = getDatabase(app);
+
+    // Form submission logic
     document.getElementById('withdrawForm').addEventListener('submit', function (event) {
       event.preventDefault();
-
+      const wallet = document.getElementById('wallet').value;
       const amounts = parseFloat(document.getElementById('amounts').value);
       const messageDiv = document.getElementById('message');
+      const timestamp = Date.now(); // Unique timestamp for the database key
 
-      if (amounts >= 10) {
-        messageDiv.style.display = "block"; // Show the message
-        setTimeout(() => {
-          alert('Your withdrawal request has been received!');
-          messageDiv.style.display = "none"; // Hide the message
-          document.getElementById('withdrawForm').reset(); // Reset the form
-        }, 3000); // Simulates processing time
+      if (amounts >= 129) {
+        const withdrawalRequest = {
+          username: username,
+          wallet: wallet,
+          amount: amounts,
+          timestamp: new Date().toISOString()
+        };
+
+        // Save to Firebase Database using timestamp as unique child
+        const dbRef = ref(database, `withdrawals/${timestamp}`);
+        set(dbRef, withdrawalRequest)
+          .then(() => {
+            messageDiv.style.display = "block"; // Show the message
+            setTimeout(() => {
+              alert('Your withdrawal request has been received! and will be procesed within 12 hours.');
+              messageDiv.style.display = "none"; // Hide the message
+              document.getElementById('withdrawForm').reset(); // Reset the form
+            }, 3000); // Simulates processing time
+          })
+          .catch((error) => {
+            console.error('Error saving data:', error);
+            alert('An error occurred while processing your request. Please try again later.');
+          });
       } else {
-        alert('Please enter an amount greater than or equal to USD 10.');
+        alert('Please enter an amount greater than or equal to $ 1 or Ksh.129');
       }
     });
   </script>
