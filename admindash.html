@@ -343,8 +343,8 @@
     <div id="loadingBar"></div>
   </div>
   <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.16.0/firebase-app.js";
-    import { getDatabase, ref, get, update } from "https://www.gstatic.com/firebasejs/9.16.0/firebase-database.js";
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.21.0/firebase-app.js";
+    import { getDatabase, ref, get, update, remove } from "https://www.gstatic.com/firebasejs/9.21.0/firebase-database.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyD6k4OlLYnotuuChAjLBoHmqfv9-iwrlfY",
@@ -407,6 +407,9 @@
             <button class="edit-btn">Edit</button>
             <button class="save-btn" style="display: none;">Save</button>
           </td>
+          <td>
+            <button class="delete-btn">Delete</button>
+          </td>
         `;
         usersContainer.appendChild(row);
 
@@ -414,6 +417,7 @@
         const editBtn = row.querySelector('.edit-btn');
         const saveBtn = row.querySelector('.save-btn');
         const cells = row.querySelectorAll('td:not(:first-child):not(:last-child)');
+        const deleteBtn = row.querySelector('.delete-btn');
 
         editBtn.addEventListener('click', () => {
           cells.forEach(cell => cell.setAttribute('contenteditable', 'true'));
@@ -422,7 +426,7 @@
           editBtn.style.display = 'none';
           saveBtn.style.display = 'inline-block';
         });
-
+        deleteBtn.addEventListener('click', () => deleteUser(key));
         saveBtn.addEventListener('click', () => {
           saveRow(row, key, cells);
           saveBtn.classList.add('clicked'); // Add class for styling
@@ -431,66 +435,40 @@
       });
     }
 
-    function saveRow(row, id, cells) {
-      const updatedData = {
-        username: cells[0].textContent.trim(),
-        phone: cells[1].textContent.trim(),
-        depo: cells[2].textContent.trim(),
-        balance: cells[3].textContent.trim(),
-        account: cells[4].textContent.trim(),
-        wid: cells[5].textContent.trim(),
-        referredby: cells[6].textContent.trim(),
-        email: cells[7].textContent.trim(),
-        password: cells[8].textContent.trim(),
-      };
-
-      const userRef = ref(database, 'users/' + id);
-      update(userRef, updatedData)
+    function deleteUser(username) {
+      const userRef = ref(database, 'users/' + username);
+      remove(userRef)
         .then(() => {
-          alert('User data updated successfully!');
-          cells.forEach(cell => cell.setAttribute('contenteditable', 'false'));
-          row.querySelector('.edit-btn').style.display = 'inline-block';
-          row.querySelector('.save-btn').style.display = 'none';
+          alert('User deleted successfully');
+          fetchUsers(); // Refresh the list after deletion
         })
-        .catch(error => {
-          console.error('Error updating user data:', error);
-          alert('Failed to update user data. Check console for details.');
+        .catch((error) => {
+          console.error("Error deleting user: ", error);
         });
     }
 
-    searchInput.addEventListener('input', (e) => {
-      const searchQuery = e.target.value.toLowerCase();
-      const rows = usersContainer.querySelectorAll('tr');
-
-      rows.forEach(row => {
-        const usernameCell = row.querySelector('td:nth-child(2)');
-        if (usernameCell) {
-          const username = usernameCell.textContent.toLowerCase();
-          row.style.display = username.includes(searchQuery) ? '' : 'none';
-        }
-      });
-    });
-
     function showProgressBar() {
-      progressBar.style.width = '0%';
-      progressBar.style.display = 'block';
-      let width = 0;
-      const interval = setInterval(() => {
-        if (width >= 100) {
-          clearInterval(interval);
-        } else {
-          width += 5;
-          progressBar.style.width = width + '%';
-        }
-      }, 50);
+      progressBar.style.width = "50%";
     }
 
     function hideProgressBar() {
-      progressBar.style.width = '100%';
-      setTimeout(() => progressBar.style.display = 'none', 500);
+      progressBar.style.width = "100%";
+      setTimeout(() => {
+        progressBar.style.width = "0%";
+      }, 500);
     }
 
-    fetchUsers();
+    fetchUsers(); // Initial fetch
+
+    // Optional: Adding search functionality
+    searchInput.addEventListener('input', (event) => {
+      const filter = event.target.value.toLowerCase();
+      const rows = document.querySelectorAll('#users-container tr');
+      rows.forEach(row => {
+        const username = row.querySelector('td:nth-child(2)').textContent.toLowerCase();
+        row.style.display = username.includes(filter) ? '' : 'none';
+      });
+    });
   </script>
   <h1>Withdrawal Requests</h1>
   
@@ -520,6 +498,7 @@
         <th>Wallet</th>
         <th>Amount (USD)</th>
         <th>Timestamp</th>
+        <th>Action</th>
       </tr>
     </thead>
     <tbody id="seenTable">
@@ -529,7 +508,7 @@
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js";
-    import { getDatabase, ref, onValue, update } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-database.js";
+    import { getDatabase, ref, onValue, update, remove } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-database.js";
 
     // Firebase configuration
     const firebaseConfig = {
@@ -574,6 +553,15 @@
 
             if (value.seen) {
               // Add to seen table
+              const deleteBtn = document.createElement('button');
+              deleteBtn.textContent = 'Delete';
+              deleteBtn.classList.add('delete-btn');
+              deleteBtn.onclick = () => deleteRequest(key);
+
+              const actionCell = document.createElement('td');
+              actionCell.appendChild(deleteBtn);
+              row.appendChild(actionCell);
+
               seenTable.appendChild(row);
             } else {
               // Add action button for unseen
@@ -603,6 +591,19 @@
         })
         .catch((error) => {
           console.error('Error marking request as seen:', error);
+        });
+    };
+
+    // Delete a seen request
+    const deleteRequest = (key) => {
+      const dbRef = ref(database, `withdrawals/${key}`);
+      remove(dbRef)
+        .then(() => {
+          alert('Request deleted.');
+          fetchData(); // Refresh data
+        })
+        .catch((error) => {
+          console.error('Error deleting request:', error);
         });
     };
 
