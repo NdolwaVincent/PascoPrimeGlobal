@@ -422,7 +422,7 @@
         editBtn.addEventListener('click', () => {
           cells.forEach(cell => cell.setAttribute('contenteditable', 'true'));
           editBtn.classList.add('clicked'); // Add class for styling
-          saveBtn.classList.remove('clicked'); // Reset save button styling
+          saveBtn.classList.add('clicked'); // Reset save button styling
           editBtn.style.display = 'none';
           saveBtn.style.display = 'inline-block';
         });
