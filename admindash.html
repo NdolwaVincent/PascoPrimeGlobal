@@ -343,133 +343,164 @@
     <div id="loadingBar"></div>
   </div>
   <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.21.0/firebase-app.js";
-    import { getDatabase, ref, get, update, remove } from "https://www.gstatic.com/firebasejs/9.21.0/firebase-database.js";
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.21.0/firebase-app.js";
+  import { getDatabase, ref, get, update, remove } from "https://www.gstatic.com/firebasejs/9.21.0/firebase-database.js";
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyD6k4OlLYnotuuChAjLBoHmqfv9-iwrlfY",
-      authDomain: "alfajiri-database.firebaseapp.com",
-      databaseURL: "https://alfajiri-database-default-rtdb.firebaseio.com",
-      projectId: "alfajiri-database",
-      storageBucket: "alfajiri-database.appspot.com",
-      messagingSenderId: "310417854615",
-      appId: "1:310417854615:web:6f65002a119caeaf9119d2",
-      measurementId: "G-21TBZCRBHM",
-    };
+  const firebaseConfig = {
+    apiKey: "AIzaSyD6k4OlLYnotuuChAjLBoHmqfv9-iwrlfY",
+    authDomain: "alfajiri-database.firebaseapp.com",
+    databaseURL: "https://alfajiri-database-default-rtdb.firebaseio.com",
+    projectId: "alfajiri-database",
+    storageBucket: "alfajiri-database.appspot.com",
+    messagingSenderId: "310417854615",
+    appId: "1:310417854615:web:6f65002a119caeaf9119d2",
+    measurementId: "G-21TBZCRBHM",
+  };
 
-    const app = initializeApp(firebaseConfig);
-    const database = getDatabase(app);
+  const app = initializeApp(firebaseConfig);
+  const database = getDatabase(app);
 
-    const usersContainer = document.getElementById('users-container');
-    const progressBar = document.getElementById('progressBar');
-    const searchInput = document.getElementById('searchInput');
+  const usersContainer = document.getElementById("users-container");
+  const progressBar = document.getElementById("progressBar");
+  const searchInput = document.getElementById("searchInput");
 
-    async function fetchUsers() {
-      showProgressBar();
+  async function fetchUsers() {
+    showProgressBar();
 
-      const usersRef = ref(database, 'users');
-      try {
-        const snapshot = await get(usersRef);
-        if (snapshot.exists()) {
-          const users = snapshot.val();
-          displayUsers(users);
-        } else {
-          usersContainer.innerHTML = '<tr><td colspan="11">No users found.</td></tr>';
-        }
-      } catch (error) {
-        console.error('Error fetching users:', error);
-        usersContainer.innerHTML = '<tr><td colspan="11">Error fetching users.</td></tr>';
-      } finally {
-        hideProgressBar();
+    const usersRef = ref(database, "users");
+    try {
+      const snapshot = await get(usersRef);
+      if (snapshot.exists()) {
+        const users = snapshot.val();
+        displayUsers(users);
+      } else {
+        usersContainer.innerHTML = '<tr><td colspan="11">No users found.</td></tr>';
       }
+    } catch (error) {
+      console.error("Error fetching users:", error);
+      usersContainer.innerHTML = '<tr><td colspan="11">Error fetching users.</td></tr>';
+    } finally {
+      hideProgressBar();
     }
+  }
 
-    function displayUsers(users) {
-      usersContainer.innerHTML = ''; // Clear existing rows
-      let rowNumber = 1; // Initialize the auto-numbering counter
+  function displayUsers(users) {
+    usersContainer.innerHTML = ""; // Clear existing rows
+    let rowNumber = 1; // Initialize the auto-numbering counter
 
-      Object.keys(users).forEach((key) => {
-        const user = users[key];
-        const row = document.createElement('tr');
-        row.setAttribute('data-id', key);
-        row.innerHTML = `
-          <td>${rowNumber++}</td> <!-- Auto-number -->
-          <td>${user.username || ''}</td>
-          <td>${user.phone || ''}</td>
-          <td>${user.depo || ''}</td>
-          <td>${user.balance || ''}</td>
-          <td>${user.account || ''}</td>
-          <td>${user.wid || ''}</td>
-          <td>${user.referredby || ''}</td>
-          <td>${user.email || ''}</td>
-          <td>${user.password || ''}</td>
-          <td>
-            <button class="edit-btn">Edit</button>
-            <button class="save-btn" style="display: none;">Save</button>
-          </td>
-          <td>
-            <button class="delete-btn">Delete</button>
-          </td>
-        `;
-        usersContainer.appendChild(row);
+    Object.keys(users).forEach((key) => {
+      const user = users[key];
+      const row = document.createElement("tr");
+      row.setAttribute("data-id", key);
+      row.innerHTML = `
+        <td>${rowNumber++}</td> <!-- Auto-number -->
+        <td>${user.username || ""}</td>
+        <td>${user.phone || ""}</td>
+        <td>${user.depo || ""}</td>
+        <td>${user.balance || ""}</td>
+        <td>${user.account || ""}</td>
+        <td>${user.wid || ""}</td>
+        <td>${user.referredby || ""}</td>
+        <td>${user.email || ""}</td>
+        <td>${user.password || ""}</td>
+        <td>
+          <button class="edit-btn">Edit</button>
+          <button class="save-btn" style="display: none;">Save</button>
+        </td>
+        <td>
+          <button class="delete-btn">Delete</button>
+        </td>
+      `;
+      usersContainer.appendChild(row);
 
-        // Add event listeners for Edit and Save buttons
-        const editBtn = row.querySelector('.edit-btn');
-        const saveBtn = row.querySelector('.save-btn');
-        const cells = row.querySelectorAll('td:not(:first-child):not(:last-child)');
-        const deleteBtn = row.querySelector('.delete-btn');
+      // Add event listeners for Edit and Save buttons
+      const editBtn = row.querySelector(".edit-btn");
+      const saveBtn = row.querySelector(".save-btn");
+      const cells = row.querySelectorAll("td:not(:first-child):not(:last-child)");
+      const deleteBtn = row.querySelector(".delete-btn");
 
-        editBtn.addEventListener('click', () => {
-          cells.forEach(cell => cell.setAttribute('contenteditable', 'true'));
-          editBtn.classList.add('clicked'); // Add class for styling
-          saveBtn.classList.add('clicked'); // Reset save button styling
-          editBtn.style.display = 'none';
-          saveBtn.style.display = 'inline-block';
-        });
-        deleteBtn.addEventListener('click', () => deleteUser(key));
-        saveBtn.addEventListener('click', () => {
-          saveRow(row, key, cells);
-          saveBtn.classList.add('clicked'); // Add class for styling
-          editBtn.classList.remove('clicked'); // Reset edit button styling
-        });
+      editBtn.addEventListener("click", () => {
+        cells.forEach((cell) => cell.setAttribute("contenteditable", "true"));
+        editBtn.style.display = "none";
+        saveBtn.style.display = "inline-block";
       });
-    }
 
-    function deleteUser(username) {
-      const userRef = ref(database, 'users/' + username);
-      remove(userRef)
-        .then(() => {
-          alert('User deleted successfully');
-          fetchUsers(); // Refresh the list after deletion
-        })
-        .catch((error) => {
-          console.error("Error deleting user: ", error);
-        });
-    }
+      saveBtn.addEventListener("click", () => {
+        // Remove contenteditable attribute from cells
+        cells.forEach((cell) => cell.removeAttribute("contenteditable"));
 
-    function showProgressBar() {
-      progressBar.style.width = "50%";
-    }
+        // Save the row data
+        saveRow(row, key, cells);
 
-    function hideProgressBar() {
-      progressBar.style.width = "100%";
-      setTimeout(() => {
-        progressBar.style.width = "0%";
-      }, 500);
-    }
-
-    fetchUsers(); // Initial fetch
-
-    // Optional: Adding search functionality
-    searchInput.addEventListener('input', (event) => {
-      const filter = event.target.value.toLowerCase();
-      const rows = document.querySelectorAll('#users-container tr');
-      rows.forEach(row => {
-        const username = row.querySelector('td:nth-child(2)').textContent.toLowerCase();
-        row.style.display = username.includes(filter) ? '' : 'none';
+        // Update button visibility
+        saveBtn.style.display = "none";
+        editBtn.style.display = "inline-block";
       });
+
+      deleteBtn.addEventListener("click", () => deleteUser(key));
     });
-  </script>
+  }
+
+  function saveRow(row, key, cells) {
+    const updatedData = {};
+    const fields = [
+      "username",
+      "phone",
+      "depo",
+      "balance",
+      "account",
+      "wid",
+      "referredby",
+      "email",
+      "password",
+    ];
+
+    cells.forEach((cell, index) => {
+      updatedData[fields[index]] = cell.textContent.trim();
+    });
+
+    const userRef = ref(database, `users/${key}`);
+    update(userRef, updatedData)
+      .then(() => alert("User data updated successfully"))
+      .catch((error) => console.error("Error updating user data:", error));
+  }
+
+  function deleteUser(username) {
+    const userRef = ref(database, "users/" + username);
+    remove(userRef)
+      .then(() => {
+        alert("User deleted successfully");
+        fetchUsers(); // Refresh the list after deletion
+      })
+      .catch((error) => {
+        console.error("Error deleting user: ", error);
+      });
+  }
+
+  function showProgressBar() {
+    progressBar.style.width = "50%";
+  }
+
+  function hideProgressBar() {
+    progressBar.style.width = "100%";
+    setTimeout(() => {
+      progressBar.style.width = "0%";
+    }, 500);
+  }
+
+  fetchUsers(); // Initial fetch
+
+  // Optional: Adding search functionality
+  searchInput.addEventListener("input", (event) => {
+    const filter = event.target.value.toLowerCase();
+    const rows = document.querySelectorAll("#users-container tr");
+    rows.forEach((row) => {
+      const username = row.querySelector("td:nth-child(2)").textContent.toLowerCase();
+      row.style.display = username.includes(filter) ? "" : "none";
+    });
+  });
+</script>
+
   <h1>Withdrawal Requests</h1>
   
   <div id="loading" class="loading">Loading data, please wait...</div>
