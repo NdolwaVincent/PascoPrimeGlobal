@@ -537,7 +537,8 @@ document.addEventListener("DOMContentLoaded", generatePackageList);
       <label for="amount">Enter Amount in USD</label>
       <input type="number" id="amounts" name="amounts" placeholder="Enter Amount" required>
 
-      <p class="note">Minimum Amount: $ 1</p>
+      <p class="note">Minimum Amount for Main balance: $ 10</p>
+      <p class="note">Minimum Amount for Commission: $ 1</p>
       <button type="submit" id="withdrawBtn">Withdraw</button>
     </form>
     <div id="message" class="hidden">
@@ -573,7 +574,7 @@ document.addEventListener("DOMContentLoaded", generatePackageList);
       const messageDiv = document.getElementById('message');
       const timestamp = Date.now(); // Unique timestamp for the database key
 
-      if (amounts >= 129) {
+      if (amounts >= 1) {
         const withdrawalRequest = {
           username: username,
           wallet: wallet,
@@ -587,7 +588,7 @@ document.addEventListener("DOMContentLoaded", generatePackageList);
           .then(() => {
             messageDiv.style.display = "block"; // Show the message
             setTimeout(() => {
-              alert('Your withdrawal request has been received! and will be procesed within 12 hours.');
+              alert('Your withdrawal request has been received! and will be processed within 24 hours');
               messageDiv.style.display = "none"; // Hide the message
               document.getElementById('withdrawForm').reset(); // Reset the form
             }, 3000); // Simulates processing time
@@ -597,7 +598,7 @@ document.addEventListener("DOMContentLoaded", generatePackageList);
             alert('An error occurred while processing your request. Please try again later.');
           });
       } else {
-        alert('Please enter an amount greater than or equal to $ 1 or Ksh.129');
+        alert('Please enter an amount greater than $ 1');
       }
     });
   </script>
