@@ -192,36 +192,6 @@
   </form>
   </div>
 
-    <!-- section 2 -->
-   <!--  <fieldset>
-      <legend><span class="section">2</span>Profile</legend>
-      <label class="" for="bio">Bio:</label>
-      <textarea name="bio" id="bio" required></textarea>
-
-      <label for="job">Job Role:</label>
-      <select name="job" id="job" required>
-        <optgroup label="Web">
-          <option value="front_end_developer">Frontend Developer</option>
-          <option value="back_end_developer">Backend Developer</option>
-          <option value="fullstack_developer">Fullstack Developer</option>
-        </optgroup>
-        <optgroup label="Mobile">
-          <option value="android">Android</option>
-          <option value="ionic">Ionic</option>
-          <option value="phonegap">PhoneGap</option>
-        </optgroup>
-      </select>
-      <br /><br />
-      <label>Interest:</label>
-
-      <select id="interest" required>
-        <option value="development">Development</option>
-        <option value="design">Design</option>
-        <option value="business">Business</option>
-      </select> -->
-
-     
-
    <script type="module">
 
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js";
@@ -240,87 +210,111 @@
       // Initialize Firebase
     const app = initializeApp(firebaseConfig);
 
-    import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-database.js";
-     // Check connection status on page load
-    window.addEventListener('load', function () {
-      if (!navigator.onLine) {
-        alert('You are currently offline. Some features may not work.');
-      }
-    });
+    import { getDatabase, ref, set, get, child } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-database.js";
 
-    // Listen for connection status changes
-    window.addEventListener('online', () => {
-      alert('You are back online.');
-    });
+// Listen for submit event
+document.getElementById('registrationform').addEventListener('submit', function (e) {
+  if (!navigator.onLine) {
+    e.preventDefault();
+    alert('No internet connection. Please check your connection and try again.');
+    return;
+  }
 
-    window.addEventListener('offline', () => {
-      alert('You have lost internet connection.');
-    });
+  formSubmit(e);
+});
 
-    //listen for submit event//(1)
-     document.getElementById('registrationform').addEventListener('submit', function (e) {
-      if (!navigator.onLine) {
-        e.preventDefault();
-        alert('No internet connection. Please check your connection and try again.');
+// Submit form
+function formSubmit(e) {
+  e.preventDefault();
+
+  // Get values from the DOM
+  let username = document.querySelector('#username').value.trim();
+  let email = document.querySelector('#email').value.trim();
+  let password = document.querySelector('#password').value.trim();
+  let phone = document.querySelector('#phone').value.trim();
+  let referredby = document.querySelector('#referred-by').value.trim();
+
+  // Validate the form
+  if (!username || !email || !password || !phone) {
+    alert('Please fill in all the required fields.');
+    return;
+  }
+
+  // Check if username or phone number already exists
+  checkUserExists(username, phone, email, password, referredby);
+}
+
+// Check if the user or phone number exists in the database
+function checkUserExists(username, phone, email, password, referredby) {
+  const database = getDatabase();
+  const dbRef = ref(database);
+
+  get(child(dbRef, 'users')).then((snapshot) => {
+    if (snapshot.exists()) {
+      let userExists = false;
+      let phoneExists = false;
+
+      // Iterate through existing users
+      snapshot.forEach((childSnapshot) => {
+        const existingUser = childSnapshot.val();
+        if (existingUser.username === username) {
+          userExists = true;
+        }
+        if (existingUser.phone === phone) {
+          phoneExists = true;
+        }
+      });
+
+      // Handle duplicate entries
+      if (userExists) {
+        alert('Username already exists. Please choose another username.');
         return;
+      } else if (phoneExists) {
+        alert('Phone number already exists. Please use another phone number.');
+        return;
+      } else {
+        // If no duplicates, proceed to send data to Firebase
+        sendMessage(username, email, phone, password, referredby);
       }
-
-      formSubmit(e);
-    });
-
-    //Submit form(2)
-    function formSubmit(e) {
-      e.preventDefault();
-      // Get Values from the DOM
-      let username = document.querySelector('#username').value;
-      let email = document.querySelector('#email').value;
-      let password = document.querySelector('#password').value;
-      let phone = document.querySelector('#phone').value;
-      let referredby = document.querySelector('#referred-by').value;
-      const widss= 
-      
-
-      //send message values(3)
+    } else {
+      // If no users exist in the database, proceed to send data to Firebase
       sendMessage(username, email, phone, password, referredby);
     }
+  }).catch((error) => {
+    alert('Error checking existing users: ' + error.message);
+  });
+}
 
-    //Send Message to Firebase(4)
-    // Send Message to Firebase (4)
-// Send Message to Firebase (4)
+// Send Message to Firebase
 function sendMessage(username, email, phone, password, referredby) {
   const database = getDatabase();
 
-  // Convert the variables to strings and assign them '0'
-  var depo = String(0);      // '0' as a string
-  var wid = String(0);       // '0' as a string
-  var balance = String(0);   // '0' as a string
-  var account = String(0);   // '0' as a string
-
   // Add the data to the Firebase Realtime Database
-  set(ref(database, 'users/' + String(username)), {
-    username: String(username),
-    email: String(email),
-    phone: String(phone),
-    password: String(password),
-    referredby: String(referredby),
-    depo: depo,             // Adding 'depo' to database
-    wid: wid,               // Adding 'wid' to database
-    balance: balance,       // Adding 'balance' to database
-    account: account        // Adding 'account' to database
+  set(ref(database, 'users/' + username), {
+    username: username,
+    email: email,
+    phone: phone,
+    password: password,
+    referredby: referredby,
+    depo: "0",
+    wid: "0",
+    balance: "0",
+    account: "0"
   }).then(() => {
-      // Show Alert Message (5)
-      alert('Account is created successfully');
-      
-      // Redirect to login page after 2 seconds
-      setTimeout(function () {
-        window.location.href = 'login.html';  // Redirect to login page
-      }, 2000);  // Delay the redirection for 2 seconds to show the success message
+    // Show Alert Message
+    alert('Account is created successfully');
+    
+    // Redirect to login page after 2 seconds
+    setTimeout(function () {
+      window.location.href = 'login.html'; // Redirect to login page
+    }, 2000);
 
-      document.getElementById('registrationform').reset();
+    document.getElementById('registrationform').reset();
   }).catch((error) => {
-    alert(error);
+    alert(error.message);
   });
 }
+
 
   </script>
 </body>
