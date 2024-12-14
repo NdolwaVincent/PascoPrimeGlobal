@@ -69,6 +69,21 @@
             outline: none;
             border-color: #007bff;
         }
+        .btn {
+            width: 100%;
+            padding: 12px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn:hover {
+            background-color: #0056b3;
+        }
 
         .login-btn {
             width: 100%;
@@ -107,6 +122,28 @@
                 max-width: 90%;
             }
         }
+        toggle-link {
+            margin-top: 15px;
+            color: #007bff;
+            cursor: pointer;
+            text-decoration: underline;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .error {
+            color: red;
+            font-size: 14px;
+            margin-top: 10px;
+        }
+
+        .success {
+            color: green;
+            font-size: 14px;
+            margin-top: 10px;
+        }
     </style>
 </head>
 <body>
@@ -125,10 +162,25 @@
         <input type="password" id="password" class="input-field" placeholder="Password" required>
 
         <button type="submit" class="login-btn">Login</button>
+        <p>Don't have an account? <a href="Register.html" class="toggle-link">Sign up</a></p>
     </form>
     <p class="error" id="error"></p>
     <div class="footer">
-        <p>Don't have an account? <a href="Register.html" class="toggle-link">Sign up</a></p>
+        <form id="changePasswordForm" class="hidden">
+        <label for="currentPassword">Current Password:</label>
+        <input type="password" id="currentPassword" class="input-field" placeholder="Current Password" required>
+        <label for="newPassword">New Password:</label>
+        <input type="password" id="newPassword" class="input-field" placeholder="New Password" required>
+        <label for="confirmPassword">Confirm New Password:</label>
+        <input type="password" id="confirmPassword" class="input-field" placeholder="Confirm New Password" required>
+        <button type="submit" class="btn">Change Password</button>
+    </form>
+
+    <!-- Toggle Link -->
+    <p class="toggle-link" id="toggleLink">Change Password</p>
+
+    <p class="error" id="error"></p>
+    <p class="success" id="success"></p>
         <!-- <p><a href="#">Forgot Password?</a></p> -->
     </div>
 </div>
@@ -228,6 +280,120 @@
         });
     });
 </script>
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js";
+    import { getDatabase, ref, child, get, update } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-database.js";
 
+    const firebaseConfig = {
+        apiKey: "AIzaSyD6k4OlLYnotuuChAjLBoHmqfv9-iwrlfY",
+        authDomain: "alfajiri-database.firebaseapp.com",
+        databaseURL: "https://alfajiri-database-default-rtdb.firebaseio.com",
+        projectId: "alfajiri-database",
+        storageBucket: "alfajiri-database.appspot.com",
+        messagingSenderId: "310417854615",
+        appId: "1:310417854615:web:6f65002a119caeaf9119d2",
+        measurementId: "G-21TBZCRBHM"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const database = getDatabase(app);
+
+    const loginForm = document.getElementById('loginForm');
+    const changePasswordForm = document.getElementById('changePasswordForm');
+    const toggleLink = document.getElementById('toggleLink');
+    const errorElement = document.getElementById('error');
+    const successElement = document.getElementById('success');
+
+    // Toggle between forms
+    toggleLink.addEventListener('click', () => {
+        loginForm.classList.toggle('hidden');
+        changePasswordForm.classList.toggle('hidden');
+        toggleLink.textContent = loginForm.classList.contains('hidden')
+            ? "Back to Login"
+            : "Change Password";
+        errorElement.textContent = '';
+        successElement.textContent = '';
+    });
+
+    // Login Logic
+    loginForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const username = document.getElementById('username').value.trim();
+        const password = document.getElementById('password').value;
+
+        const dbRef = ref(database);
+        get(child(dbRef, `users/${username}`))
+            .then((snapshot) => {
+                if (snapshot.exists()) {
+                    const userData = snapshot.val();
+                    if (userData.password === password) {
+                        successElement.textContent = 'Login successful!';
+                        errorElement.textContent = '';
+                        // Redirect or perform further actions
+                    } else {
+                        errorElement.textContent = 'Incorrect password!';
+                        successElement.textContent = '';
+                    }
+                } else {
+                    errorElement.textContent = 'User does not exist!';
+                    successElement.textContent = '';
+                }
+            })
+            .catch((error) => {
+                errorElement.textContent = 'An error occurred. Please try again.';
+                console.error(error);
+            });
+    });
+
+    // Change Password Logic
+    changePasswordForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+
+        const username = document.getElementById('username').value.trim();
+        const currentPassword = document.getElementById('currentPassword').value;
+        const newPassword = document.getElementById('newPassword').value;
+        const confirmPassword = document.getElementById('confirmPassword').value;
+
+        if (newPassword !== confirmPassword) {
+            errorElement.textContent = 'New passwords do not match!';
+            successElement.textContent = '';
+            return;
+        }
+
+        const dbRef = ref(database);
+        get(child(dbRef, `users/${username}`))
+            .then((snapshot) => {
+                if (snapshot.exists()) {
+                    const userData = snapshot.val();
+                    if (userData.password === currentPassword) {
+                        const updates = {};
+                        updates[`users/${username}/password`] = newPassword;
+
+                        update(dbRef, updates)
+                            .then(() => {
+                                successElement.textContent = 'Password changed successfully!';
+                                errorElement.textContent = '';
+                            })
+                            .catch((error) => {
+                                errorElement.textContent = 'Failed to update password!';
+                                successElement.textContent = '';
+                                console.error(error);
+                            });
+                    } else {
+                        errorElement.textContent = 'Current password is incorrect!';
+                        successElement.textContent = '';
+                    }
+                } else {
+                    errorElement.textContent = 'User does not exist!';
+                    successElement.textContent = '';
+                }
+            })
+            .catch((error) => {
+                errorElement.textContent = 'An error occurred. Please try again.';
+                successElement.textContent = '';
+                console.error(error);
+            });
+    });
+</script>
 </body>
 </html>
