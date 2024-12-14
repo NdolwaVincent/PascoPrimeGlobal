@@ -136,13 +136,56 @@
   </div>
 
  <script type="module">
-    import { getDatabase, ref, update } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-database.js";
+    // Import Firebase modules
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js";
+    import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-database.js";
+
+    // Your Firebase configuration object
+    const firebaseConfig = {
+        apiKey: "AIzaSyD6k4OlLYnotuuChAjLBoHmqfv9-iwrlfY",
+        authDomain: "alfajiri-database.firebaseapp.com",
+        databaseURL: "https://alfajiri-database-default-rtdb.firebaseio.com",
+        projectId: "alfajiri-database",
+        storageBucket: "alfajiri-database.appspot.com",
+        messagingSenderId: "310417854615",
+        appId: "1:310417854615:web:6f65002a119caeaf9119d2",
+        measurementId: "G-21TBZCRBHM",
+    };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    // Extract username from URL parameters
+    const urlParams = new URLSearchParams(window.location.search);
+    const username = urlParams.get('username');
+
+    if (username) {
+        // Reference the user's data in the database
+        const userRef = ref(db, `users/${username}`);
+
+        // Listen for real-time updates
+        onValue(userRef, (snapshot) => {
+            if (snapshot.exists()) {
+                const userData = snapshot.val();
+
+                // Populate fields with updated data
+                document.getElementById('comms').textContent = convertToUSD(userData.account || '0');
+                document.getElementById('withdra').textContent = convertToUSD(userData.wid || '0');
+                document.getElementById('deposits').textContent = convertToUSD(userData.depo || '0');
+                document.getElementById('balance').textContent = convertToUSD(userData.balance || '0');
+            } else {
+                console.log("No data available for the specified username.");
+            }
+        }, (error) => {
+            console.error("Error fetching data:", error);
+        });
+    } else {
+        console.error("No username provided in the URL parameters.");
+    }
 
     // Conversion rate from local currency to USD
-    const conversionRate = 129.5;
-
-    // Extract URL parameters
-    const urlParams = new URLSearchParams(window.location.search);
+    const conversionRate = 131;
 
     // Function to convert amount to USD and format
     function convertToUSD(amount) {
@@ -152,13 +195,9 @@
             return 'USD 0'; // Default value if amount is not a number
         }
     }
-
-    // Populate fields with converted values
-    document.getElementById('comms').textContent = convertToUSD(urlParams.get('account') || '0');
-    document.getElementById('withdra').textContent = convertToUSD(urlParams.get('wid') || '0');
-    document.getElementById('deposits').textContent = convertToUSD(urlParams.get('depo') || '0');
-    document.getElementById('balance').textContent = convertToUSD(urlParams.get('balance') || '0');
 </script>
+
+
 
             
           </div>
@@ -212,7 +251,7 @@
   const database = getDatabase(app);
 
   // Conversion rate
-  const conversionRate = 0.00772;
+  const conversionRate = 0.0076335877862595;
 
   document.getElementById('amount').addEventListener('input', function () {
     const amountKES = parseFloat(this.value) || 0;
@@ -733,7 +772,7 @@ document.addEventListener("DOMContentLoaded", generatePackageList);
     // Populate the profile section
     document.getElementById('email').value = urlParams.get('email') || 'Not provided';
     document.getElementById('username').value = urlParams.get('username') || 'Not provided';
-    document.getElementById('phones').value = urlParams.get('phones') || '';
+    document.getElementById('phones').value = urlParams.get('phone') || '';
     document.getElementById('referredby').value = urlParams.get('referredby') || '';
 
     // Handle save changes
