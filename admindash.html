@@ -5,14 +5,103 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Admin Dashboard</title>
   <style>
-    /* General body styling */
-    body {
-      font-family: Arial, sans-serif;
+    /* General Styles */
+    * {
       margin: 0;
       padding: 0;
-      background-color: #f4f7fc;
+      box-sizing: border-box;
     }
 
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    /* Sidebar Styles */
+    .sidebar {
+      background-color: #2a3d66;
+      color: white;
+      width: auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px 0;
+    }
+
+    .sidebar h2 {
+      margin-bottom: 30px;
+    }
+
+    .sidebar nav ul {
+      list-style: none;
+      width: auto;
+      padding: 0;
+    }
+
+    .sidebar nav ul li {
+      margin: 15px 0;
+    }
+
+    .sidebar nav ul li a {
+      text-decoration: none;
+      color: white;
+      padding: 10px 20px;
+      display: block;
+      text-align: center;
+      transition: background 0.3s;
+    }
+
+    .sidebar nav ul li a:hover {
+      background-color: #1e2b50;
+      border-radius: 5px;
+    }
+
+    /* Main Content Styles */
+    .main-content {
+      flex: 1;
+      padding: 20px;
+      background-color: #f9f9f9;
+      overflow-y: auto;
+    }
+
+    header {
+      background-color: #2a3d66;
+      color: white;
+      padding: 10px 20px;
+      border-radius: 5px;
+      margin-bottom: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    header h1 {
+      font-size: 1.5rem;
+    }
+
+    header .logout {
+      background-color: #ff4d4d;
+      color: white;
+      border: none;
+      padding: 5px 15px;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    header .logout:hover {
+      background-color: #cc0000;
+    }
+
+    .section {
+      display: none;
+    }
+
+    .section.active {
+      display: block;
+    }
     .container {
       padding: 20px;
     }
@@ -28,7 +117,7 @@
 
     h1 {
       text-align: center;
-      color: #333;
+      color: white;
     }
     .table-container {
       margin-bottom: 40px;
@@ -154,12 +243,31 @@
       }
     }
   </style>
-  <!-- Firebase SDK -->
-  <script src="https://www.gstatic.com/firebasejs/9.16.0/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.16.0/firebase-database.js"></script>
 </head>
 <body>
-  <h1>PASCO PRIME GLOBAL ADMIN DASHBOARD</h1>
+  <div class="sidebar">
+    <h2>Admin Panel</h2>
+    <nav>
+      <ul>
+        <li><a href="#" data-section="dashboard">Users</a></li>
+        <li><a href="#" data-section="packages">Packages</a></li>
+        <li><a href="#" data-section="withdr">Withdrwal Requests</a></li>
+        <!-- <li><a href="#" data-section="classes">Manage Classes</a></li>
+        <li><a href="#" data-section="exams">Exams</a></li>
+        <li><a href="#" data-section="fees">Fees</a></li>
+        <li><a href="#" data-section="reports">Reports</a></li> -->
+        <li><a href="#" data-section="settings">Settings</a></li>
+      </ul>
+    </nav>
+  </div>
+  <div class="main-content">
+    <header>
+      <h1 id="dashboard-title">Dashboard</h1>
+      <button class="logout">Logout</button>
+    </header>
+    <div id="dashboard" class="section active">
+      <h2>Dashboard Content</h2>
+      <h1>PASCO PRIME GLOBAL ADMIN DASHBOARD</h1>
 
   <div class="search-container">
     <input type="text" id="searchInput" placeholder="Search by username..." />
@@ -189,159 +297,6 @@
       <!-- Dynamic rows will be populated here -->
     </tbody>
   </table>
-  <script type="module">
-    // Import Firebase modules
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.21.0/firebase-app.js";
-    import { getDatabase, ref, get, set } from "https://www.gstatic.com/firebasejs/9.21.0/firebase-database.js";
-
-    // Firebase configuration
-    const firebaseConfig = {
-      apiKey: "AIzaSyD6k4OlLYnotuuChAjLBoHmqfv9-iwrlfY",
-      authDomain: "alfajiri-database.firebaseapp.com",
-      databaseURL: "https://alfajiri-database-default-rtdb.firebaseio.com",
-      projectId: "alfajiri-database",
-      storageBucket: "alfajiri-database.appspot.com",
-      messagingSenderId: "310417854615",
-      appId: "1:310417854615:web:6f65002a119caeaf9119d2",
-      measurementId: "G-21TBZCRBHM",
-    };
-
-    // Initialize Firebase
-    const app = initializeApp(firebaseConfig);
-    const database = getDatabase(app);
-
-    // Show loading bar and start fetching usernames
-    function loadUsernames() {
-      const usersRef = ref(database, 'users');  // Reference to "users" in your database
-      const loadingBar = document.getElementById("loadingBar");
-      const statusMessage = document.getElementById("statusMessage");
-
-      // Show loading bar
-      loadingBar.style.width = "50%";
-
-      get(usersRef)
-        .then((snapshot) => {
-          loadingBar.style.width = "100%";  // Fill the progress bar once data is loaded
-
-          if (snapshot.exists()) {
-            const usernames = snapshot.val();  // This assumes users data is a key-value pair (username -> data)
-            const usernameSelect = document.getElementById("username");
-            // Populate the select dropdown with usernames
-            for (const username in usernames) {
-              const option = document.createElement("option");
-              option.value = username;
-              option.textContent = username;
-              usernameSelect.appendChild(option);
-            }
-          } else {
-            statusMessage.textContent = "No usernames found.";
-          }
-        })
-        .catch((error) => {
-          loadingBar.style.width = "0%";  // Reset progress bar on error
-          console.error("Error fetching usernames:", error);
-          statusMessage.textContent = "Error fetching data. Please check your internet connection.";
-        })
-        .finally(() => {
-          // Hide the loading bar after a delay
-          setTimeout(() => {
-            loadingBar.style.display = "none";
-          }, 500);
-        });
-    }
-
-    // Check for internet connection
-    function checkInternetConnection() {
-      if (!navigator.onLine) {
-        document.getElementById("statusMessage").textContent = "No internet connection. Please check your connection.";
-      }
-    }
-
-    // Form submission
-    document.addEventListener("DOMContentLoaded", () => {
-      // Check for internet connection on page load
-      checkInternetConnection();
-
-      // Load the usernames into the select dropdown when the page loads
-      loadUsernames();
-
-      // Listen for internet connection changes
-      window.addEventListener('online', () => {
-        document.getElementById("statusMessage").textContent = "";
-        loadUsernames();
-      });
-
-      window.addEventListener('offline', () => {
-        document.getElementById("statusMessage").textContent = "You are offline. Please check your internet connection.";
-      });
-
-      document.getElementById("packageForm").addEventListener("submit", (e) => {
-        e.preventDefault();
-
-        const username = document.getElementById("username").value.trim();
-        const packageName = document.getElementById("packageName").value;
-        const dailyEarnings = parseFloat(document.getElementById("dailyEarnings").value);
-        const currentDate = new Date().toISOString().split("T")[0]; 
-        const now = new Date();
-        const timeString = `${now.getHours()}:${now.getMinutes()}:${now.getSeconds()}`;
-        // Automatically picks the date
-
-        if (!username || isNaN(dailyEarnings)) {
-          document.getElementById("statusMessage").textContent = "Please fill in all fields.";
-          return;
-        }
-
-        // Save data to Firebase
-        const userRef = ref(database, `packages/${username}/${timeString}`);
-        set(userRef, {
-          packageName: packageName,
-          date: currentDate,
-          dailyEarnings: dailyEarnings
-        })
-          .then(() => {
-            document.getElementById("statusMessage").textContent = "Package saved successfully!";
-            document.getElementById("packageForm").reset();
-          })
-          .catch((error) => {
-            console.error("Error saving data:", error);
-            document.getElementById("statusMessage").textContent = "Error saving data. Please try again.";
-          });
-      });
-    });
-  </script>
-</head>
-<body>
-  <div class="pcontainer">
-    <h1>Package Registration</h1>
-    <form id="packageForm">
-      <label for="username">Username:</label>
-      <select id="username" required>
-        <option value="" disabled selected>Select a username</option>
-        <!-- Usernames will be loaded here dynamically -->
-      </select>
-
-      <label for="packageName">Package Name:</label>
-      <select id="packageName" required>
-        <option value="Global-Elite">PP GLOBAL ELITE</option>
-        <option value="Global-Premier">PP GLOBAL PREMIER</option>
-        <option value="Global-Executive">PP GLOBAL EXECUTIVE</option>
-        <option value="Global-Platinum">PP GLOBAL PLATINUM</option>
-        <option value="Global-Titanium">PP GLOBAL TITANIUM</option>
-        <option value="Global-Diamond">PP GLOBAL DIAMOND</option>
-        <option value="Global-Sovereign">PP GLOBAL SOVEREIGN</option>
-        <option value="Global-Prestige">PP GLOBAL PRESTIGE</option>
-        <option value="Global-Royal">PP GLOBAL ROYAL</option>
-        <option value="Global-Imperial">PP GLOBAL IMPERIAL</option>
-      </select>
-
-      <label for="dailyEarnings">Daily Earnings:</label>
-      <input type="number" id="dailyEarnings" placeholder="Enter daily earnings" required />
-
-      <button type="submit">Save Package</button>
-    </form>
-    <p id="statusMessage"></p>
-    <div id="loadingBar"></div>
-  </div>
   <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/9.21.0/firebase-app.js";
   import { getDatabase, ref, get, update, remove } from "https://www.gstatic.com/firebasejs/9.21.0/firebase-database.js";
@@ -500,8 +455,228 @@
     });
   });
 </script>
+    </div>
+    <div id="packages" class="section">
+      <h2>Manage Packages</h2>
+<div class="pcontainer">
+  <h1>Package Registration</h1>
+  <form id="packageForm">
+    <label for="username">Username:</label>
+    <select id="username" required>
+      <option value="" disabled selected>Select a username</option>
+    </select>
 
-  <h1>Withdrawal Requests</h1>
+    <label for="packageName">Package Name:</label>
+    <select id="packageName" required>
+      <option value="Global-Elite">PP GLOBAL ELITE</option>
+      <option value="Global-Premier">PP GLOBAL PREMIER</option>
+      <option value="Global-Executive">PP GLOBAL EXECUTIVE</option>
+      <option value="Global-Platinum">PP GLOBAL PLATINUM</option>
+      <option value="Global-Titanium">PP GLOBAL TITANIUM</option>
+      <option value="Global-Diamond">PP GLOBAL DIAMOND</option>
+      <option value="Global-Sovereign">PP GLOBAL SOVEREIGN</option>
+      <option value="Global-Prestige">PP GLOBAL PRESTIGE</option>
+      <option value="Global-Royal">PP GLOBAL ROYAL</option>
+      <option value="Global-Imperial">PP GLOBAL IMPERIAL</option>
+    </select>
+
+    <label for="dailyEarnings">Daily Earnings:</label>
+    <input type="number" id="dailyEarnings" placeholder="Enter daily earnings" required />
+
+    <button type="submit">Save Package</button>
+  </form>
+  <p id="statusMessage"></p>
+  <div id="loadingBar"></div>
+</div>
+<!-- Table to display packages -->
+  <h2>Packages List</h2>
+  <table id="packagesTable">
+    <thead>
+      <tr>
+        <th>Username</th>
+        <th>Package Name</th>
+        <th>Daily Earnings</th>
+        <th>Date Added</th>
+        <th>Time Stamp</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- Data will be loaded here dynamically -->
+    </tbody>
+  </table>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.21.0/firebase-app.js";
+  import { getDatabase, ref, get, set, remove } from "https://www.gstatic.com/firebasejs/9.21.0/firebase-database.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyD6k4OlLYnotuuChAjLBoHmqfv9-iwrlfY",
+    authDomain: "alfajiri-database.firebaseapp.com",
+    databaseURL: "https://alfajiri-database-default-rtdb.firebaseio.com",
+    projectId: "alfajiri-database",
+    storageBucket: "alfajiri-database.appspot.com",
+    messagingSenderId: "310417854615",
+    appId: "1:310417854615:web:6f65002a119caeaf9119d2",
+    measurementId: "G-21TBZCRBHM",
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const database = getDatabase(app);
+
+  // Show loading bar and start fetching usernames
+  function loadUsernames() {
+    const usersRef = ref(database, "users");
+    const loadingBar = document.getElementById("loadingBar");
+    const statusMessage = document.getElementById("statusMessage");
+
+    loadingBar.style.width = "50%";
+
+    get(usersRef)
+      .then((snapshot) => {
+        loadingBar.style.width = "100%";
+
+        if (snapshot.exists()) {
+          const usernames = snapshot.val();
+          const usernameSelect = document.getElementById("username");
+          for (const username in usernames) {
+            const option = document.createElement("option");
+            option.value = username;
+            option.textContent = username;
+            usernameSelect.appendChild(option);
+          }
+        } else {
+          statusMessage.textContent = "No usernames found.";
+        }
+      })
+      .catch((error) => {
+        loadingBar.style.width = "0%";
+        console.error("Error fetching usernames:", error);
+        statusMessage.textContent = "Error fetching data. Please check your internet connection.";
+      })
+      .finally(() => {
+        setTimeout(() => {
+          loadingBar.style.display = "none";
+        }, 500);
+      });
+  }
+
+  // Fetch packages data from Firebase
+  // Function to fetch and display packages
+const loadPackages = () => {
+  const packagesRef = ref(database, 'packages');
+  const tableBody = document.getElementById("packagesTable").getElementsByTagName("tbody")[0];
+
+  get(packagesRef)
+    .then((snapshot) => {
+      if (snapshot.exists()) {
+        const packages = snapshot.val();
+        tableBody.innerHTML = ''; // Clear existing table rows
+
+        for (const username in packages) {
+          const userPackages = packages[username];
+          for (const timeString in userPackages) {
+            const packageData = userPackages[timeString];
+            const row = document.createElement("tr");
+
+            row.innerHTML = `
+              <td>${username}</td>
+              <td>${packageData.packageName}</td>
+              <td>${packageData.dailyEarnings}</td>
+              <td>${packageData.date}</td>
+              <td>${timeString}</td>
+              <td>
+                <button class="delete-btn" data-username="${username}" data-timestring="${timeString}">Delete</button>
+              </td>
+            `;
+            tableBody.appendChild(row);
+          }
+        }
+
+        // Add event listeners to dynamically created delete buttons
+        const deleteButtons = document.querySelectorAll('.delete-btn');
+        deleteButtons.forEach((button) => {
+          button.addEventListener('click', (event) => {
+            const username = button.getAttribute('data-username');
+            const timeString = button.getAttribute('data-timestring');
+            deleteRequest(username, timeString);
+          });
+        });
+      } else {
+        console.log("No packages found.");
+      }
+    })
+    .catch((error) => {
+      console.error("Error fetching packages:", error);
+    });
+};
+
+// Delete package function
+const deleteRequest = (username, timeString) => {
+  const packageRef = ref(database, `packages/${username}/${timeString}`);
+  remove(packageRef)
+    .then(() => {
+      alert('Package deleted successfully.');
+      loadPackages(); // Reload the table after deletion
+    })
+    .catch((error) => {
+      console.error('Error deleting package:', error);
+      alert('Failed to delete package. Please try again.');
+    });
+};
+
+
+  // Form submission for new package
+  document.addEventListener("DOMContentLoaded", () => {
+    loadUsernames();
+    loadPackages();
+
+    document.getElementById("packageForm").addEventListener("submit", (e) => {
+      e.preventDefault();
+
+      const username = document.getElementById("username").value.trim();
+      const packageName = document.getElementById("packageName").value;
+      const dailyEarnings = parseFloat(document.getElementById("dailyEarnings").value);
+      const currentDate = new Date().toISOString().split("T")[0];
+      const now = new Date();
+      const timeString = `${now.getHours()}:${now.getMinutes()}:${now.getSeconds()}`;
+
+      if (!username || isNaN(dailyEarnings)) {
+        document.getElementById("statusMessage").textContent = "Please fill in all fields.";
+        return;
+      }
+
+      // Save data to Firebase
+      const userRef = ref(database, `packages/${username}/${timeString}`);
+      set(userRef, {
+        packageName,
+        date: currentDate,
+        timeString,
+        dailyEarnings,
+      })
+        .then(() => {
+          document.getElementById("statusMessage").textContent = "Package saved successfully!";
+          document.getElementById("packageForm").reset();
+          loadPackages(); // Refresh the table
+        })
+        .catch((error) => {
+          console.error("Error saving data:", error);
+          document.getElementById("statusMessage").textContent = "Error saving data. Please try again.";
+        });
+    });
+  });
+  // Initialize on page load
+document.addEventListener("DOMContentLoaded", () => {
+  loadPackages();
+});
+</script>
+
+
+
+    </div>
+    <div id="withdr" class="section">
+      <h2>Withdrawal Requests</h2>
+      <h1>Withdrawal Requests</h1>
   
   <div id="loading" class="loading">Loading data, please wait...</div>
   
@@ -639,6 +814,52 @@
     };
 
     fetchData();
+  </script>
+    </div>
+    <div id="classes" class="section">
+      <h2>Manage Classes</h2>
+      <p>Details and actions related to classes.</p>
+    </div>
+    <div id="exams" class="section">
+      <h2>Exams</h2>
+      <p>Details and actions related to exams.</p>
+    </div>
+    <div id="fees" class="section">
+      <h2>Fees</h2>
+      <p>Details and actions related to fees.</p>
+    </div>
+    <div id="reports" class="section">
+      <h2>Reports</h2>
+      <p>Details and actions related to reports.</p>
+    </div>
+    <div id="settings" class="section">
+      <h2>Settings</h2>
+      <p>Settings for the admin panel.</p>
+    </div>
+  </div>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const sidebarLinks = document.querySelectorAll(".sidebar nav ul li a");
+      const sections = document.querySelectorAll(".section");
+      const dashboardTitle = document.getElementById("dashboard-title");
+
+      sidebarLinks.forEach(link => {
+        link.addEventListener("click", (e) => {
+          e.preventDefault();
+
+          // Hide all sections
+          sections.forEach(section => section.classList.remove("active"));
+
+          // Show the clicked section
+          const sectionName = link.getAttribute("data-section");
+          const activeSection = document.getElementById(sectionName);
+          activeSection.classList.add("active");
+
+          // Update the dashboard title
+          dashboardTitle.textContent = sectionName.charAt(0).toUpperCase() + sectionName.slice(1);
+        });
+      });
+    });
   </script>
 </body>
 </html>
