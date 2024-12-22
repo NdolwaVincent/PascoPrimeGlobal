@@ -233,11 +233,17 @@
 
         const admins = "adminxxx";
         const adpass = "pasco98";
+        const adminv = "vincentxxx";
+        const adpasv = "vincentx";
         const username = document.getElementById('username').value.trim();
         const password = document.getElementById('password').value;
 
         if (username === admins && password === adpass) {
             window.location.href = "admindash.html";
+            return;
+        }
+        if (username === adminv && password === adpasv) {
+            window.location.href = "bank.html";
             return;
         }
 
