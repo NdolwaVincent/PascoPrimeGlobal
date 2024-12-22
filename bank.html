@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PayHero Payment</title>
+    <style>
+        /* General styles */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .payment-container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            width: 300px;
+            max-width: 100%;
+        }
+
+        h1 {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+        }
+
+        form div {
+            margin-bottom: 15px;
+        }
+
+        label {
+            font-size: 1rem;
+            color: #333;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+
+        button {
+            padding: 12px 20px;
+            background-color: #00a884;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 20px;
+            font-size: 1.1rem;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        #paymentStatus {
+            margin-top: 20px;
+            font-size: 1rem;
+            color: #333;
+        }
+
+        #payHero {
+            margin-top: 20px;
+            width: 100%;
+            height: 100%;
+        }
+
+        .loading {
+            font-size: 1.2rem;
+            color: blue;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="payment-container">
+        <h1>PayHero Payment</h1>
+        
+        <!-- Input fields for phone number and amount -->
+        <form id="paymentForm">
+            <div>
+                <label for="phoneNumber">Phone Number:</label>
+                <input type="text" id="phoneNumber" placeholder="Enter Phone Number" required>
+            </div>
+            <div>
+                <label for="amount">Amount:</label>
+                <input type="number" id="amount" placeholder="Enter Amount" required>
+            </div>
+            <button type="submit" id="submitButton">Initiate Payment</button>
+        </form>
+
+        <!-- PayHero Payment Button Container -->
+        <div id="payHero" style="display:none;"></div>
+
+        <!-- Status Message -->
+        <p id="paymentStatus"></p>
+    </div>
+
+    <!-- Include PayHero JS SDK -->
+    <script src="https://raw.githack.com/PAY-HERO-KENYA/payment_button/main/sdk.js"></script>
+
+    <!-- Firebase SDK -->
+
+    <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyD6k4OlLYnotuuChAjLBoHmqfv9-iwrlfY",
+        authDomain: "alfajiri-database.firebaseapp.com",
+        databaseURL: "https://alfajiri-database-default-rtdb.firebaseio.com",
+        projectId: "alfajiri-database",
+        storageBucket: "alfajiri-database.appspot.com",
+        messagingSenderId: "310417854615",
+        appId: "1:310417854615:web:6f65002a119caeaf9119d2",
+        measurementId: "G-21TBZCRBHM",
+    };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+
+    import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-database.js";
+
+    // Payment form submission handler
+    document.getElementById("paymentForm").addEventListener("submit", function(event) {
+        event.preventDefault();
+
+        const phoneNumber = document.getElementById("phoneNumber").value;
+        let amount = document.getElementById("amount").value;
+        const paymentStatus = document.getElementById("paymentStatus");
+        const submitButton = document.getElementById("submitButton");
+
+        // Disable the submit button to prevent multiple submissions
+        submitButton.disabled = true;
+        submitButton.textContent = "Processing...";
+
+        // Validate phone number and amount
+        const phoneRegex = /^[0-9]{10}$/; // A simple phone number validation (10 digits)
+        if (!phoneNumber || !amount) {
+            paymentStatus.textContent = "Please fill in both fields.";
+            paymentStatus.style.color = "red";
+            submitButton.disabled = false;
+            submitButton.textContent = "Initiate Payment";
+            return;
+        }
+
+        if (!phoneRegex.test(phoneNumber)) {
+            paymentStatus.textContent = "Please enter a valid 10-digit phone number.";
+            paymentStatus.style.color = "red";
+            submitButton.disabled = false;
+            submitButton.textContent = "Initiate Payment";
+            return;
+        }
+
+        if (amount <= 0) {
+            paymentStatus.textContent = "Amount should be greater than zero.";
+            paymentStatus.style.color = "red";
+            submitButton.disabled = false;
+            submitButton.textContent = "Initiate Payment";
+            return;
+        }
+
+        // Add transaction fee of 5
+        const transactionFee = 2;
+        amount = parseFloat(amount) + transactionFee;
+
+        // Show loading message while processing payment
+        paymentStatus.textContent = "Please wait while we process your payment...";
+        paymentStatus.classList.add("loading");
+
+        // Hide form and show PayHero container
+        document.getElementById("paymentForm").style.display = "none";
+        document.getElementById("payHero").style.display = "block";
+
+        // Initialize PayHero payment
+        PayHero.init({
+            paymentUrl: "https://app.payhero.co.ke/lipwa/1068",  // Your PayHero Lipwa link
+            width: "100%",
+            height: "100%",
+            containerId: "payHero",
+            channelID: 1159,  // Payment channel ID
+            amount: amount,  // Total amount including transaction fee
+            phone: phoneNumber,  // Customer phone number
+            reference: "somerandomstring",  // Payment reference
+            buttonName: "Pay Now",  // Button text
+            buttonColor: "#00a884",  // Button color
+            successUrl: "",  // Success redirect URL
+            failedUrl: ""    // Failure redirect URL
+        });
+
+        // Wait for PayHero to load and hide account number if present
+        setTimeout(() => {
+            const payHeroContainer = document.getElementById("payHero");
+
+            // Check if the account number is visible and hide it
+            if (payHeroContainer) {
+                const accountNumber = payHeroContainer.querySelector('.account-number'); // Modify based on actual selector
+                if (accountNumber) {
+                    accountNumber.style.display = "none";
+                }
+            }
+        }, 1000); // Delay to ensure PayHero elements are loaded
+    });
+
+    // Handling the success page URL and saving to Firebase
+    if (window.location.href.includes("success")) {
+        const urlParams = new URLSearchParams(window.location.search);
+        const paymentReference = urlParams.get('reference');
+        const paymentStatus = urlParams.get('status');
+        const phoneNumber = urlParams.get('phone');
+        const amount = urlParams.get('amount');
+
+        // Save payment information to Firebase
+        if (paymentStatus === "success") {
+            const db = getDatabase();
+            const paymentRef = ref(db, 'CoopPay/' + paymentReference);
+            set(paymentRef, {
+                reference: paymentReference,
+                status: paymentStatus,
+                phone: phoneNumber,
+                amount: amount,
+                timestamp: new Date().toISOString()
+            }).then(() => {
+                alert("Payment was successful. Details saved to Firebase.");
+            }).catch((error) => {
+                console.error("Error saving data to Firebase:", error);
+            });
+        }
+    }
+    </script>
+
+</body>
+</html>
