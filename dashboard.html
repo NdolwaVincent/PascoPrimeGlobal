@@ -52,16 +52,16 @@
     <h1>YOUR PASCO PRIME GLOBAL ACCOUNT</h1>
     <a href="https://chat.whatsapp.com/EY4XBBRiFTh40eFcGsXNh0" class="button">JOIN our WhatsApp group</a>
     <div class="card-container">
-      <div class="card">
-        <h3 id="balance">USD 0</h3>
+     <div class="card">
+        <h3 id="balance">Loading...</h3>
         <p>Account Balance</p>
       </div>
       <div class="card">
-        <h3 id="deposits">USD 0</h3>
+        <h3 id="deposits">Loading...</h3>
         <p>Deposit Balance</p>
       </div>
       <div class="card">
-        <h3 id="withdra">USD 0</h3>
+        <h3 id="withdra">Loading...</h3>
         <p>Total Withdrawn</p>
       </div>
       <div class="card">
@@ -169,11 +169,11 @@
             if (snapshot.exists()) {
                 const userData = snapshot.val();
 
-                // Populate fields with updated data
-                document.getElementById('comms').textContent = convertToUSD(userData.account || '0');
-                document.getElementById('withdra').textContent = convertToUSD(userData.wid || '0');
-                document.getElementById('deposits').textContent = convertToUSD(userData.depo || '0');
-                document.getElementById('balance').textContent = convertToUSD(userData.balance || '0');
+                // Populate fields with updated data in KSH
+                document.getElementById('comms').textContent = formatKSH(userData.account || '0');
+                document.getElementById('withdra').textContent = formatKSH(userData.wid || '0');
+                document.getElementById('deposits').textContent = formatKSH(userData.depo || '0');
+                document.getElementById('balance').textContent = formatKSH(userData.balance || '0');
             } else {
                 console.log("No data available for the specified username.");
             }
@@ -184,15 +184,12 @@
         console.error("No username provided in the URL parameters.");
     }
 
-    // Conversion rate from local currency to USD
-    const conversionRate = 131;
-
-    // Function to convert amount to USD and format
-    function convertToUSD(amount) {
+    // Function to format amounts in KSH
+    function formatKSH(amount) {
         if (!isNaN(amount)) {
-            return `$${(parseFloat(amount) / conversionRate).toFixed(2)}`;
+            return `KSH ${(parseFloat(amount)).toFixed(2)}`;
         } else {
-            return 'USD 0'; // Default value if amount is not a number
+            return 'KSH 0'; // Default value if amount is not a number
         }
     }
 </script>
