@@ -1,405 +1,238 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Arial', sans-serif;
-            background-color: #f5f5f5;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-        }
-
-        .login-container {
-            background-color: #333;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            width: 100%;
-            max-width: 400px;
-            padding: 30px;
-            text-align: center;
-        }
-
-        .login-container h2 {
-            font-size: 20px;
-            margin-bottom: 20px;
-            color: white;
-        }
-        .login-container h4 {
-            font-size: 16px;
-            margin-bottom: 20px;
-            color: white;
-        }
-
-        .login-container p {
-            font-size: 14px;
-            margin-bottom: 20px;
-            color: #777;
-        }
-
-        .input-field {
-            width: 100%;
-            padding: 12px;
-            margin-bottom: 20px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            border-style: normal;
-            font-size: 16px;
-            color: green;
-        }
-      .login-container  label {
-      display: block;
-      font-size: 14px;
-      margin-bottom: 5px;
-      color: white;
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login - Pasco Prime</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet" />
+  <style>
+    body {
+      font-family: 'Roboto', sans-serif;
+      background: linear-gradient(-45deg, #0f172a, #1e293b, #0f172a, #1e293b);
+      background-size: 400% 400%;
+      animation: pulseBG 10s ease infinite;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 1rem;
+      color: #f1f5f9;
     }
 
-        .input-field:focus {
-            outline: none;
-            border-color: #007bff;
-        }
-        .btn {
-            width: 100%;
-            padding: 12px;
-            background-color: #007bff;
-            color: #fff;
-            border: none;
-            border-radius: 4px;
-            font-size: 16px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
+    @keyframes pulseBG {
+      0%, 100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+    }
 
-        .btn:hover {
-            background-color: #0056b3;
-        }
+    .form-wrapper {
+      background-color: rgba(15, 23, 42, 0.95);
+      padding: 2rem;
+      border-radius: 1rem;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+      width: 100%;
+      max-width: 420px;
+    }
 
-        .login-btn {
-            width: 100%;
-            padding: 12px;
-            background-color: #007bff;
-            color: #fff;
-            border: none;
-            border-radius: 4px;
-            font-size: 16px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
+    .form-wrapper h2, .form-wrapper h4 {
+      color: #10b981;
+    }
 
-        .login-btn:hover {
-            background-color: #0056b3;
-        }
+    .form-control {
+      background-color: #1e293b !important;
+      border: 1px solid #334155;
+      color: #f1f5f9 !important;
+    }
 
-        .footer {
-            margin-top: 15px;
-            font-size: 14px;
-        }
-        img{
-            width: 80px;
-            height: 80px;
-            padding: 5px;
-        }
-        .footer a {
-            color: #007bff;
-            text-decoration: none;
-        }
+    .form-control::placeholder {
+      color: #94a3b8 !important;
+    }
 
-        /* Responsive Design */
-        @media (max-width: 768px) {
-            .login-container {
-                padding: 20px;
-                max-width: 90%;
-            }
-        }
-        toggle-link {
-            margin-top: 15px;
-            color: #007bff;
-            cursor: pointer;
-            text-decoration: underline;
-        }
+    .form-control:focus {
+      border-color: #10b981;
+      background-color: #1e293b;
+      box-shadow: none;
+      color: #f1f5f9;
+    }
 
-        .hidden {
-            display: none;
-        }
+    .btn-primary {
+      background-color: #10b981;
+      border: none;
+    }
 
-        .error {
-            color: red;
-            font-size: 14px;
-            margin-top: 10px;
-        }
+    .btn-primary:hover {
+      background-color: #059669;
+    }
 
-        .success {
-            color: green;
-            font-size: 14px;
-            margin-top: 10px;
-        }
-    </style>
+    .hidden {
+      display: none;
+    }
+  </style>
 </head>
+
 <body>
+  <div class="form-wrapper text-center">
+    <img src="logob.PNG" class="mx-auto mb-3" style="width: 70px; height: 70px;">
+    <h2 class="mb-1">PASCO PRIME GLOBAL</h2>
+    <h4 class="mb-3">Welcome back! Please enter your details to log in.</h4>
 
-<div class="login-container">
-    <img src="logob.PNG">
-    <h2>PASCO PRIME GLOBAL</h2>
-    <h4>Welcome back! Please enter your details to log in.</h4>
-
-    <p id="connection-status" class="connection-status"></p>
+    <p id="connection-status" class="text-sm mb-2"></p>
 
     <form id="loginForm">
-        <label for="username">Username:</label>
-        <input type="text" id="username" class="input-field" placeholder="Username" required>
-        <label for="password">Password:</label>
-        <input type="password" id="password" class="input-field" placeholder="Password" required>
-
-        <button type="submit" class="login-btn">Login</button>
-        <p>Don't have an account? <a href="Register.html" class="toggle-link">Sign up</a></p>
-    </form>
-    <p class="error" id="error"></p>
-    <div class="footer">
-        <form id="changePasswordForm" class="hidden">
-        <label for="currentPassword">Current Password:</label>
-        <input type="password" id="currentPassword" class="input-field" placeholder="Current Password" required>
-        <label for="newPassword">New Password:</label>
-        <input type="password" id="newPassword" class="input-field" placeholder="New Password" required>
-        <label for="confirmPassword">Confirm New Password:</label>
-        <input type="password" id="confirmPassword" class="input-field" placeholder="Confirm New Password" required>
-        <button type="submit" class="btn">Change Password</button>
+      <div class="mb-3 text-start">
+        <label for="username" class="form-label">Username</label>
+        <input type="text" class="form-control" id="username" placeholder="Enter username" required>
+      </div>
+      <div class="mb-3 text-start">
+        <label for="password" class="form-label">Password</label>
+        <input type="password" class="form-control" id="password" placeholder="Enter password" required>
+      </div>
+      <button type="submit" class="btn btn-primary w-100">Login</button>
+      <p class="mt-3">Don't have an account? <a href="Register.html" class="text-green-400">Sign up</a></p>
     </form>
 
-    <!-- Toggle Link -->
-    <p class="toggle-link" id="toggleLink">Change Password</p>
+    <p class="error text-red-500 mt-2" id="error"></p>
 
-    <p class="error" id="error"></p>
-    <p class="success" id="success"></p>
-        <!-- <p><a href="#">Forgot Password?</a></p> -->
-    </div>
-</div>
+    <form id="changePasswordForm" class="hidden mt-4">
+      <div class="text-start">
+        <label for="currentPassword" class="form-label">Current Password</label>
+        <input type="password" class="form-control mb-3" id="currentPassword" placeholder="Current Password" required>
 
-<script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js";
-    import { getDatabase, ref, child, get } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-database.js";
+        <label for="newPassword" class="form-label">New Password</label>
+        <input type="password" class="form-control mb-3" id="newPassword" placeholder="New Password" required>
 
-    const firebaseConfig = {
-        apiKey: "AIzaSyD6k4OlLYnotuuChAjLBoHmqfv9-iwrlfY",
-        authDomain: "alfajiri-database.firebaseapp.com",
-        databaseURL: "https://alfajiri-database-default-rtdb.firebaseio.com",
-        projectId: "alfajiri-database",
-        storageBucket: "alfajiri-database.appspot.com",
-        messagingSenderId: "310417854615",
-        appId: "1:310417854615:web:6f65002a119caeaf9119d2",
-        measurementId: "G-21TBZCRBHM"
-    };
+        <label for="confirmPassword" class="form-label">Confirm New Password</label>
+        <input type="password" class="form-control mb-3" id="confirmPassword" placeholder="Confirm New Password" required>
+      </div>
+      <button type="submit" class="btn btn-success w-100">Change Password</button>
+    </form>
 
-    const app = initializeApp(firebaseConfig);
-    const database = getDatabase(app);
+    <p class="toggle-link mt-3 cursor-pointer text-green-400" id="toggleLink">Change Password</p>
+    <p class="success text-green-500 mt-2" id="success"></p>
+  </div>
 
-    const connectionStatus = document.getElementById('connection-status');
-    const loginForm = document.getElementById('loginForm');
-    const errorElement = document.getElementById('error');
-
-    // Internet connection check
-    function updateConnectionStatus() {
-        if (navigator.onLine) {
-            connectionStatus.textContent = 'You are online.';
-            connectionStatus.style.color = 'green';
-        } else {
-            connectionStatus.textContent = 'You are offline. Check your connection.';
-            connectionStatus.style.color = 'red';
-        }
-    }
-
-    // Update connection status on page load and network changes
-    updateConnectionStatus();
-    window.addEventListener('online', updateConnectionStatus);
-    window.addEventListener('offline', updateConnectionStatus);
-
-    loginForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-
-        if (!navigator.onLine) {
-            errorElement.textContent = 'Cannot log in while offline.';
-            return;
-        }
-
-        const admins = "adminxxx";
-        const adpass = "pasco98";
-        const adminv = "vincentxxx";
-        const adpasv = "vincentx";
-        const username = document.getElementById('username').value.trim();
-        const password = document.getElementById('password').value;
-
-        if (username === admins && password === adpass) {
-            window.location.href = "admindash.html";
-            return;
-        }
-        if (username === adminv && password === adpasv) {
-            window.location.href = "bank.html";
-            return;
-        }
-
-        // Firebase user verification
-      const dbRef = ref(database);
-      get(child(dbRef, `users/${username}`))
-        .then((snapshot) => {
-          if (snapshot.exists()) {
-            const userData = snapshot.val();
-
-            // Check if user credentials are valid
-            if (userData.password === password) {
-              errorElement.textContent = ''; // Clear error message
-
-              // Prepare URL parameters with additional fields
-              const urlParams = new URLSearchParams({
-                username: username,
-                email: userData.email || '',
-                phone: userData.phone || '',
-                referredby: userData.referredby || '',
-                balance: userData.balance || '',
-                account: userData.account || '',
-                depo: userData.depo || '',
-                wid: userData.wid || '0',
-              });
-
-              // Redirect to user dashboard
-              const dashboardUrl = `dashboard.html?${urlParams.toString()}`;
-              window.location.href = dashboardUrl;
-            } else {
-              errorElement.textContent = 'Incorrect password!';
-            }
-          } else {
-            errorElement.textContent = 'Username does not exist!';
-          }
-        })
-        .catch((error) => {
-          errorElement.textContent = 'An error occurred. Please try again.';
-          console.error(error);
-        });
-    });
-</script>
-<script type="module">
+  <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js";
     import { getDatabase, ref, child, get, update } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-database.js";
 
     const firebaseConfig = {
-        apiKey: "AIzaSyD6k4OlLYnotuuChAjLBoHmqfv9-iwrlfY",
-        authDomain: "alfajiri-database.firebaseapp.com",
-        databaseURL: "https://alfajiri-database-default-rtdb.firebaseio.com",
-        projectId: "alfajiri-database",
-        storageBucket: "alfajiri-database.appspot.com",
-        messagingSenderId: "310417854615",
-        appId: "1:310417854615:web:6f65002a119caeaf9119d2",
-        measurementId: "G-21TBZCRBHM"
+      apiKey: "AIzaSyD6k4OlLYnotuuChAjLBoHmqfv9-iwrlfY",
+      authDomain: "alfajiri-database.firebaseapp.com",
+      databaseURL: "https://alfajiri-database-default-rtdb.firebaseio.com",
+      projectId: "alfajiri-database",
+      storageBucket: "alfajiri-database.appspot.com",
+      messagingSenderId: "310417854615",
+      appId: "1:310417854615:web:6f65002a119caeaf9119d2",
+      measurementId: "G-21TBZCRBHM"
     };
 
     const app = initializeApp(firebaseConfig);
-    const database = getDatabase(app);
+    const db = getDatabase(app);
 
+    const connectionStatus = document.getElementById('connection-status');
     const loginForm = document.getElementById('loginForm');
     const changePasswordForm = document.getElementById('changePasswordForm');
     const toggleLink = document.getElementById('toggleLink');
     const errorElement = document.getElementById('error');
     const successElement = document.getElementById('success');
 
-    // Toggle between forms
+    function updateConnectionStatus() {
+      if (navigator.onLine) {
+        connectionStatus.textContent = 'You are online';
+        connectionStatus.style.color = 'lightgreen';
+      } else {
+        connectionStatus.textContent = 'You are offline. Check your connection.';
+        connectionStatus.style.color = 'red';
+      }
+    }
+
+    window.addEventListener('online', updateConnectionStatus);
+    window.addEventListener('offline', updateConnectionStatus);
+    updateConnectionStatus();
+
     toggleLink.addEventListener('click', () => {
-        loginForm.classList.toggle('hidden');
-        changePasswordForm.classList.toggle('hidden');
-        toggleLink.textContent = loginForm.classList.contains('hidden')
-            ? "Back to Login"
-            : "Change Password";
-        errorElement.textContent = '';
-        successElement.textContent = '';
+      loginForm.classList.toggle('hidden');
+      changePasswordForm.classList.toggle('hidden');
+      toggleLink.textContent = loginForm.classList.contains('hidden') ? 'Back to Login' : 'Change Password';
+      errorElement.textContent = '';
+      successElement.textContent = '';
     });
 
-    // Login Logic
-    loginForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-        const username = document.getElementById('username').value.trim();
-        const password = document.getElementById('password').value;
+    loginForm.addEventListener('submit', e => {
+      e.preventDefault();
+      if (!navigator.onLine) {
+        errorElement.textContent = 'Cannot log in while offline.';
+        return;
+      }
 
-        const dbRef = ref(database);
-        get(child(dbRef, `users/${username}`))
-            .then((snapshot) => {
-                if (snapshot.exists()) {
-                    const userData = snapshot.val();
-                    if (userData.password === password) {
-                        successElement.textContent = 'Login successful!';
-                        errorElement.textContent = '';
-                        // Redirect or perform further actions
-                    } else {
-                        errorElement.textContent = 'Incorrect password!';
-                        successElement.textContent = '';
-                    }
-                } else {
-                    errorElement.textContent = 'User does not exist!';
-                    successElement.textContent = '';
-                }
-            })
-            .catch((error) => {
-                errorElement.textContent = 'An error occurred. Please try again.';
-                console.error(error);
+      const username = document.getElementById('username').value.trim();
+      const password = document.getElementById('password').value;
+
+      const dbRef = ref(db);
+      get(child(dbRef, `users/${username}`)).then(snapshot => {
+        if (snapshot.exists()) {
+          const user = snapshot.val();
+          if (user.password === password) {
+            const params = new URLSearchParams({
+              username,
+              email: user.email || '',
+              phone: user.phone || '',
+              referredby: user.referredby || '',
+              balance: user.balance || '',
+              account: user.account || '',
+              depo: user.depo || '',
+              wid: user.wid || '0'
             });
-    });
-
-    // Change Password Logic
-    changePasswordForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-
-        const username = document.getElementById('username').value.trim();
-        const currentPassword = document.getElementById('currentPassword').value;
-        const newPassword = document.getElementById('newPassword').value;
-        const confirmPassword = document.getElementById('confirmPassword').value;
-
-        if (newPassword !== confirmPassword) {
-            errorElement.textContent = 'New passwords do not match!';
-            successElement.textContent = '';
-            return;
+            window.location.href = `dashboard.html?${params.toString()}`;
+          } else {
+            errorElement.textContent = 'Incorrect password!';
+          }
+        } else {
+          errorElement.textContent = 'Username does not exist!';
         }
-
-        const dbRef = ref(database);
-        get(child(dbRef, `users/${username}`))
-            .then((snapshot) => {
-                if (snapshot.exists()) {
-                    const userData = snapshot.val();
-                    if (userData.password === currentPassword) {
-                        const updates = {};
-                        updates[`users/${username}/password`] = newPassword;
-
-                        update(dbRef, updates)
-                            .then(() => {
-                                successElement.textContent = 'Password changed successfully!';
-                                errorElement.textContent = '';
-                            })
-                            .catch((error) => {
-                                errorElement.textContent = 'Failed to update password!';
-                                successElement.textContent = '';
-                                console.error(error);
-                            });
-                    } else {
-                        errorElement.textContent = 'Current password is incorrect!';
-                        successElement.textContent = '';
-                    }
-                } else {
-                    errorElement.textContent = 'User does not exist!';
-                    successElement.textContent = '';
-                }
-            })
-            .catch((error) => {
-                errorElement.textContent = 'An error occurred. Please try again.';
-                successElement.textContent = '';
-                console.error(error);
-            });
+      }).catch(err => {
+        console.error(err);
+        errorElement.textContent = 'An error occurred. Try again.';
+      });
     });
-</script>
+
+    changePasswordForm.addEventListener('submit', e => {
+      e.preventDefault();
+      const username = document.getElementById('username').value.trim();
+      const currentPassword = document.getElementById('currentPassword').value;
+      const newPassword = document.getElementById('newPassword').value;
+      const confirmPassword = document.getElementById('confirmPassword').value;
+
+      if (newPassword !== confirmPassword) {
+        errorElement.textContent = 'New passwords do not match!';
+        return;
+      }
+
+      const dbRef = ref(db);
+      get(child(dbRef, `users/${username}`)).then(snapshot => {
+        if (snapshot.exists()) {
+          const user = snapshot.val();
+          if (user.password === currentPassword) {
+            const updates = {};
+            updates[`users/${username}/password`] = newPassword;
+            update(dbRef, updates).then(() => {
+              successElement.textContent = 'Password changed successfully!';
+            }).catch(err => {
+              errorElement.textContent = 'Update failed!';
+            });
+          } else {
+            errorElement.textContent = 'Current password is incorrect!';
+          }
+        } else {
+          errorElement.textContent = 'User does not exist!';
+        }
+      }).catch(err => {
+        errorElement.textContent = 'An error occurred. Try again.';
+      });
+    });
+  </script>
 </body>
+
 </html>
