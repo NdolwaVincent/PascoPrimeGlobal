@@ -198,151 +198,160 @@
 
             
           </div>
+          <div id="deposit" class="section">
+  <h1>Recharge Your Account</h1>
+  <div class="container">
+    <form id="rechargeForm">
+      <label for="amount">Enter Amount (KES):</label>
+      <input type="number" id="amount" placeholder="Enter amount in KES" required>
 
+      <label for="phone">Phone Number:</label>
+      <input type="tel" id="phone" placeholder="Enter your phone number" required>
 
-            <div id="deposit" class="section" >
-                <h1 >Recharge Your Account</h1>
-               <div class="container">
-  <form id="rechargeForm">
-    <label for="amount">Enter Amount (KES):</label>
-    <input type="number" id="amount" placeholder="Enter amount in KES" required>
+      <label for="name">Your Name:</label>
+      <input type="text" id="name" placeholder="Enter your name" required>
 
-    <label for="phone">Phone Number:</label>
-    <input type="tel" id="phone" placeholder="Enter your phone number" required>
+      <p>Converted to USD: <span id="convertedAmount">0.00</span></p>
 
-    <label for="name">Your Name:</label>
-    <input type="text" id="name" placeholder="Enter your name" required>
+      <label for="paymentOption">Payment Option:</label>
+      <select id="paymentOption" required>
+        <option value="mpesa">M-Pesa</option>
+        <option value="paypal">PayPal</option>
+        <option value="binance">Binance</option>
+      </select>
 
-    <p>Converted to USD: <span id="convertedAmount">0.00</span></p>
+      <button type="submit">Submit</button>
+    </form>
+    <div id="responseMessage" class="p-4 rounded mb-4 hidden"></div>
+    <div id="payHero" style="display: none;"></div>
+  </div>
 
-    <label for="paymentOption">Payment Option:</label>
-    <select id="paymentOption" required>
-      <option value="mpesa">M-Pesa</option>
-      <option value="paypal">PayPal</option>
-      <option value="binance">Binance</option>
-    </select>
+  <!-- SDK + Firebase + Logic -->
+  <script src="https://raw.githack.com/PAY-HERO-KENYA/payment_button/main/sdk.js"></script>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getDatabase, ref, push, set } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
 
-    <button type="submit">Submit</button>
-  </form>
-  <div id="payHero" style="display: none;"></div>
-</div>
-<script src="https://raw.githack.com/PAY-HERO-KENYA/payment_button/main/sdk.js"></script>
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
-  import { getDatabase, ref, set, push } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
-
-  // Firebase Configuration
-  const firebaseConfig = {
-    apiKey: "AIzaSyD6k4OlLYnotuuChAjLBoHmqfv9-iwrlfY",
-    authDomain: "alfajiri-database.firebaseapp.com",
-    databaseURL: "https://alfajiri-database-default-rtdb.firebaseio.com",
-    projectId: "alfajiri-database",
-    storageBucket: "alfajiri-database.appspot.com",
-    messagingSenderId: "310417854615",
-    appId: "1:310417854615:web:6f65002a119caeaf9119d2",
-    measurementId: "G-21TBZCRBHM",
-  };
-
-  // Initialize Firebase
-  const app = initializeApp(firebaseConfig);
-  const database = getDatabase(app);
-
-  // Conversion rate 7 to 8
-  const conversionRate = 0.007335877862595;
-
-  document.getElementById('amount').addEventListener('input', function () {
-    const amountKES = parseFloat(this.value) || 0;
-    const convertedAmount = (amountKES * conversionRate).toFixed(2);
-    document.getElementById('convertedAmount').textContent = convertedAmount;
-  });
-
-  document.getElementById('rechargeForm').addEventListener('submit', function (event) {
-    event.preventDefault();
-
-    const amountKES = parseFloat(document.getElementById('amount').value);
-    const phone = document.getElementById('phone').value.trim();
-    const name = document.getElementById('name').value.trim();
-    const paymentOption = document.getElementById('paymentOption').value;
-
-    if (!amountKES || amountKES <= 0 || !phone || !name) {
-      alert('Please fill in all required fields.');
-      return;
-    }
-
-    if (paymentOption === 'mpesa') {
-      processMpesaPayment(amountKES, phone, name);
-    } else if (paymentOption === 'paypal') {
-      const convertedAmount = (amountKES * conversionRate).toFixed(2);
-      processPayPalPayment(convertedAmount);
-    } else if (paymentOption === 'binance') {
-      processBinancePayment(amountKES);
-    }
-  });
-
-  function processMpesaPayment(amount, phone, name) {
-    alert(`Redirecting to PayHero for M-Pesa payment of KES ${amount}.`);
-
-    document.getElementById('payHero').style.display = 'block';
-
-    PayHero.init({
-        paymentUrl: "https://app.payhero.co.ke/lipwa/1068",
-        width: "100%",
-        height: "100%",
-        containerId: "payHero",
-        channelID: 1887,
-        amount: parseFloat(amount),
-        phone: phone,
-        reference: name,
-        buttonName: "Complete Payment",
-        buttonColor: "#00a884",
-        successUrl: "", // Empty or remove to avoid PayHero's own redirection
-        failedUrl: "",  // Empty or remove to avoid PayHero's own redirection
-        onSuccess: function () {
-            alert(`Payment of KES ${amount} was successful!`);
-            savePaymentData(phone, name, amount);
-            // Redirect manually
-            window.location.href = "login.html"; // Redirect to login.html on success
-        },
-        onFailure: function () {
-            alert("Payment failed. Please try again.");
-            // Redirect manually
-            window.location.href = "login.html"; // Redirect to login.html on failure
-        }
-    });
-}
-
-
-  function savePaymentData(phone, name, amount) {
-    /*const paymentsRef = ref(database, 'payments');
-    const paymentData = {
-      phone,
-      name,
-      amount,
-      timestamp: new Date().toISOString(),
+    // Firebase Configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyD6k4OlLYnotuuChAjLBoHmqfv9-iwrlfY",
+      authDomain: "alfajiri-database.firebaseapp.com",
+      databaseURL: "https://alfajiri-database-default-rtdb.firebaseio.com",
+      projectId: "alfajiri-database",
+      storageBucket: "alfajiri-database.appspot.com",
+      messagingSenderId: "310417854615",
+      appId: "1:310417854615:web:6f65002a119caeaf9119d2",
+      measurementId: "G-21TBZCRBHM",
     };
 
-    push(paymentsRef, paymentData)
-      .then(() => {
-        alert("Payment data saved successfully!");
-      })
-      .catch((error) => {
-        alert(`Error saving payment data: ${error.message}`);
-      });*/
-  }
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
 
-  function processPayPalPayment(amountUSD) {
-    alert(`Redirecting to PayPal for $${amountUSD}`);
-    const paypalURL = `https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=YOUR_PAYPAL_BUSINESS_EMAIL&item_name=Payment&amount=${encodeURIComponent(amountUSD)}&currency_code=USD&return=https://www.yoursite.com/success&cancel_return=https://www.yoursite.com/cancel`;
-    window.location.href = paypalURL;
-  }
+    const conversionRate = 0.007335877862595;
 
-  function processBinancePayment(amount) {
-    alert(`Processing Binance payment for KES ${amount}`);
-  }
-</script>
+    document.getElementById('amount').addEventListener('input', function () {
+      const amountKES = parseFloat(this.value) || 0;
+      const convertedAmount = (amountKES * conversionRate).toFixed(2);
+      document.getElementById('convertedAmount').textContent = convertedAmount;
+    });
+
+    document.getElementById('rechargeForm').addEventListener('submit', function (event) {
+      event.preventDefault();
+
+      const amount = parseFloat(document.getElementById('amount').value);
+      const phone = document.getElementById('phone').value.trim();
+      const name = document.getElementById('name').value.trim();
+      const paymentOption = document.getElementById('paymentOption').value;
+
+      if (!amount || amount <= 0 || !phone || !name) {
+        alert('Please fill in all required fields.');
+        return;
+      }
+
+      if (paymentOption === 'mpesa') {
+        processMpesaPayment(amount, phone, name);
+      } else if (paymentOption === 'paypal') {
+        const convertedAmount = (amount * conversionRate).toFixed(2);
+        processPayPalPayment(convertedAmount);
+      } else if (paymentOption === 'binance') {
+        processBinancePayment(amount);
+      }
+    });
+
+    async function processMpesaPayment(amount, phone, name) {
+      const channel_id = 1887;
+      const apiUsername = 'V0AbcFaRRuTTfH5Ky4wM';
+      const apiPassword = 'N6xa6uiOS1DPsZmkXM2P84sgyvsmF68N8VQaeWmk';
+      const externalReference = "INV-" + Date.now();
+
+      const payload = {
+        amount,
+        phone_number: phone,
+        channel_id,
+        provider: "m-pesa",
+        external_reference: externalReference,
+        customer_name: name,
+        callback_url: "https://yourdomain.com/callback"
+      };
+
+      const credentials = btoa(`${apiUsername}:${apiPassword}`);
+
+      try {
+        const res = await fetch('https://backend.payhero.co.ke/api/v2/payments', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Basic ${credentials}`
+          },
+          body: JSON.stringify(payload)
+        });
+
+        const result = await res.json();
+
+        if (res.ok) {
+          showResponse("STK push sent successfully. Check your phone.", true);
+
+          const paymentRef = push(ref(db, "payments"));
+          await set(paymentRef, {
+            amount,
+            phone,
+            name,
+            reference: externalReference,
+            timestamp: new Date().toISOString()
+          });
+
+        } else {
+          showResponse("STK push failed: " + (result.message || JSON.stringify(result)), false);
+        }
+      } catch (error) {
+        console.error(error);
+        showResponse("Error occurred: " + error.message, false);
+      }
+    }
+
+    function processPayPalPayment(amountUSD) {
+      alert(`Redirecting to PayPal for $${amountUSD}`);
+      const paypalURL = `https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=YOUR_PAYPAL_BUSINESS_EMAIL&item_name=Payment&amount=${encodeURIComponent(amountUSD)}&currency_code=USD&return=https://www.yoursite.com/success&cancel_return=https://www.yoursite.com/cancel`;
+      window.location.href = paypalURL;
+    }
+
+    function processBinancePayment(amount) {
+      alert(`Processing Binance payment for KES ${amount}`);
+    }
+
+    function showResponse(message, success) {
+  const div = document.getElementById("responseMessage");
+  div.textContent = message;
+  div.classList.remove("hidden", "bg-green-100", "text-green-800", "bg-red-100", "text-red-800");
+  div.classList.add("bg-green-100", "text-green-800");
+}
+
+  </script>
+</div>
 
 
-            </div>
+
             <div id="package" class="section">
                 <h1>Package</h1>
                 <div class="container">
