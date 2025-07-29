@@ -1,5 +1,6 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="en">
+  <!--Created by Vincent-->
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -8,207 +9,228 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
     />
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-    />
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-      .card_icons span {
-        margin-right: 0.5rem;
-        cursor: pointer;
-      }
-      .social-icon {
-        display: inline-block;
-        margin-right: 10px;
-        color: #f1f1f1;
-        text-decoration: underline;
-      }
-    </style>
+    <script src=
+"https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js">
+    </script>
+    <link rel="stylesheet" href="bout.css" />
   </head>
-  <body class="bg-white text-gray-800">
-    <header class="bg-gray-900 text-white" id="home">
-      <nav class="container d-flex justify-between align-items-center py-4">
-        <a href="#" class="text-xl font-bold">
-          <img src="images/logow.PNG" alt="Logo" class="h-12" />
-        </a>
-        <div class="d-md-none">
-          <i class="fas fa-bars fa-2x"></i>
+  <body>
+    <header class="header" id="home">
+      <nav>
+        <div class="navbar">
+          <div class="logo">
+            <a href="#">
+              <img src="images/logow.PNG" alt="" />
+            </a>
+          </div>
+
+          <div class="menu_btn">
+            <i class="fas fa-bars"></i>
+          </div>
         </div>
-        <ul class="d-none d-md-flex gap-4 list-unstyled mb-0">
-          <li><a href="#home" class="text-white">Home</a></li>
-          <li><a href="#about" class="text-white">About</a></li>
-          <li><a href="#popular" class="text-white">Popular</a></li>
-          <li><a href="#explore" class="text-white">Explore</a></li>
-          <li><a href="#contact" class="text-white">Contact</a></li>
+
+        <ul class="links">
+          <li><a href="#home">Home</a></li>
+          <li><a href="#about">About</a></li>
+          <li><a href="#popular">Popular</a></li>
+          <li><a href="#explore">Explore</a></li>
+          <li><a href="#contact">Contact</a></li>
         </ul>
-        <button class="btn btn-primary" onclick="RegPage()">Register Now</button>
+
+        <button class="btn nav_btn" onclick="RegPage()">Register Now</button>
       </nav>
 
-      <section class="text-center py-20">
-        <p class="text-lg uppercase tracking-widest">Invest - and - Win</p>
-        <h1 class="text-4xl md:text-6xl font-bold leading-tight">
-          Pasco <br /> Prime <span class="text-blue-400">Global</span>
-          Love in Every trading <span class="text-blue-400">View</span>.
+      <section class="section header_section">
+        <p>Invest - and - Win</p>
+        <h1>
+          Pasco <br />
+          Prime <span>Global</span>  Love in Every trading <span> View</span>.
         </h1>
       </section>
     </header>
 
-    <section class="container my-10 grid md:grid-cols-3 gap-4">
-      <div class="flex items-center border p-3 rounded shadow">
-        <span class="mr-3"><i class="fas fa-calendar"></i></span>
-        <input type="date" class="form-control w-full" />
-      </div>
-      <div class="flex items-center border p-3 rounded shadow">
-        <span class="mr-3"><i class="fas fa-user"></i></span>
-        <input type="text" placeholder="Your Name" class="form-control w-full" />
-      </div>
-      <div class="text-center">
-        <button class="btn btn-success w-full h-full" onclick="RegPage()">
-          Get Started
-        </button>
-      </div>
+    <section class="section booking_section">
+        <div class="input_box">
+          <span><i class="fas fa-calendar"></i></span>
+        </div>
+        <div class="input_box">
+          <span><i class="fas fa-user"></i></span>
+        </div>
+        <div class="input_box">
+          
+          <button class="btn" onclick="RegPage()">Get Started</button>
+        </div>
     </section>
 
-    <section class="container py-12" id="about">
-      <div class="row align-items-center">
-        <div class="col-md-6 mb-4">
-          <img src="images/PP4.jpg" class="img-fluid rounded shadow" alt="About" />
-        </div>
-        <div class="col-md-6">
-          <p class="text-primary fw-bold">ABOUT US</p>
-          <h2 class="fw-bold mb-4">Overview and Summary about Pasco Prime Global</h2>
-          <p>
-            PascoPrime Global is a premier international trading platform designed
-            to offer individuals and businesses access to global financial markets...
-          </p>
-          <button class="btn btn-outline-primary mt-3">Read More</button>
+    <section class="section about_section" id="about">
+      <div class="about_img">
+        <img src="images/PP4.jpg" alt="" />
+      </div>
+
+      <div class="about_content">
+        <p class="title">ABOUT US</p>
+        <h2 class="tagline">Overview and Summary about Pasco Prime Global</h2>
+        <p class="desc">
+          PascoPrime Global is a premier international trading platform designed to offer individuals and businesses access to global financial markets. Built on transparency, technology, and customer-centric values, we aim to democratize trading and wealth-building opportunities worldwide.
+        </p>
+        <div class="about_btn">
+          <button class="btn">Read More</button>
         </div>
       </div>
     </section>
 
-    <section class="bg-gray-100 py-12">
-      <div class="container">
-        <p class="text-center text-primary">How you Earn in Pasco Prime</p>
-        <h2 class="text-center text-2xl md:text-4xl font-bold mb-8">
-          Where Winning mentality Meets success.
-        </h2>
+    <section class="section deal_section">
+      <p class="title">How you Earn in Pasco Prime</p>
+      <h2 class="tagline">Where Winning mentality Meets success.</h2>
 
-        <div class="row g-4">
-          <div class="col-md-4">
-            <div class="card h-100">
-              <img src="images/PP3.jpg" class="card-img-top" alt="Earn" />
-              <div class="card-body">
-                <h5 class="card-title">Earn</h5>
-                <p class="card-text">
-                  Our platform connects you to global financial markets...
-                </p>
-                <p><strong>Packages:</strong> $5 - $1000</p>
-                <button class="btn btn-primary" onclick="RegPage()">Join Now</button>
-              </div>
+      <div class="deal_wrapper">
+        <div class="deal_card">
+          <div class="card_img">
+            <img src="images/PP3.jpg" alt="" />
+            <div class="card_icons">
+              <span><i class="fas fa-heart"></i></span>
+              <span><i class="fas fa-bookmark"></i></span>
+              <span><i class="fas fa-share-nodes"></i></span>
             </div>
           </div>
 
-          <div class="col-md-4">
-            <div class="card h-100">
-              <img src="images/cash.jpg" class="card-img-top" alt="Cash Out" />
-              <div class="card-body">
-                <h5 class="card-title">How to Cash Out</h5>
-                <p class="card-text">Withdrawals are simple and secure...</p>
-              </div>
+          <div class="card_details">
+            <h4>Earn</h4>
+            <p>
+              Our platform connects you to global financial markets with an intuitive interface and cutting-edge tools. Choose a package, subscribe, and start trading stocks, commodities, indices, and currencies. Earn daily on your subscribed package within 24 hours.
+            </p>
+            <h5>Starting from a Package of <span>PP Global Premier – $5</span><span> to </span><span>PP Global Imperial – $1000</span></h5>
+            <button class="btn" onclick="RegPage()">Join Now</button>
+          </div>
+        </div>
+        <div class="deal_card">
+          <div class="card_img">
+            <img src="images/cash.jpg" alt="" />
+            <div class="card_icons">
+              <span><i class="fas fa-heart"></i></span>
+              <span><i class="fas fa-bookmark"></i></span>
+              <span><i class="fas fa-share-nodes"></i></span>
             </div>
           </div>
 
-          <div class="col-md-4">
-            <div class="card h-100">
-              <img src="images/PP6.jpg" class="card-img-top" alt="Mission" />
-              <div class="card-body">
-                <h5 class="card-title">Mission</h5>
-                <p class="card-text">
-                  To empower individuals and businesses with tools, resources...
-                </p>
-              </div>
+          <div class="card_details">
+            <h4>How to Cash Out</h4>
+            <p>
+              Withdrawals are simple and secure, with funds sent to your bank or preferred payment method. Minimum cashout is $10.
+            </p>
+          </div>
+        </div>
+        <div class="deal_card">
+          <div class="card_img">
+            <img src="images/PP6.jpg" alt="" />
+            <div class="card_icons">
+              <span><i class="fas fa-heart"></i></span>
+              <span><i class="fas fa-bookmark"></i></span>
+              <span><i class="fas fa-share-nodes"></i></span>
             </div>
+          </div>
+
+          <div class="card_details">
+            <h2>Mission</h2>
+            <p>
+              To empower individuals and businesses with tools, resources, and opportunities in global markets, providing a secure, transparent trading experience.
+            </p>
           </div>
         </div>
       </div>
     </section>
-
-    <section class="container py-12 text-center">
-      <div class="grid md:grid-cols-3 gap-4">
-        <div class="bg-blue-500 text-white p-6 rounded shadow">
-          <h4 class="text-3xl font-bold">10+</h4>
+    <section class="section banner_section">
+      <div class="banner_content">
+        <div class="banner_card">
+          <h4>10+</h4>
           <p>Packages Available</p>
         </div>
-        <div class="bg-green-500 text-white p-6 rounded shadow">
-          <h4 class="text-3xl font-bold">$5</h4>
+        <div class="banner_card">
+          <h4>$5</h4>
           <p>Starting Package</p>
         </div>
-        <div class="bg-indigo-500 text-white p-6 rounded shadow">
-          <h4 class="text-3xl font-bold">$1000</h4>
+        <div class="banner_card">
+          <h4>$1000</h4>
           <p>Highest Available Package</p>
         </div>
       </div>
     </section>
 
-    <section class="container py-12" id="explore">
-      <p class="text-center text-primary">EXPLORE</p>
-      <h2 class="text-center text-3xl font-bold mb-6">Love in Every Trading View</h2>
-      <div class="row g-4">
-        <div class="col-md-4">
-          <img src="images/PP4.jpg" class="img-fluid rounded shadow" alt="Join" />
-          <h4 class="text-center mt-2">Join</h4>
+    <section class="section explore_section" id="explore">
+      <p class="title">EXPLORE</p>
+      <h2 class="tagline">Love in Every Trading View</h2>
+
+      <div class="explore_wrapper">
+        <div class="explore_card">
+          <div class="card_img">
+            <img src="images/PP4.jpg" alt="" />
+            <div class="card_title">Join</div>
+          </div>
         </div>
-        <div class="col-md-4">
-          <img src="images/PP6.jpg" class="img-fluid rounded shadow" alt="Invest" />
-          <h4 class="text-center mt-2">Invest</h4>
+        <div class="explore_card">
+          <div class="card_img">
+            <img src="images/PP6.jpg" alt="" />
+            <div class="card_title">Invest</div>
+          </div>
         </div>
-        <div class="col-md-4">
-          <img src="images/winn.jpg" class="img-fluid rounded shadow" alt="Enjoy" />
-          <h4 class="text-center mt-2">Enjoy Winnings</h4>
+        <div class="explore_card">
+          <div class="card_img">
+            <img src="images/winn.jpg" alt="" />
+            <div class="card_title">Enjoy winnings</div>
+          </div>
         </div>
       </div>
     </section>
 
-    <footer class="bg-dark text-white py-10" id="contact">
-      <div class="container">
-        <div class="row g-4">
-          <div class="col-md-4">
-            <h5>Vision</h5>
-            <p>To be the leading global trading platform...</p>
-          </div>
-          <div class="col-md-4">
-            <h5>Company</h5>
-            <ul class="list-unstyled">
-              <li><a href="#" class="text-white">About</a></li>
-              <li><a href="#" class="text-white">Careers</a></li>
-              <li><a href="#" class="text-white">Press</a></li>
-              <li><a href="#" class="text-white">Blog</a></li>
-              <li><a href="#" class="text-white">Privacy Policy</a></li>
-            </ul>
-          </div>
-          <div class="col-md-4">
-            <h5>Contact Us</h5>
-            <ul class="list-unstyled">
-              <li>Pasco Prime Global Company Ltd</li>
-              <li>875 United Nation Plaza, New York 10017</li>
-              <li>+44 7383 290320</li>
-              <li>Company No: PP5543428</li>
-              <li>Email: pascoprimeint@gmail.com</li>
-            </ul>
-            <div class="mt-2">
-              <a href="#" class="social-icon">Facebook</a>
-              <a href="#" class="social-icon">Twitter</a>
-              <a href="#" class="social-icon">Instagram</a>
-              <a href="#" class="social-icon">LinkedIn</a>
-            </div>
-          </div>
+    <footer class="footer" id="contact">
+      <div class="section footer_section">
+        <div class="footer_col">
+          <h1>Vision</h1>
+          <p class="desc">
+            To be the leading global trading platform that democratizes access, fosters inclusion, and sets new industry standards.
+          </p>
         </div>
-        <p class="text-center mt-4">&copy; 2023 PascoPrime Global. All rights reserved.</p>
+        <div class="footer_col">
+          <h4>COMPANY</h4>
+          <ul class="footer_links">
+            <li><a href="#">About</a></li>
+            <li><a href="#">Careers</a></li>
+            <li><a href="#">Press</a></li>
+            <li><a href="#">Blog</a></li>
+            <li><a href="#">Privacy Policy</a></li>
+          </ul>
+        </div>
+
+        <div class="footer_col">
+          <h4>CONTACT US</h4>
+          <ul class="footer_links">
+
+            <li><h5>Pasco Prime Global Company Ltd</h5></li>
+            <li><h5>875 United Nation Plaza</h5></li>
+            <li><h5>New York</h5></li>
+            <li><h5>10017</h5></li>
+            <li><h5>+44 7383 290320</h5></li>
+            <li><h5>United States</h5></li>
+            <li><h5>Company Registration No: PP5543428</h5></li>
+            <li><h5>STCA No: GTE557864</h5></li>
+            <li><h5>Email support</h5></li>
+            <li><a href="#">pascoprimeint@gmail.com</a></li>
+          </ul>
+          <div class="footer-section social-media">
+          <h3>Follow Us</h3>
+
+           <a href="https://facebook.com" target="_blank" class="social-icon">Facebook</a>
+                        <a href="https://twitter.com" target="_blank" class="social-icon">Twitter</a>
+                        <a href="https://instagram.com" target="_blank" class="social-icon">Instagram</a>
+                        <a href="https://linkedin.com" target="_blank" class="social-icon">LinkedIn</a>
+        </div>
+        </div>
+      </div>
+      <div class="copyright">
+        &copy; 2023 PascoPrime Global. All rights reserved.
       </div>
     </footer>
 
     <script src="main.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   </body>
 </html>
