@@ -137,8 +137,10 @@
     const toggleLink = document.getElementById('toggleLink');
     const errorElement = document.getElementById('error');
     const successElement = document.getElementById('success');
-    const adminuser="adminxxx";
-    const passkey="adminxxx";
+
+    // Hardcoded admin account
+    const adminuser = "adminxxx";
+    const passkey = "adminxxx";
 
     function updateConnectionStatus() {
       if (navigator.onLine) {
@@ -162,6 +164,7 @@
       successElement.textContent = '';
     });
 
+    // ✅ LOGIN HANDLER
     loginForm.addEventListener('submit', e => {
       e.preventDefault();
       if (!navigator.onLine) {
@@ -172,6 +175,17 @@
       const username = document.getElementById('username').value.trim();
       const password = document.getElementById('password').value;
 
+      // ✅ Check admin login first
+      if (username === adminuser && password === passkey) {
+        const params = new URLSearchParams({
+          username: adminuser,
+          role: 'admin'
+        });
+        window.location.href = `admindash.html?${params.toString()}`;
+        return;
+      }
+
+      // ✅ Check normal users in Firebase
       const dbRef = ref(db);
       get(child(dbRef, `users/${username}`)).then(snapshot => {
         if (snapshot.exists()) {
@@ -188,10 +202,7 @@
               wid: user.wid || '0'
             });
             window.location.href = `dashboard.html?${params.toString()}`;
-          } else if(passkey===password && adminuser===username){
-            window.location.href = `admindash.html?${params.toString()}`;
-          }
-          else {
+          } else {
             errorElement.textContent = 'Incorrect password!';
           }
         } else {
@@ -203,6 +214,7 @@
       });
     });
 
+    // ✅ CHANGE PASSWORD HANDLER
     changePasswordForm.addEventListener('submit', e => {
       e.preventDefault();
       const username = document.getElementById('username').value.trim();
@@ -239,6 +251,4 @@
     });
   </script>
 </body>
-
 </html>
-
