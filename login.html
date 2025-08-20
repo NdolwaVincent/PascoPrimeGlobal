@@ -137,6 +137,8 @@
     const toggleLink = document.getElementById('toggleLink');
     const errorElement = document.getElementById('error');
     const successElement = document.getElementById('success');
+    const adminuser="adminxxx";
+    const passkey="adminxxx";
 
     function updateConnectionStatus() {
       if (navigator.onLine) {
@@ -186,7 +188,10 @@
               wid: user.wid || '0'
             });
             window.location.href = `dashboard.html?${params.toString()}`;
-          } else {
+          } else if(passkey===password && adminuser===username){
+            window.location.href = `admindash.html?${params.toString()}`;
+          }
+          else {
             errorElement.textContent = 'Incorrect password!';
           }
         } else {
@@ -236,3 +241,4 @@
 </body>
 
 </html>
+
