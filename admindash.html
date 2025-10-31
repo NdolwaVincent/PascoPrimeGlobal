@@ -2,7 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <script src="https://cdn.tailwindcss.com"></script>
   <title>Admin Dashboard</title>
   <style>
     /* General Styles */
@@ -256,7 +257,7 @@
         <li><a href="#" data-section="exams">Exams</a></li>
         <li><a href="#" data-section="fees">Fees</a></li>
         <li><a href="#" data-section="reports">Reports</a></li>
-        <li><a href="#" data_section="settings">Settings</a></li>
+       
 
         
 
@@ -267,6 +268,11 @@
     <header>
       <h1 id="dashboard-title">Dashboard</h1>
       <button class="logout">Logout</button>
+        <a href="pay.html" target="_blank" 
+   class="text-blue-600 hover:text-blue-800 font-medium underline hover:no-underline transition duration-300">
+   Dev Page
+</a>
+
     </header>
     <div id="dashboard" class="section active">
       <h2>Dashboard Content</h2>
@@ -867,6 +873,7 @@ document.addEventListener("DOMContentLoaded", () => {
   </script>
 </body>
 </html>
+
 
 
 
