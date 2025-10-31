@@ -1,171 +1,202 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
-  <title>Pasco Prime Global - Admin Dashboard</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Pasco Prime Admin Dashboard</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    /* small helper to keep existing table look while using Tailwind */
+    [contenteditable="true"] { outline: 2px dashed rgba(59,130,246,0.35); }
+  </style>
 </head>
-<body class="flex h-screen bg-gray-100">
+<body class="min-h-screen bg-gray-100 text-gray-800">
 
-  <!-- Sidebar -->
-  <aside class="w-64 bg-indigo-800 text-white flex flex-col">
-    <div class="p-6 text-center border-b border-indigo-700">
-      <h2 class="text-2xl font-bold">Admin Panel</h2>
-    </div>
-    <nav class="flex-1 p-4 space-y-2">
-      <a href="#" data-section="dashboard" class="block px-4 py-2 rounded hover:bg-indigo-700">Users</a>
-      <a href="#" data-section="packages" class="block px-4 py-2 rounded hover:bg-indigo-700">Packages</a>
-      <a href="#" data-section="withdr" class="block px-4 py-2 rounded hover:bg-indigo-700">Withdrawals</a>
-    </nav>
-    <div class="p-4 border-t border-indigo-700">
-      <a href="pay.html" target="_blank" class="block text-center bg-blue-600 hover:bg-blue-700 py-2 rounded text-white">Dev Page</a>
-    </div>
-  </aside>
+  <!-- Layout: Sidebar + Main -->
+  <div class="flex h-screen">
 
-  <!-- Main Content -->
-  <main class="flex-1 flex flex-col overflow-y-auto">
-    <!-- Header -->
-    <header class="bg-indigo-800 text-white flex justify-between items-center px-6 py-3 shadow">
-      <h1 id="dashboard-title" class="text-lg font-semibold">Dashboard</h1>
-      <button class="bg-red-500 hover:bg-red-600 px-4 py-1 rounded">Logout</button>
-    </header>
-
-    <!-- Dashboard (Users Section) -->
-    <section id="dashboard" class="section p-6">
-      <h2 class="text-2xl font-bold mb-4">PASCO PRIME GLOBAL ADMIN DASHBOARD</h2>
-
-      <div class="mb-4">
-        <input id="searchInput" type="text" placeholder="Search by username..."
-               class="w-full max-w-md border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring focus:ring-indigo-300" />
+    <!-- Sidebar -->
+    <aside id="sidebar" class="w-20 md:w-64 bg-[#2a3d66] text-white flex flex-col items-center md:items-stretch p-3 transition-transform z-30">
+      <div class="w-full flex items-center justify-between md:justify-start gap-2 px-2">
+        <h2 class="hidden md:block text-lg font-bold">Admin Panel</h2>
+        <button id="sidebarClose" class="md:hidden text-white text-2xl">✕</button>
       </div>
 
-      <div class="h-1 bg-gray-300 mb-4">
-        <div id="progressBar" class="h-1 bg-green-500 w-0 transition-all duration-500"></div>
+      <nav class="mt-6 w-full">
+        <ul class="flex md:flex-col justify-center md:justify-start gap-2">
+          <li><a href="#" data-section="dashboard" class="section-link block w-full text-center md:text-left px-2 py-3 rounded hover:bg-[#1e2b50]">Users</a></li>
+          <li><a href="#" data-section="packages" class="section-link block w-full text-center md:text-left px-2 py-3 rounded hover:bg-[#1e2b50]">Packages</a></li>
+          <li><a href="#" data-section="withdr" class="section-link block w-full text-center md:text-left px-2 py-3 rounded hover:bg-[#1e2b50]">Withdrawals</a></li>
+        </ul>
+      </nav>
+
+      <div class="mt-auto w-full px-2">
+        <a href="pay.html" target="_blank" class="block text-center mt-4 bg-white text-[#2a3d66] rounded px-2 py-2 font-semibold">Dev Page</a>
       </div>
+    </aside>
 
-      <div class="overflow-x-auto bg-white shadow-md rounded-lg">
-        <table class="min-w-full text-sm text-gray-700">
-          <thead class="bg-indigo-600 text-white">
-            <tr>
-              <th class="px-4 py-2">No</th>
-              <th class="px-4 py-2">Username</th>
-              <th class="px-4 py-2">Phone</th>
-              <th class="px-4 py-2">Deposit</th>
-              <th class="px-4 py-2">Balance</th>
-              <th class="px-4 py-2">Account</th>
-              <th class="px-4 py-2">Withdraw</th>
-              <th class="px-4 py-2">Referred By</th>
-              <th class="px-4 py-2">Email</th>
-              <th class="px-4 py-2">Password</th>
-              <th class="px-4 py-2">Actions</th>
-            </tr>
-          </thead>
-          <tbody id="users-container"></tbody>
-        </table>
-      </div>
-    </section>
+    <!-- Overlay for mobile -->
+    <div id="overlay" class="fixed inset-0 bg-black/40 hidden z-20 md:hidden"></div>
 
-    <!-- Packages Section -->
-    <section id="packages" class="section hidden p-6">
-      <h2 class="text-2xl font-bold mb-4">Manage Packages</h2>
+    <!-- Main content -->
+    <main class="flex-1 overflow-y-auto p-4 md:p-6">
+      <!-- Header -->
+      <header class="flex items-center justify-between mb-4">
+        <div class="flex items-center gap-3">
+          <button id="sidebarOpen" class="md:hidden text-2xl">☰</button>
+          <h1 id="dashboard-title" class="text-xl font-semibold">Dashboard</h1>
+        </div>
+        <div class="flex items-center gap-4">
+          <a class="text-blue-600 hover:text-blue-800" href="pay.html" target="_blank">Dev Page</a>
+          <button class="bg-red-500 text-white px-3 py-1 rounded">Logout</button>
+        </div>
+      </header>
 
-      <div class="bg-white shadow-md rounded-lg p-6 mb-6 max-w-lg">
-        <form id="packageForm" class="space-y-4">
-          <div>
-            <label class="block mb-1 font-semibold">Username</label>
-            <select id="username" class="w-full border border-gray-300 rounded px-3 py-2" required>
-              <option value="" disabled selected>Select a username</option>
-            </select>
+      <!-- Sections -->
+      <section id="dashboard" class="section block">
+        <h2 class="text-2xl font-bold mb-3">PASCO PRIME GLOBAL ADMIN DASHBOARD</h2>
+
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3 mb-3">
+          <input id="searchInput" type="text" placeholder="Search by username..." class="w-full md:w-1/3 p-2 border rounded" />
+          <div class="w-full md:w-1/3 h-2 bg-gray-200 rounded overflow-hidden">
+            <div id="progressBar" class="h-2 bg-green-500 w-0 transition-all"></div>
           </div>
+        </div>
 
-          <div>
-            <label class="block mb-1 font-semibold">Package Name</label>
-            <select id="packageName" class="w-full border border-gray-300 rounded px-3 py-2" required>
-              <option value="Global-Elite">PP GLOBAL ELITE</option>
-              <option value="Global-Premier">PP GLOBAL PREMIER</option>
-              <option value="Global-Executive">PP GLOBAL EXECUTIVE</option>
-              <option value="Global-Platinum">PP GLOBAL PLATINUM</option>
-              <option value="Global-Titanium">PP GLOBAL TITANIUM</option>
-              <option value="Global-Diamond">PP GLOBAL DIAMOND</option>
-              <option value="Global-Sovereign">PP GLOBAL SOVEREIGN</option>
-              <option value="Global-Prestige">PP GLOBAL PRESTIGE</option>
-              <option value="Global-Royal">PP GLOBAL ROYAL</option>
-              <option value="Global-Imperial">PP GLOBAL IMPERIAL</option>
-            </select>
+        <div class="overflow-x-auto bg-white shadow rounded">
+          <table class="min-w-full text-sm">
+            <thead class="bg-blue-500 text-white">
+              <tr>
+                <th class="px-3 py-2">NO</th>
+                <th class="px-3 py-2">Username</th>
+                <th class="px-3 py-2">Phone</th>
+                <th class="px-3 py-2">Deposit</th>
+                <th class="px-3 py-2">Balance</th>
+                <th class="px-3 py-2">Account</th>
+                <th class="px-3 py-2">Withdraw</th>
+                <th class="px-3 py-2">Referred By</th>
+                <th class="px-3 py-2">Email</th>
+                <th class="px-3 py-2">Password</th>
+                <th class="px-3 py-2">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="users-container" class="bg-white"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Packages -->
+      <section id="packages" class="section hidden">
+        <h2 class="text-2xl font-bold mb-3">Manage Packages</h2>
+
+        <div class="bg-white rounded shadow p-4 mb-6 max-w-2xl">
+          <h3 class="font-semibold mb-3">Package Registration</h3>
+          <form id="packageForm" class="space-y-3">
+            <div>
+              <label class="block font-medium mb-1">Username</label>
+              <select id="username" class="w-full border rounded p-2" required>
+                <option value="" disabled selected>Select a username</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block font-medium mb-1">Package Name</label>
+              <select id="packageName" class="w-full border rounded p-2" required>
+                <option value="Global-Elite">PP GLOBAL ELITE</option>
+                <option value="Global-Premier">PP GLOBAL PREMIER</option>
+                <option value="Global-Executive">PP GLOBAL EXECUTIVE</option>
+                <option value="Global-Platinum">PP GLOBAL PLATINUM</option>
+                <option value="Global-Titanium">PP GLOBAL TITANIUM</option>
+                <option value="Global-Diamond">PP GLOBAL DIAMOND</option>
+                <option value="Global-Sovereign">PP GLOBAL SOVEREIGN</option>
+                <option value="Global-Prestige">PP GLOBAL PRESTIGE</option>
+                <option value="Global-Royal">PP GLOBAL ROYAL</option>
+                <option value="Global-Imperial">PP GLOBAL IMPERIAL</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block font-medium mb-1">Daily Earnings</label>
+              <input id="dailyEarnings" type="number" class="w-full border rounded p-2" placeholder="Enter daily earnings" required />
+            </div>
+
+            <div class="flex gap-2">
+              <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded">Save Package</button>
+              <p id="statusMessage" class="text-blue-600 self-center"></p>
+            </div>
+
+            <div id="loadingBar" class="h-1 bg-green-500 w-0 rounded transition-all"></div>
+          </form>
+        </div>
+
+        <div class="bg-white rounded shadow p-4">
+          <h3 class="font-semibold mb-3">Packages List</h3>
+          <div class="overflow-x-auto">
+            <table id="packagesTable" class="min-w-full text-sm">
+              <thead class="bg-blue-500 text-white">
+                <tr>
+                  <th class="px-3 py-2">Username</th>
+                  <th class="px-3 py-2">Package Name</th>
+                  <th class="px-3 py-2">Daily Earnings</th>
+                  <th class="px-3 py-2">Date Added</th>
+                  <th class="px-3 py-2">Time Stamp</th>
+                  <th class="px-3 py-2">Actions</th>
+                </tr>
+              </thead>
+              <tbody class="bg-white"></tbody>
+            </table>
           </div>
+        </div>
+      </section>
 
-          <div>
-            <label class="block mb-1 font-semibold">Daily Earnings</label>
-            <input type="number" id="dailyEarnings" class="w-full border border-gray-300 rounded px-3 py-2" required />
-          </div>
+      <!-- Withdrawals -->
+      <section id="withdr" class="section hidden">
+        <h2 class="text-2xl font-bold mb-3">Withdrawal Requests</h2>
 
-          <button type="submit" class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded w-full">Save Package</button>
-        </form>
-        <p id="statusMessage" class="text-blue-600 mt-3 text-center font-semibold"></p>
-        <div id="loadingBar" class="h-1 bg-green-500 w-0 transition-all duration-500 mt-2"></div>
-      </div>
+        <div id="loading" class="mb-3 text-gray-600">Loading data, please wait...</div>
 
-      <div class="overflow-x-auto bg-white shadow-md rounded-lg">
-        <table class="min-w-full text-sm text-gray-700" id="packagesTable">
-          <thead class="bg-indigo-600 text-white">
-            <tr>
-              <th class="px-4 py-2">Username</th>
-              <th class="px-4 py-2">Package Name</th>
-              <th class="px-4 py-2">Daily Earnings</th>
-              <th class="px-4 py-2">Date</th>
-              <th class="px-4 py-2">Time</th>
-              <th class="px-4 py-2">Action</th>
-            </tr>
-          </thead>
-          <tbody></tbody>
-        </table>
-      </div>
-    </section>
+        <h3 class="font-semibold">Unseen Requests</h3>
+        <div class="overflow-x-auto bg-white rounded shadow mb-6">
+          <table class="min-w-full text-sm">
+            <thead class="bg-blue-500 text-white">
+              <tr>
+                <th class="px-3 py-2">Username</th>
+                <th class="px-3 py-2">Wallet</th>
+                <th class="px-3 py-2">Amount (USD)</th>
+                <th class="px-3 py-2">Timestamp</th>
+                <th class="px-3 py-2">Action</th>
+              </tr>
+            </thead>
+            <tbody id="unseenTable" class="bg-white"></tbody>
+          </table>
+        </div>
 
-    <!-- Withdrawals Section -->
-    <section id="withdr" class="section hidden p-6">
-      <h2 class="text-2xl font-bold mb-4">Withdrawal Requests</h2>
+        <h3 class="font-semibold">Seen Requests</h3>
+        <div class="overflow-x-auto bg-white rounded shadow">
+          <table class="min-w-full text-sm">
+            <thead class="bg-blue-500 text-white">
+              <tr>
+                <th class="px-3 py-2">Username</th>
+                <th class="px-3 py-2">Wallet</th>
+                <th class="px-3 py-2">Amount (USD)</th>
+                <th class="px-3 py-2">Timestamp</th>
+                <th class="px-3 py-2">Action</th>
+              </tr>
+            </thead>
+            <tbody id="seenTable" class="bg-white"></tbody>
+          </table>
+        </div>
+      </section>
 
-      <h3 class="font-semibold mb-2">Unseen Requests</h3>
-      <div class="overflow-x-auto bg-white shadow-md rounded-lg mb-6">
-        <table class="min-w-full text-sm text-gray-700">
-          <thead class="bg-indigo-600 text-white">
-            <tr>
-              <th class="px-4 py-2">Username</th>
-              <th class="px-4 py-2">Wallet</th>
-              <th class="px-4 py-2">Amount (USD)</th>
-              <th class="px-4 py-2">Timestamp</th>
-              <th class="px-4 py-2">Action</th>
-            </tr>
-          </thead>
-          <tbody id="unseenTable"></tbody>
-        </table>
-      </div>
+    </main>
+  </div>
 
-      <h3 class="font-semibold mb-2">Seen Requests</h3>
-      <div class="overflow-x-auto bg-white shadow-md rounded-lg">
-        <table class="min-w-full text-sm text-gray-700">
-          <thead class="bg-indigo-600 text-white">
-            <tr>
-              <th class="px-4 py-2">Username</th>
-              <th class="px-4 py-2">Wallet</th>
-              <th class="px-4 py-2">Amount (USD)</th>
-              <th class="px-4 py-2">Timestamp</th>
-              <th class="px-4 py-2">Action</th>
-            </tr>
-          </thead>
-          <tbody id="seenTable"></tbody>
-        </table>
-      </div>
-    </section>
-  </main>
-
-  <!-- JavaScript Section -->
+  <!-- Firebase + App script (single module keeps functionality intact) -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.21.0/firebase-app.js";
-    import { getDatabase, ref, get, update, remove, set, onValue } from "https://www.gstatic.com/firebasejs/9.21.0/firebase-database.js";
+    import { getDatabase, ref, get, set, update, remove, onValue } from "https://www.gstatic.com/firebasejs/9.21.0/firebase-database.js";
 
+    // --- Firebase config (unchanged) ---
     const firebaseConfig = {
       apiKey: "AIzaSyD6k4OlLYnotuuChAjLBoHmqfv9-iwrlfY",
       authDomain: "alfajiri-database.firebaseapp.com",
@@ -178,168 +209,398 @@
     };
 
     const app = initializeApp(firebaseConfig);
-    const db = getDatabase(app);
+    const database = getDatabase(app);
 
-    // Navigation
-    const links = document.querySelectorAll("aside nav a");
-    const sections = document.querySelectorAll(".section");
-    const title = document.getElementById("dashboard-title");
-    links.forEach(link => {
-      link.addEventListener("click", e => {
+    // --- UI elements & helpers ---
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('overlay');
+    const sidebarOpen = document.getElementById('sidebarOpen');
+    const sidebarClose = document.getElementById('sidebarClose');
+    const sectionLinks = document.querySelectorAll('.section-link');
+    const sections = document.querySelectorAll('.section');
+    const dashboardTitle = document.getElementById('dashboard-title');
+
+    // sidebar toggles (mobile)
+    sidebarOpen?.addEventListener('click', () => {
+      sidebar.classList.remove('-translate-x-full');
+      overlay.classList.remove('hidden');
+      overlay.classList.add('block');
+      sidebar.classList.add('absolute', 'left-0', 'top-0', 'bottom-0');
+    });
+    sidebarClose?.addEventListener('click', () => {
+      overlay.classList.add('hidden');
+      sidebar.classList.remove('absolute', 'left-0', 'top-0', 'bottom-0');
+    });
+    overlay?.addEventListener('click', () => {
+      overlay.classList.add('hidden');
+      sidebar.classList.remove('absolute', 'left-0', 'top-0', 'bottom-0');
+    });
+
+    // section switching (keeps same behavior)
+    sectionLinks.forEach(link => {
+      link.addEventListener('click', (e) => {
         e.preventDefault();
-        sections.forEach(sec => sec.classList.add("hidden"));
-        document.getElementById(link.dataset.section).classList.remove("hidden");
-        title.textContent = link.textContent;
+        const sectionName = link.getAttribute('data-section');
+        sections.forEach(s => s.classList.add('hidden'));
+        const active = document.getElementById(sectionName);
+        if (active) {
+          active.classList.remove('hidden');
+          dashboardTitle.textContent = sectionName.charAt(0).toUpperCase() + sectionName.slice(1);
+        }
+        // hide sidebar on small screens after selection
+        if (window.innerWidth < 768) {
+          overlay.classList.add('hidden');
+          sidebar.classList.remove('absolute', 'left-0', 'top-0', 'bottom-0');
+        }
       });
     });
 
-    // Users section
-    const usersContainer = document.getElementById("users-container");
-    const progressBar = document.getElementById("progressBar");
-    const searchInput = document.getElementById("searchInput");
+    // -------------------------
+    // USERS (fetch, edit, save, delete)
+    // -------------------------
+    const usersContainer = document.getElementById('users-container');
+    const progressBar = document.getElementById('progressBar');
+    const searchInput = document.getElementById('searchInput');
+
+    function showProgressBar() { progressBar.style.width = '50%'; }
+    function hideProgressBar() {
+      progressBar.style.width = '100%';
+      setTimeout(()=> progressBar.style.width = '0%', 500);
+    }
 
     async function fetchUsers() {
-      progressBar.style.width = "50%";
-      const snapshot = await get(ref(db, "users"));
-      progressBar.style.width = "100%";
-      setTimeout(() => (progressBar.style.width = "0%"), 500);
-
-      if (snapshot.exists()) {
-        const users = snapshot.val();
-        usersContainer.innerHTML = "";
-        let i = 1;
-        for (const key in users) {
-          const u = users[key];
-          const tr = document.createElement("tr");
-          tr.innerHTML = `
-            <td class="px-3 py-2">${i++}</td>
-            <td class="px-3 py-2">${u.username || ""}</td>
-            <td class="px-3 py-2">${u.phone || ""}</td>
-            <td class="px-3 py-2">${u.depo || ""}</td>
-            <td class="px-3 py-2">${u.balance || ""}</td>
-            <td class="px-3 py-2">${u.account || ""}</td>
-            <td class="px-3 py-2">${u.wid || ""}</td>
-            <td class="px-3 py-2">${u.referredby || ""}</td>
-            <td class="px-3 py-2">${u.email || ""}</td>
-            <td class="px-3 py-2">${u.password || ""}</td>
-            <td class="px-3 py-2">
-              <button class="bg-blue-500 hover:bg-blue-600 text-white px-2 py-1 rounded edit-btn">Edit</button>
-              <button class="bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded delete-btn">Delete</button>
-            </td>`;
-          usersContainer.appendChild(tr);
-
-          tr.querySelector(".delete-btn").addEventListener("click", () => remove(ref(db, "users/" + key)).then(fetchUsers));
+      showProgressBar();
+      const usersRef = ref(database, 'users');
+      try {
+        const snapshot = await get(usersRef);
+        if (snapshot.exists()) {
+          displayUsers(snapshot.val());
+        } else {
+          usersContainer.innerHTML = '<tr><td colspan="11" class="p-3 text-center">No users found.</td></tr>';
         }
-      } else usersContainer.innerHTML = `<tr><td colspan="11" class="text-center py-2">No users found</td></tr>`;
+      } catch (err) {
+        console.error('Error fetching users:', err);
+        usersContainer.innerHTML = '<tr><td colspan="11" class="p-3 text-center">Error fetching users.</td></tr>';
+      } finally {
+        hideProgressBar();
+      }
     }
-    fetchUsers();
-    searchInput.addEventListener("input", e => {
-      const val = e.target.value.toLowerCase();
-      [...usersContainer.children].forEach(row => {
-        const name = row.children[1]?.textContent.toLowerCase() || "";
-        row.style.display = name.includes(val) ? "" : "none";
+
+    function displayUsers(users) {
+      usersContainer.innerHTML = '';
+      let rowNumber = 1;
+
+      // users is object keyed by firebase key
+      Object.keys(users).forEach((key) => {
+        const user = users[key];
+        // create row
+        const tr = document.createElement('tr');
+        tr.setAttribute('data-key', key);
+        tr.className = 'border-b';
+
+        // build cells: first cell number, then editable fields for username..password (exact same order as original)
+        tr.innerHTML = `
+          <td class="px-2 py-2">${rowNumber++}</td>
+          <td class="px-2 py-2" data-field="username">${user.username || ''}</td>
+          <td class="px-2 py-2" data-field="phone">${user.phone || ''}</td>
+          <td class="px-2 py-2" data-field="depo">${user.depo || ''}</td>
+          <td class="px-2 py-2" data-field="balance">${user.balance || ''}</td>
+          <td class="px-2 py-2" data-field="account">${user.account || ''}</td>
+          <td class="px-2 py-2" data-field="wid">${user.wid || ''}</td>
+          <td class="px-2 py-2" data-field="referredby">${user.referredby || ''}</td>
+          <td class="px-2 py-2" data-field="email">${user.email || ''}</td>
+          <td class="px-2 py-2" data-field="password">${user.password || ''}</td>
+          <td class="px-2 py-2 space-x-2">
+            <button class="edit-btn bg-blue-500 text-white px-2 py-1 rounded">Edit</button>
+            <button class="save-btn bg-green-500 text-white px-2 py-1 rounded hidden">Save</button>
+            <button class="delete-btn bg-red-500 text-white px-2 py-1 rounded">Delete</button>
+          </td>
+        `;
+
+        // append row
+        usersContainer.appendChild(tr);
+
+        // attach events
+        const editBtn = tr.querySelector('.edit-btn');
+        const saveBtn = tr.querySelector('.save-btn');
+        const deleteBtn = tr.querySelector('.delete-btn');
+
+        // determine editable cells: all td with data-field attribute
+        const editableCells = tr.querySelectorAll('td[data-field]');
+
+        editBtn.addEventListener('click', () => {
+          editableCells.forEach(cell => cell.setAttribute('contenteditable', 'true'));
+          editBtn.classList.add('hidden');
+          saveBtn.classList.remove('hidden');
+        });
+
+        saveBtn.addEventListener('click', async () => {
+          // collect updated values in same fields order
+          const updatedData = {};
+          const fields = ['username','phone','depo','balance','account','wid','referredby','email','password'];
+          editableCells.forEach((cell, idx) => {
+            // ensure the mapping cell -> field is consistent by reading data-field
+            const fieldName = cell.getAttribute('data-field') || fields[idx];
+            updatedData[fieldName] = cell.textContent.trim();
+            cell.removeAttribute('contenteditable');
+          });
+
+          const key = tr.getAttribute('data-key');
+          try {
+            await update(ref(database, `users/${key}`), updatedData);
+            alert('User data updated successfully');
+            saveBtn.classList.add('hidden');
+            editBtn.classList.remove('hidden');
+          } catch (err) {
+            console.error('Error updating user data:', err);
+            alert('Error updating user data. Check console.');
+          }
+        });
+
+        deleteBtn.addEventListener('click', async () => {
+          const key = tr.getAttribute('data-key');
+          if (!confirm('Delete this user?')) return;
+          try {
+            await remove(ref(database, `users/${key}`));
+            tr.remove();
+            alert('User deleted successfully');
+          } catch (err) {
+            console.error('Error deleting user:', err);
+            alert('Error deleting user. Check console.');
+          }
+        });
+      });
+    }
+
+    // search functionality (keeps original behavior)
+    searchInput?.addEventListener('input', (event) => {
+      const filter = event.target.value.toLowerCase();
+      const rows = document.querySelectorAll('#users-container tr');
+      rows.forEach((row) => {
+        const usernameCell = row.querySelector('td[data-field="username"]');
+        const username = usernameCell ? usernameCell.textContent.toLowerCase() : '';
+        row.style.display = username.includes(filter) ? '' : 'none';
       });
     });
 
-    // Packages
-    const usernameSelect = document.getElementById("username");
-    const packageForm = document.getElementById("packageForm");
-    const statusMessage = document.getElementById("statusMessage");
-    const loadingBar = document.getElementById("loadingBar");
-    const packageTableBody = document.querySelector("#packagesTable tbody");
+    // init users
+    fetchUsers();
+
+    // -------------------------
+    // PACKAGES (loadUsernames, loadPackages, add, delete)
+    // -------------------------
+    const usernameSelect = document.getElementById('username');
+    const packageForm = document.getElementById('packageForm');
+    const statusMessage = document.getElementById('statusMessage');
+    const loadingBar = document.getElementById('loadingBar');
+    const packagesTableBody = document.querySelector('#packagesTable tbody');
 
     async function loadUsernames() {
-      const snapshot = await get(ref(db, "users"));
-      if (snapshot.exists()) {
-        usernameSelect.innerHTML = '<option value="" disabled selected>Select a username</option>';
-        const users = snapshot.val();
-        for (const key in users) {
-          const opt = document.createElement("option");
-          opt.value = key;
-          opt.textContent = key;
-          usernameSelect.appendChild(opt);
+      const usersRef = ref(database, 'users');
+      try {
+        loadingBar.style.width = '50%';
+        const snapshot = await get(usersRef);
+        loadingBar.style.width = '100%';
+        if (snapshot.exists()) {
+          const data = snapshot.val();
+          usernameSelect.innerHTML = '<option value="" disabled selected>Select a username</option>';
+          for (const key in data) {
+            const option = document.createElement('option');
+            option.value = key;
+            option.textContent = key;
+            usernameSelect.appendChild(option);
+          }
+        } else {
+          statusMessage.textContent = 'No usernames found.';
         }
+      } catch (err) {
+        console.error('Error fetching usernames:', err);
+        statusMessage.textContent = 'Error fetching data.';
+      } finally {
+        setTimeout(()=> loadingBar.style.display = 'none', 500);
       }
     }
 
     async function loadPackages() {
-      const snapshot = await get(ref(db, "packages"));
-      packageTableBody.innerHTML = "";
-      if (snapshot.exists()) {
-        const data = snapshot.val();
-        for (const user in data) {
-          for (const time in data[user]) {
-            const pkg = data[user][time];
-            const tr = document.createElement("tr");
-            tr.innerHTML = `
-              <td class="px-3 py-2">${user}</td>
-              <td class="px-3 py-2">${pkg.packageName}</td>
-              <td class="px-3 py-2">${pkg.dailyEarnings}</td>
-              <td class="px-3 py-2">${pkg.date}</td>
-              <td class="px-3 py-2">${pkg.timeString}</td>
-              <td class="px-3 py-2"><button class="bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded delete-btn">Delete</button></td>`;
-            tr.querySelector(".delete-btn").addEventListener("click", () => {
-              remove(ref(db, `packages/${user}/${time}`)).then(loadPackages);
-            });
-            packageTableBody.appendChild(tr);
+      const packagesRef = ref(database, 'packages');
+      try {
+        const snapshot = await get(packagesRef);
+        packagesTableBody.innerHTML = '';
+        if (snapshot.exists()) {
+          const data = snapshot.val();
+          for (const username in data) {
+            const userPackages = data[username];
+            for (const timeString in userPackages) {
+              const packageData = userPackages[timeString];
+              const tr = document.createElement('tr');
+              tr.innerHTML = `
+                <td class="px-2 py-2">${username}</td>
+                <td class="px-2 py-2">${packageData.packageName || ''}</td>
+                <td class="px-2 py-2">${packageData.dailyEarnings || ''}</td>
+                <td class="px-2 py-2">${packageData.date || ''}</td>
+                <td class="px-2 py-2">${timeString}</td>
+                <td class="px-2 py-2"><button class="delete-btn bg-red-500 text-white px-2 py-1 rounded">Delete</button></td>
+              `;
+              // attach deletion
+              tr.querySelector('.delete-btn').addEventListener('click', () => {
+                deletePackage(username, timeString);
+              });
+              packagesTableBody.appendChild(tr);
+            }
           }
+        } else {
+          // no packages found
         }
+      } catch (err) {
+        console.error('Error fetching packages:', err);
       }
     }
 
-    packageForm.addEventListener("submit", async e => {
+    function deletePackage(username, timeString) {
+      const packageRef = ref(database, `packages/${username}/${timeString}`);
+      if (!confirm('Delete this package?')) return;
+      remove(packageRef)
+        .then(() => {
+          alert('Package deleted successfully.');
+          loadPackages();
+        })
+        .catch((err) => {
+          console.error('Error deleting package:', err);
+          alert('Failed to delete package.');
+        });
+    }
+
+    // package form submit (keeps original logic)
+    packageForm?.addEventListener('submit', (e) => {
       e.preventDefault();
-      const username = usernameSelect.value;
-      const packageName = document.getElementById("packageName").value;
-      const dailyEarnings = parseFloat(document.getElementById("dailyEarnings").value);
-      if (!username || isNaN(dailyEarnings)) return;
+      const username = document.getElementById('username').value.trim();
+      const packageName = document.getElementById('packageName').value;
+      const dailyEarnings = parseFloat(document.getElementById('dailyEarnings').value);
+      const currentDate = new Date().toISOString().split('T')[0];
       const now = new Date();
-      const timeString = now.toLocaleTimeString();
-      const date = now.toISOString().split("T")[0];
-      await set(ref(db, `packages/${username}/${timeString}`), { packageName, dailyEarnings, date, timeString });
-      statusMessage.textContent = "Package saved successfully!";
-      loadPackages();
-      packageForm.reset();
-    });
+      const timeString = `${now.getHours()}:${now.getMinutes()}:${now.getSeconds()}`;
 
-    // Withdrawals
-    const unseenTable = document.getElementById("unseenTable");
-    const seenTable = document.getElementById("seenTable");
-    onValue(ref(db, "withdrawals"), snapshot => {
-      unseenTable.innerHTML = seenTable.innerHTML = "";
-      if (snapshot.exists()) {
-        const data = snapshot.val();
-        for (const key in data) {
-          const w = data[key];
-          const row = document.createElement("tr");
-          row.innerHTML = `
-            <td class="px-3 py-2">${w.username}</td>
-            <td class="px-3 py-2">${w.wallet}</td>
-            <td class="px-3 py-2">${w.amount}</td>
-            <td class="px-3 py-2">${new Date(parseInt(key)).toLocaleString()}</td>`;
-          const btn = document.createElement("button");
-          if (w.seen) {
-            btn.textContent = "Delete";
-            btn.className = "bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded";
-            btn.onclick = () => remove(ref(db, "withdrawals/" + key));
-            const td = document.createElement("td"); td.appendChild(btn);
-            row.appendChild(td);
-            seenTable.appendChild(row);
-          } else {
-            btn.textContent = "Mark Seen";
-            btn.className = "bg-blue-500 hover:bg-blue-600 text-white px-2 py-1 rounded";
-            btn.onclick = () => update(ref(db, "withdrawals/" + key), { seen: true });
-            const td = document.createElement("td"); td.appendChild(btn);
-            row.appendChild(td);
-            unseenTable.appendChild(row);
-          }
-        }
+      if (!username || isNaN(dailyEarnings)) {
+        statusMessage.textContent = 'Please fill in all fields.';
+        return;
       }
+
+      const userRef = ref(database, `packages/${username}/${timeString}`);
+      set(userRef, {
+        packageName,
+        date: currentDate,
+        timeString,
+        dailyEarnings,
+      })
+      .then(() => {
+        statusMessage.textContent = 'Package saved successfully!';
+        packageForm.reset();
+        loadPackages();
+      })
+      .catch((err) => {
+        console.error('Error saving package:', err);
+        statusMessage.textContent = 'Error saving data. Please try again.';
+      });
     });
 
-    // Initialize
+    // init packages data on load
     loadUsernames();
     loadPackages();
+
+    // -------------------------
+    // WITHDRAWALS (onValue, markSeen, delete)
+    // -------------------------
+    const unseenTable = document.getElementById('unseenTable');
+    const seenTable = document.getElementById('seenTable');
+    const loadingDiv = document.getElementById('loading');
+
+    const withdrawalsRef = ref(database, 'withdrawals');
+
+    function fetchWithdrawals() {
+      loadingDiv.style.display = 'block';
+      onValue(withdrawalsRef, (snapshot) => {
+        const data = snapshot.val() || {};
+        unseenTable.innerHTML = '';
+        seenTable.innerHTML = '';
+
+        // convert entries and sort by key descending (matching original)
+        const entries = Object.entries(data).sort((a,b) => b[0] - a[0]);
+
+        entries.forEach(([key, value]) => {
+          const row = document.createElement('tr');
+          row.className = 'border-b';
+          row.innerHTML = `
+            <td class="px-2 py-2">${value.username || ''}</td>
+            <td class="px-2 py-2">${value.wallet || ''}</td>
+            <td class="px-2 py-2">${value.amount || ''}</td>
+            <td class="px-2 py-2">${new Date(parseInt(key)).toLocaleString()}</td>
+          `;
+
+          if (value.seen) {
+            // seen -> show delete
+            const delBtn = document.createElement('button');
+            delBtn.textContent = 'Delete';
+            delBtn.className = 'bg-red-500 text-white px-2 py-1 rounded';
+            delBtn.addEventListener('click', () => deleteWithdrawal(key));
+            const actionTd = document.createElement('td');
+            actionTd.className = 'px-2 py-2';
+            actionTd.appendChild(delBtn);
+            row.appendChild(actionTd);
+            seenTable.appendChild(row);
+          } else {
+            // unseen -> show mark seen
+            const markBtn = document.createElement('button');
+            markBtn.textContent = 'Mark Seen';
+            markBtn.className = 'bg-blue-500 text-white px-2 py-1 rounded';
+            markBtn.addEventListener('click', () => markSeen(key));
+            const actionTd = document.createElement('td');
+            actionTd.className = 'px-2 py-2';
+            actionTd.appendChild(markBtn);
+            row.appendChild(actionTd);
+            unseenTable.appendChild(row);
+          }
+        });
+
+        loadingDiv.style.display = 'none';
+      }, (err) => {
+        console.error('Error reading withdrawals:', err);
+        loadingDiv.style.display = 'none';
+      });
+    }
+
+    function markSeen(key) {
+      const itemRef = ref(database, `withdrawals/${key}`);
+      update(itemRef, { seen: true })
+        .then(() => alert('Request marked as seen.'))
+        .catch((err) => {
+          console.error('Error marking seen:', err);
+          alert('Error marking request as seen.');
+        });
+    }
+
+    function deleteWithdrawal(key) {
+      const itemRef = ref(database, `withdrawals/${key}`);
+      if (!confirm('Delete this withdrawal request?')) return;
+      remove(itemRef)
+        .then(() => {
+          alert('Request deleted.');
+        })
+        .catch((err) => {
+          console.error('Error deleting withdrawal:', err);
+          alert('Error deleting request.');
+        });
+    }
+
+    // initialize withdrawals listener
+    fetchWithdrawals();
+
+    // keep UI responsive on window resize (ensures classes toggled properly)
+    window.addEventListener('resize', () => {
+      if (window.innerWidth >= 768) {
+        overlay.classList.add('hidden');
+        sidebar.classList.remove('absolute', 'left-0', 'top-0', 'bottom-0');
+      }
+    });
   </script>
 </body>
 </html>
