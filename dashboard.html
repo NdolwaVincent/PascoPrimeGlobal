@@ -199,7 +199,7 @@
 
             
           </div>
-          <div id="deposit" class="section">
+         <div id="deposit" class="section">
   <h1>Recharge Your Account</h1>
   <div class="container">
     <form id="rechargeForm">
@@ -207,33 +207,31 @@
       <input type="number" id="amount" placeholder="Enter amount in KES" required>
 
       <label for="phone">Phone Number:</label>
-      <input type="tel" id="phone" placeholder="Enter your phone number" required>
+      <input type="tel" id="phone" placeholder="07XXXXXXXX" required>
 
       <label for="name">Your Name:</label>
       <input type="text" id="name" placeholder="Enter your name" required>
-
-      <p>Converted to USD: <span id="convertedAmount">0.00</span></p>
 
       <label for="paymentOption">Payment Option:</label>
       <select id="paymentOption" required>
         <option value="mpesa">M-Pesa</option>
         <option value="paypal">PayPal</option>
-        <option value="binance">Binance</option>
       </select>
 
       <button type="submit">Submit</button>
     </form>
+
     <div id="responseMessage" class="p-4 rounded mb-4 hidden"></div>
-    <div id="payHero" style="display: none;"></div>
+    <div id="payHero" class="mt-4"></div>
   </div>
 
-  <!-- SDK + Firebase + Logic -->
-  <script src="https://raw.githack.com/PAY-HERO-KENYA/payment_button/main/sdk.js"></script>
+  <!-- PayHero SDK + Firebase Logic -->
+  <script src="https://applet.payherokenya.com/cdn/button_sdk.js?v=3.1"></script>
+
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
     import { getDatabase, ref, push, set } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
 
-    // Firebase Configuration
     const firebaseConfig = {
       apiKey: "AIzaSyD6k4OlLYnotuuChAjLBoHmqfv9-iwrlfY",
       authDomain: "alfajiri-database.firebaseapp.com",
@@ -241,115 +239,72 @@
       projectId: "alfajiri-database",
       storageBucket: "alfajiri-database.appspot.com",
       messagingSenderId: "310417854615",
-      appId: "1:310417854615:web:6f65002a119caeaf9119d2",
-      measurementId: "G-21TBZCRBHM",
+      appId: "1:310417854615:web:6f65002a119caeaf9119d2"
     };
 
-    // Initialize Firebase
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
 
-    const conversionRate = 0.007335877862595;
+    document.getElementById("rechargeForm").addEventListener("submit", (e) => {
+      e.preventDefault();
+      const amount = parseFloat(document.getElementById("amount").value);
+      const phone = document.getElementById("phone").value.trim();
+      const name = document.getElementById("name").value.trim();
+      const paymentOption = document.getElementById("paymentOption").value;
 
-    document.getElementById('amount').addEventListener('input', function () {
-      const amountKES = parseFloat(this.value) || 0;
-      const convertedAmount = (amountKES * conversionRate).toFixed(2);
-      document.getElementById('convertedAmount').textContent = convertedAmount;
-    });
-
-    document.getElementById('rechargeForm').addEventListener('submit', function (event) {
-      event.preventDefault();
-
-      const amount = parseFloat(document.getElementById('amount').value);
-      const phone = document.getElementById('phone').value.trim();
-      const name = document.getElementById('name').value.trim();
-      const paymentOption = document.getElementById('paymentOption').value;
-
-      if (!amount || amount <= 0 || !phone || !name) {
-        alert('Please fill in all required fields.');
+      if (!phone.startsWith("07") || phone.length !== 10) {
+        showResponse("Invalid phone number format.", false);
         return;
       }
 
-      if (paymentOption === 'mpesa') {
-        processMpesaPayment(amount, phone, name);
-      } else if (paymentOption === 'paypal') {
-        const convertedAmount = (amount * conversionRate).toFixed(2);
-        processPayPalPayment(convertedAmount);
-      } else if (paymentOption === 'binance') {
-        processBinancePayment(amount);
+      if (paymentOption === "mpesa") {
+        triggerMpesa(amount, phone, name);
+      } else {
+        alert("PayPal coming soon!");
       }
     });
 
-    async function processMpesaPayment(amount, phone, name) {
-      const channel_id = 1887;
-      const apiUsername = 'ZxAJQsxvaNm38ULIXjtL';
-      const apiPassword = 'PKZdRjmVMcEzNlLji3UFNbzs87l21VddEHO3BnVt';
-      const externalReference = "INV-" + Date.now();
+    function triggerMpesa(amount, phone, name) {
+      const reference = "DEP-" + Date.now();
 
-      const payload = {
+      PayHero.init({
+        paymentUrl: "https://app.payhero.co.ke/lipwa/1068",
+        channelID: 1887,
+        amount: amount,
+        phone: phone,
+        name: name,
+        reference: reference,
+        containerId: "payHero",
+        buttonName: "Pay via M-Pesa",
+        buttonColor: "#00a884"
+      });
+
+      // save payment intent
+      const paymentRef = push(ref(db, "Deposits"));
+      set(paymentRef, {
+        name,
+        phone,
         amount,
-        phone_number: phone,
-        channel_id,
-        provider: "m-pesa",
-        external_reference: externalReference,
-        customer_name: name,
-        callback_url: "https://yourdomain.com/callback"
-      };
+        reference,
+        status: "Pending",
+        timestamp: new Date().toISOString()
+      });
 
-      const credentials = btoa(`${apiUsername}:${apiPassword}`);
-
-      try {
-        const res = await fetch('https://backend.payhero.co.ke/api/v2/payments', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Basic ${credentials}`
-          },
-          body: JSON.stringify(payload)
-        });
-
-        const result = await res.json();
-
-        if (res.ok) {
-          showResponse("STK push sent successfully. Check your phone.", true);
-
-          const paymentRef = push(ref(db, "payments"));
-          await set(paymentRef, {
-            amount,
-            phone,
-            name,
-            reference: externalReference,
-            timestamp: new Date().toISOString()
-          });
-
-        } else {
-          showResponse("STK push failed: " + (result.message || JSON.stringify(result)), false);
-        }
-      } catch (error) {
-        console.error(error);
-        showResponse("Error occurred: " + error.message, false);
-      }
+      showResponse("✅ STK Push sent! Check your phone", true);
     }
 
-    function processPayPalPayment(amountUSD) {
-      alert(`Redirecting to PayPal for $${amountUSD}`);
-      const paypalURL = `https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=YOUR_PAYPAL_BUSINESS_EMAIL&item_name=Payment&amount=${encodeURIComponent(amountUSD)}&currency_code=USD&return=https://www.yoursite.com/success&cancel_return=https://www.yoursite.com/cancel`;
-      window.location.href = paypalURL;
+    function showResponse(msg, ok) {
+      const box = document.getElementById("responseMessage");
+      box.textContent = msg;
+      box.classList.remove("hidden");
+      box.classList.toggle("bg-green-200", ok);
+      box.classList.toggle("text-green-900", ok);
+      box.classList.toggle("bg-red-200", !ok);
+      box.classList.toggle("text-red-900", !ok);
     }
-
-    function processBinancePayment(amount) {
-      alert(`Processing Binance payment for KES ${amount}`);
-    }
-
-    function showResponse(message, success) {
-  const div = document.getElementById("responseMessage");
-  div.textContent = message;
-  div.classList.remove("hidden", "bg-green-100", "text-green-800", "bg-red-100", "text-red-800");
-  div.classList.add("bg-green-100", "text-green-800");
-}
-
   </script>
 </div>
+
 
 
 
@@ -910,6 +865,7 @@ document.addEventListener("DOMContentLoaded", generatePackageList);
     </div>
 </body>
 </html>
+
 
 
 
