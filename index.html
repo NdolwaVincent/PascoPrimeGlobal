@@ -1,236 +1,261 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
-  <!--Created by Vincent-->
+  <!-- Redesigned & Rebranded by Vincent -->
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Pasco Prime</title>
+    <title>Proven Wealth Investment</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
     />
-    <script src=
-"https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js">
-    </script>
-    <link rel="stylesheet" href="bout.css" />
-  </head>
-  <body>
-    <header class="header" id="home">
-      <nav>
-        <div class="navbar">
-          <div class="logo">
-            <a href="#">
-              <img src="images/logow.PNG" alt="" />
-            </a>
-          </div>
 
-          <div class="menu_btn">
-            <i class="fas fa-bars"></i>
-          </div>
+    <style>
+      body {
+        scroll-behavior: smooth;
+        font-family: "Poppins", sans-serif;
+      }
+
+      .hero-bg {
+        background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)),
+          url('images/PP4.jpg') center/cover no-repeat;
+      }
+
+      .card:hover {
+        transform: translateY(-5px);
+        transition: all 0.3s ease;
+      }
+
+      .social-icon:hover {
+        color: #22c55e;
+      }
+
+      .nav-link {
+        transition: color 0.3s;
+      }
+
+      .nav-link:hover {
+        color: #22c55e;
+      }
+    </style>
+  </head>
+
+  <body class="bg-gray-50 text-gray-800">
+    <!-- Header -->
+    <header id="home" class="hero-bg text-white min-h-screen">
+      <nav class="flex justify-between items-center px-6 py-4 bg-black/40 backdrop-blur-sm fixed top-0 left-0 w-full z-50">
+        <div class="flex items-center space-x-3">
+          <img src="images/logow.PNG" alt="logo" class="w-12 h-12 rounded-full" />
+          <h1 class="text-lg md:text-xl font-bold tracking-wide">Proven Wealth</h1>
         </div>
 
-        <ul class="links">
-          <li><a href="#home">Home</a></li>
-          <li><a href="#about">About</a></li>
-          <li><a href="#popular">Popular</a></li>
-          <li><a href="#explore">Explore</a></li>
-          <li><a href="#contact">Contact</a></li>
+        <!-- Desktop Nav -->
+        <ul class="hidden md:flex space-x-6 text-sm font-medium">
+          <li><a href="#home" class="nav-link">Home</a></li>
+          <li><a href="#about" class="nav-link">About</a></li>
+          <li><a href="#popular" class="nav-link">Packages</a></li>
+          <li><a href="#explore" class="nav-link">Explore</a></li>
+          <li><a href="#contact" class="nav-link">Contact</a></li>
         </ul>
 
-        <button class="btn nav_btn" onclick="RegPage()">Register Now</button>
+        <button
+          onclick="RegPage()"
+          class="bg-green-500 hover:bg-green-600 px-4 py-2 rounded-full text-white font-semibold text-sm"
+        >
+          Register Now
+        </button>
+
+        <!-- Mobile Menu Button -->
+        <button id="menu-btn" class="md:hidden text-2xl"><i class="fas fa-bars"></i></button>
       </nav>
 
-      <section class="section header_section">
-        <p>Invest - and - Win</p>
-        <h1>
-          Pasco <br />
-          Prime <span>Global</span>  Love in Every trading <span> View</span>.
+      <!-- Hero Section -->
+      <section class="text-center pt-32 md:pt-48 pb-16 px-6 md:px-20">
+        <p class="text-green-400 text-lg">Invest Smart. Grow Fast.</p>
+        <h1 class="text-4xl md:text-6xl font-bold leading-tight mt-4">
+          Proven Wealth Investment
+          <br />
+          <span class="text-green-400">Empowering Global Investors</span>
         </h1>
+        <p class="max-w-2xl mx-auto text-gray-200 mt-6">
+          Join our international investment network where technology meets
+          opportunity — start your journey to financial freedom today.
+        </p>
+        <button
+          onclick="RegPage()"
+          class="mt-8 bg-green-500 hover:bg-green-600 px-8 py-3 rounded-full text-lg font-semibold"
+        >
+          Get Started
+        </button>
       </section>
     </header>
 
-    <section class="section booking_section">
-        <div class="input_box">
-          <span><i class="fas fa-calendar"></i></span>
-        </div>
-        <div class="input_box">
-          <span><i class="fas fa-user"></i></span>
-        </div>
-        <div class="input_box">
-          
-          <button class="btn" onclick="RegPage()">Get Started</button>
-        </div>
-    </section>
-
-    <section class="section about_section" id="about">
-      <div class="about_img">
-        <img src="images/PP4.jpg" alt="" />
-      </div>
-
-      <div class="about_content">
-        <p class="title">ABOUT US</p>
-        <h2 class="tagline">Overview and Summary about Pasco Prime Global</h2>
-        <p class="desc">
-          PascoPrime Global is a premier international trading platform designed to offer individuals and businesses access to global financial markets. Built on transparency, technology, and customer-centric values, we aim to democratize trading and wealth-building opportunities worldwide.
-        </p>
-        <div class="about_btn">
-          <button class="btn">Read More</button>
+    <!-- About Section -->
+    <section id="about" class="py-20 px-6 md:px-20 bg-white">
+      <div class="grid md:grid-cols-2 gap-10 items-center">
+        <img src="images/PP4.jpg" alt="" class="rounded-2xl shadow-lg" />
+        <div>
+          <h3 class="text-green-500 uppercase text-sm font-semibold">About Us</h3>
+          <h2 class="text-3xl font-bold mt-2">
+            Empowering Wealth Creation Globally
+          </h2>
+          <p class="mt-4 text-gray-600">
+            Proven Wealth Investment is an innovative trading and investment
+            company connecting individuals and organizations to the global
+            financial markets. Our mission is to make smart investing
+            accessible, transparent, and profitable for everyone.
+          </p>
+          <button
+            class="mt-6 bg-green-500 hover:bg-green-600 text-white px-6 py-2 rounded-full"
+          >
+            Learn More
+          </button>
         </div>
       </div>
     </section>
 
-    <section class="section deal_section">
-      <p class="title">How you Earn in Pasco Prime</p>
-      <h2 class="tagline">Where Winning mentality Meets success.</h2>
+    <!-- Packages / Earnings Section -->
+    <section id="popular" class="py-20 bg-gray-100">
+      <div class="text-center mb-12">
+        <h3 class="text-green-500 uppercase">How You Earn</h3>
+        <h2 class="text-3xl font-bold">Your Path to Financial Growth</h2>
+      </div>
 
-      <div class="deal_wrapper">
-        <div class="deal_card">
-          <div class="card_img">
-            <img src="images/PP3.jpg" alt="" />
-            <div class="card_icons">
-              <span><i class="fas fa-heart"></i></span>
-              <span><i class="fas fa-bookmark"></i></span>
-              <span><i class="fas fa-share-nodes"></i></span>
-            </div>
-          </div>
-
-          <div class="card_details">
-            <h4>Earn</h4>
-            <p>
-              Our platform connects you to global financial markets with an intuitive interface and cutting-edge tools. Choose a package, subscribe, and start trading stocks, commodities, indices, and currencies. Earn daily on your subscribed package within 24 hours.
+      <div class="grid md:grid-cols-3 gap-8 px-6 md:px-20">
+        <div class="card bg-white rounded-xl shadow-lg overflow-hidden">
+          <img src="images/PP3.jpg" class="w-full h-56 object-cover" />
+          <div class="p-6">
+            <h4 class="text-xl font-semibold mb-2">Invest & Earn</h4>
+            <p class="text-gray-600 mb-4">
+              Choose from flexible investment packages starting at just $5. Earn
+              daily returns based on your plan — automated, transparent, and
+              reliable.
             </p>
-            <h5>Starting from a Package of <span>PP Global Premier – $5</span><span> to </span><span>PP Global Imperial – $1000</span></h5>
-            <button class="btn" onclick="RegPage()">Join Now</button>
+            <p class="font-semibold">
+              Packages from <span class="text-green-500">$5</span> to
+              <span class="text-green-500">$1000</span>
+            </p>
+            <button
+              class="mt-4 bg-green-500 hover:bg-green-600 px-6 py-2 rounded-full text-white"
+            >
+              Join Now
+            </button>
           </div>
         </div>
-        <div class="deal_card">
-          <div class="card_img">
-            <img src="images/cash.jpg" alt="" />
-            <div class="card_icons">
-              <span><i class="fas fa-heart"></i></span>
-              <span><i class="fas fa-bookmark"></i></span>
-              <span><i class="fas fa-share-nodes"></i></span>
-            </div>
-          </div>
 
-          <div class="card_details">
-            <h4>How to Cash Out</h4>
-            <p>
-              Withdrawals are simple and secure, with funds sent to your bank or preferred payment method. Minimum cashout is $10.
+        <div class="card bg-white rounded-xl shadow-lg overflow-hidden">
+          <img src="images/cash.jpg" class="w-full h-56 object-cover" />
+          <div class="p-6">
+            <h4 class="text-xl font-semibold mb-2">Easy Withdrawals</h4>
+            <p class="text-gray-600">
+              Withdraw your profits easily and securely. Minimum withdrawal
+              starts from $10 — your earnings, your control.
             </p>
           </div>
         </div>
-        <div class="deal_card">
-          <div class="card_img">
-            <img src="images/PP6.jpg" alt="" />
-            <div class="card_icons">
-              <span><i class="fas fa-heart"></i></span>
-              <span><i class="fas fa-bookmark"></i></span>
-              <span><i class="fas fa-share-nodes"></i></span>
-            </div>
-          </div>
 
-          <div class="card_details">
-            <h2>Mission</h2>
-            <p>
-              To empower individuals and businesses with tools, resources, and opportunities in global markets, providing a secure, transparent trading experience.
+        <div class="card bg-white rounded-xl shadow-lg overflow-hidden">
+          <img src="images/PP6.jpg" class="w-full h-56 object-cover" />
+          <div class="p-6">
+            <h4 class="text-xl font-semibold mb-2">Our Mission</h4>
+            <p class="text-gray-600">
+              To empower investors globally by providing transparent,
+              sustainable, and innovative investment opportunities for all.
             </p>
           </div>
         </div>
       </div>
     </section>
-    <section class="section banner_section">
-      <div class="banner_content">
-        <div class="banner_card">
-          <h4>10+</h4>
-          <p>Packages Available</p>
+
+    <!-- Explore Section -->
+    <section id="explore" class="py-20 bg-white">
+      <div class="text-center mb-12">
+        <h3 class="text-green-500 uppercase">Explore</h3>
+        <h2 class="text-3xl font-bold">Invest. Earn. Enjoy.</h2>
+      </div>
+      <div class="grid md:grid-cols-3 gap-6 px-6 md:px-20">
+        <div class="relative overflow-hidden rounded-xl shadow-lg">
+          <img src="images/PP4.jpg" class="w-full h-64 object-cover" />
+          <h4
+            class="absolute inset-0 flex items-center justify-center bg-black/50 text-white text-2xl font-semibold"
+          >
+            Join
+          </h4>
         </div>
-        <div class="banner_card">
-          <h4>$5</h4>
-          <p>Starting Package</p>
+        <div class="relative overflow-hidden rounded-xl shadow-lg">
+          <img src="images/PP6.jpg" class="w-full h-64 object-cover" />
+          <h4
+            class="absolute inset-0 flex items-center justify-center bg-black/50 text-white text-2xl font-semibold"
+          >
+            Invest
+          </h4>
         </div>
-        <div class="banner_card">
-          <h4>$1000</h4>
-          <p>Highest Available Package</p>
+        <div class="relative overflow-hidden rounded-xl shadow-lg">
+          <img src="images/winn.jpg" class="w-full h-64 object-cover" />
+          <h4
+            class="absolute inset-0 flex items-center justify-center bg-black/50 text-white text-2xl font-semibold"
+          >
+            Enjoy Winnings
+          </h4>
         </div>
       </div>
     </section>
 
-    <section class="section explore_section" id="explore">
-      <p class="title">EXPLORE</p>
-      <h2 class="tagline">Love in Every Trading View</h2>
-
-      <div class="explore_wrapper">
-        <div class="explore_card">
-          <div class="card_img">
-            <img src="images/PP4.jpg" alt="" />
-            <div class="card_title">Join</div>
-          </div>
-        </div>
-        <div class="explore_card">
-          <div class="card_img">
-            <img src="images/PP6.jpg" alt="" />
-            <div class="card_title">Invest</div>
-          </div>
-        </div>
-        <div class="explore_card">
-          <div class="card_img">
-            <img src="images/winn.jpg" alt="" />
-            <div class="card_title">Enjoy winnings</div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <footer class="footer" id="contact">
-      <div class="section footer_section">
-        <div class="footer_col">
-          <h1>Vision</h1>
-          <p class="desc">
-            To be the leading global trading platform that democratizes access, fosters inclusion, and sets new industry standards.
+    <!-- Footer -->
+    <footer id="contact" class="bg-black text-gray-300 py-12">
+      <div class="grid md:grid-cols-3 gap-10 px-6 md:px-20">
+        <div>
+          <h3 class="text-white text-xl font-bold mb-3">Vision</h3>
+          <p>
+            To be the world’s most trusted investment platform — making wealth
+            creation accessible, transparent, and rewarding for all.
           </p>
         </div>
-        <div class="footer_col">
-          <h4>COMPANY</h4>
-          <ul class="footer_links">
-            <li><a href="#">About</a></li>
-            <li><a href="#">Careers</a></li>
-            <li><a href="#">Press</a></li>
-            <li><a href="#">Blog</a></li>
-            <li><a href="#">Privacy Policy</a></li>
+
+        <div>
+          <h3 class="text-white text-xl font-bold mb-3">Company</h3>
+          <ul>
+            <li><a href="#" class="hover:text-green-400">About</a></li>
+            <li><a href="#" class="hover:text-green-400">Careers</a></li>
+            <li><a href="#" class="hover:text-green-400">Privacy Policy</a></li>
           </ul>
         </div>
 
-        <div class="footer_col">
-          <h4>CONTACT US</h4>
-          <ul class="footer_links">
-
-            <li><h5>Pasco Prime Global Company Ltd</h5></li>
-            <li><h5>875 United Nation Plaza</h5></li>
-            <li><h5>New York</h5></li>
-            <li><h5>10017</h5></li>
-            <li><h5>+44 7383 290320</h5></li>
-            <li><h5>United States</h5></li>
-            <li><h5>Company Registration No: PP5543428</h5></li>
-            <li><h5>STCA No: GTE557864</h5></li>
-            <li><h5>Email support</h5></li>
-            <li><a href="#">pascoprimeint@gmail.com</a></li>
-          </ul>
-          <div class="footer-section social-media">
-          <h3>Follow Us</h3>
-
-           <a href="https://facebook.com" target="_blank" class="social-icon">Facebook</a>
-                        <a href="https://twitter.com" target="_blank" class="social-icon">Twitter</a>
-                        <a href="https://instagram.com" target="_blank" class="social-icon">Instagram</a>
-                        <a href="https://linkedin.com" target="_blank" class="social-icon">LinkedIn</a>
-        </div>
+        <div>
+          <h3 class="text-white text-xl font-bold mb-3">Contact</h3>
+          <p>Proven Wealth Investment Ltd</p>
+          <p>875 United Nation Plaza, New York</p>
+          <p>+44 7383 290320</p>
+          <p>Email: provenwealthint@gmail.com</p>
+          <div class="flex space-x-4 mt-3 text-lg">
+            <a href="https://facebook.com" class="social-icon"><i class="fab fa-facebook"></i></a>
+            <a href="https://twitter.com" class="social-icon"><i class="fab fa-twitter"></i></a>
+            <a href="https://instagram.com" class="social-icon"><i class="fab fa-instagram"></i></a>
+            <a href="https://linkedin.com" class="social-icon"><i class="fab fa-linkedin"></i></a>
+          </div>
         </div>
       </div>
-      <div class="copyright">
-        &copy; 2023 PascoPrime Global. All rights reserved.
+
+      <div class="text-center mt-10 text-sm border-t border-gray-700 pt-4">
+        © 2025 Proven Wealth Investment. All rights reserved.
       </div>
     </footer>
 
-    <script src="main.js"></script>
+    <script>
+      // Mobile menu toggle
+      const menuBtn = document.getElementById("menu-btn");
+      menuBtn.addEventListener("click", () => {
+        const navLinks = document.querySelector("nav ul");
+        navLinks.classList.toggle("hidden");
+      });
+
+      // Register button
+      function RegPage() {
+        window.location.href = "register.html";
+      }
+    </script>
   </body>
 </html>
