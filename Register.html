@@ -1,116 +1,125 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1"/>
   <title>Pasco Prime Registration</title>
   <script src="https://cdn.tailwindcss.com"></script>
+
   <style>
-    /* Animated Gradient Background */
     body {
-      background: linear-gradient(-45deg, #1f2937, #4b5563, #111827, #374151);
+      background: linear-gradient(-45deg, #0f172a, #1e293b, #0a0f1d, #1a2e28);
       background-size: 400% 400%;
-      animation: gradientBG 12s ease infinite;
+      animation: gradientBG 14s ease infinite;
+      font-family: 'Inter', sans-serif;
     }
 
     @keyframes gradientBG {
-      0% {background-position: 0% 50%;}
-      50% {background-position: 100% 50%;}
-      100% {background-position: 0% 50%;}
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
     }
 
-    /* Floating green shape for ambient branding */
-    .floating-shape::before {
-      content: '';
+    /* Glow Object */
+    .glow::before {
+      content: "";
       position: absolute;
-      top: -80px;
-      right: -80px;
-      width: 250px;
-      height: 250px;
-      background: radial-gradient(circle, rgba(34,197,94,0.25) 0%, transparent 70%);
+      width: 360px;
+      height: 360px;
+      background: radial-gradient(circle, rgba(16,185,129,0.4) 0%, transparent 70%);
       border-radius: 50%;
-      animation: pulse 8s ease-in-out infinite;
-      z-index: 0;
+      top: -160px;
+      right: -100px;
+      opacity: 0.45;
+      filter: blur(70px);
+      animation: pulse 7s infinite ease-in-out;
     }
 
     @keyframes pulse {
-      0%, 100% {
-        transform: scale(1);
-        opacity: 0.4;
-      }
-      50% {
-        transform: scale(1.2);
-        opacity: 0.6;
-      }
+      0%,100% { transform: scale(1); }
+      50% { transform: scale(1.25); }
     }
   </style>
 </head>
 
-<body class="relative min-h-screen text-white floating-shape">
+<body class="relative min-h-screen flex items-center justify-center p-4 text-white">
 
-  <!-- Hero Section -->
-  <div class="absolute top-0 w-full text-center z-10 py-6 bg-emerald-700/70 shadow-md">
-    <h1 class="text-3xl md:text-4xl font-bold tracking-wide">Join the Digital Revolution with Pasco Prime</h1>
-    <p class="text-sm md:text-base mt-1 text-gray-100">Smart. Secure. Seamless. Registration in minutes.</p>
-  </div>
+  <div class="glow absolute"></div>
 
-  <!-- Registration Form -->
-  <div class="relative z-10 flex items-center justify-center min-h-screen px-4 pt-32">
-    <div class="backdrop-blur-xl bg-white/10 border border-white/20 rounded-2xl shadow-2xl w-full max-w-lg p-6 sm:p-8">
-      <div class="flex flex-col items-center mb-6">
-        <img src="images/logop.jpg" alt="Logo" class="w-20 h-20 rounded-full border-4 border-white shadow mb-4">
-        <h2 class="text-emerald-400 text-2xl font-bold">Proven Wealth Investment</h2>
-        <p class="text-slate-200 text-sm">Create your account and start exploring</p>
+  <div class="relative z-10 w-full max-w-md sm:max-w-lg p-6 sm:p-8 rounded-3xl backdrop-blur-xl bg-white/10 shadow-[0_0_35px_rgba(0,255,170,0.25)] border border-white/10">
+
+    <!-- Branding -->
+    <div class="text-center mb-6 sm:mb-8">
+      <img src="images/logop.jpg" class="w-20 h-20 sm:w-24 sm:h-24 mx-auto rounded-full border-4 border-emerald-400 shadow-lg">
+      <h2 class="mt-3 sm:mt-4 text-2xl sm:text-3xl font-bold tracking-wide text-emerald-400">
+        Pasco Prime
+      </h2>
+      <p class="text-sm sm:text-base text-gray-200 mt-1">
+        Proven Wealth Investment — Begin Your Journey
+      </p>
+    </div>
+
+    <!-- Form -->
+    <form id="registrationform" method="POST" class="space-y-4">
+
+      <div>
+        <label class="text-base text-white font-semibold">Username</label>
+        <input id="username" required
+          class="w-full p-3 mt-1 rounded-xl bg-white/95 text-gray-800 focus:ring-2 focus:ring-emerald-400 outline-none">
       </div>
 
-      <form id="registrationform" method="POST" class="space-y-5">
+      <div>
+        <label class="text-base text-white font-semibold">Email</label>
+        <input type="email" id="email" required
+          class="w-full p-3 mt-1 rounded-xl bg-white/95 text-gray-800 focus:ring-2 focus:ring-emerald-400 outline-none">
+      </div>
+
+      <div>
+        <label class="text-base text-white font-semibold">Phone Number</label>
+        <input type="tel" id="phone" required
+          class="w-full p-3 mt-1 rounded-xl bg-white/95 text-gray-800 focus:ring-2 focus:ring-emerald-400 outline-none">
+      </div>
+
+      <!-- Password -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
-          <label for="username" class="text-white font-medium text-sm block mb-1">Username</label>
-          <input type="text" id="username" required class="w-full p-3 rounded-lg bg-white/80 text-gray-800 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-emerald-400 shadow-sm">
+          <label class="text-base font-semibold">Password</label>
+          <input type="password" id="password" required
+            class="w-full p-3 mt-1 rounded-xl bg-white/95 text-gray-800 focus:ring-2 focus:ring-emerald-400 outline-none">
         </div>
-
         <div>
-          <label for="email" class="text-white font-medium text-sm block mb-1">Email</label>
-          <input type="email" id="email" required class="w-full p-3 rounded-lg bg-white/80 text-gray-800 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-emerald-400 shadow-sm">
+          <label class="text-base font-semibold">Confirm Password</label>
+          <input type="password" id="confirm-password" required
+            class="w-full p-3 mt-1 rounded-xl bg-white/95 text-gray-800 focus:ring-2 focus:ring-emerald-400 outline-none">
         </div>
+      </div>
 
-        <div>
-          <label for="phone" class="text-white font-medium text-sm block mb-1">Phone Number</label>
-          <input type="tel" id="phone" required class="w-full p-3 rounded-lg bg-white/80 text-gray-800 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-emerald-400 shadow-sm">
-        </div>
+      <!-- Referral -->
+      <div>
+        <label class="text-base font-semibold">Referred By</label>
+        <input id="referred-by" required
+          class="w-full p-3 mt-1 rounded-xl bg-white/95 text-gray-800 focus:ring-2 focus:ring-emerald-400 outline-none">
+      </div>
 
-        <div>
-          <label for="password" class="text-white font-medium text-sm block mb-1">Password</label>
-          <input type="password" id="password" required class="w-full p-3 rounded-lg bg-white/80 text-gray-800 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-emerald-400 shadow-sm">
-        </div>
+      <!-- Submit Button -->
+      <button type="submit" id="submitBtn"
+        class="w-full bg-emerald-500 hover:bg-emerald-600 transition-all duration-300 text-white font-bold py-3 rounded-xl shadow-lg hover:shadow-[0_0_20px_rgba(16,185,129,0.5)] flex justify-center items-center gap-2">
+        <span id="btnText" class="text-base sm:text-lg">Create Account</span>
+        <svg id="spinner" class="w-5 h-5 animate-spin hidden" fill="none" viewBox="0 0 24 24">
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="white" stroke-width="4"></circle>
+          <path class="opacity-75" fill="white" d="M4 12a8 8 0 018-8v8H4z"></path>
+        </svg>
+      </button>
 
-        <div>
-          <label for="confirm-password" class="text-white font-medium text-sm block mb-1">Confirm Password</label>
-          <input type="password" id="confirm-password" required class="w-full p-3 rounded-lg bg-white/80 text-gray-800 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-emerald-400 shadow-sm">
-        </div>
+      <p class="text-center text-sm sm:text-base mt-2">
+        Already registered?
+        <a href="login.html" class="text-emerald-300 hover:underline hover:text-white font-medium">Login</a>
+      </p>
 
-        <div>
-          <label for="referred-by" class="text-white font-medium text-sm block mb-1">Referred By</label>
-          <input type="text" id="referred-by" required class="w-full p-3 rounded-lg bg-white/80 text-gray-800 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-emerald-400 shadow-sm">
-        </div>
-
-        <!-- Submit Button -->
-        <button type="submit" id="submitBtn" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 rounded-lg flex items-center justify-center gap-2 transition duration-300 shadow-lg">
-          <span id="btnText">CREATE ACCOUNT</span>
-          <svg id="spinner" class="w-5 h-5 animate-spin hidden text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
-          </svg>
-        </button>
-
-        <p class="text-center text-sm mt-4 text-slate-300">
-          Already have an account?
-          <a href="login.html" class="text-emerald-300 underline hover:text-white">Login</a>
-        </p>
-      </form>
-    </div>
+    </form>
   </div>
 
+  <!-- ✅ Firebase Logic Unchanged -->
   <!-- Firebase Registration Logic -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js";
@@ -216,7 +225,6 @@
       });
     }
   </script>
+
 </body>
 </html>
-
-
