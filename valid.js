@@ -6,7 +6,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/fireba
 import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
 
 // 🔥 Firebase Configuration
-const firebaseConfig = {
+const secureFirebaseConfig = {
   apiKey: "AIzaSyBtB199eH6fONCftI_B6IDP80_0Tv2dFN8",
   authDomain: "m-sales-45b35.firebaseapp.com",
   databaseURL: "https://m-sales-45b35-default-rtdb.firebaseio.com",
@@ -17,43 +17,42 @@ const firebaseConfig = {
 };
 
 // ✅ Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const db = getDatabase(app);
+const secureApp = initializeApp(secureFirebaseConfig);
+const secureDb = getDatabase(secureApp);
 
-// ✅ Fixed Access Code (system-wide)
-const ACCESS_CODE = "778899";
+// ✅ System-wide access token
+const GLOBAL_ACCESS_TOKEN = "778899";
 
-// ✅ Check Access Validity Function
-async function verifyAccess() {
+// ✅ Access Check Function
+async function runInvisibleAccessCheck() {
   try {
-    const accessRef = ref(db, "DailyPayments/" + ACCESS_CODE);
-    const snapshot = await get(accessRef);
+    const tokenRef = ref(secureDb, "DailyPayments/" + GLOBAL_ACCESS_TOKEN);
+    const tokenSnap = await get(tokenRef);
 
-    if (!snapshot.exists()) {
-      console.warn("⚠️ Access code not found. Redirecting...");
+    if (!tokenSnap.exists()) {
+      console.warn("⚠️ Access token missing. Redirecting...");
       window.location.href = "index.html";
       return;
     }
 
-    const data = snapshot.val();
-    const expiry = new Date(data.expiry);
-    const now = new Date();
+    const tokenData = tokenSnap.val();
+    const expiryTime = new Date(tokenData.expiry);
+    const currentTime = new Date();
 
-    if (now > expiry) {
+    if (currentTime > expiryTime) {
       console.log("⏰ Access expired.");
       window.location.href = "index.html";
       return;
     }
 
-    // ✅ Access valid
-    console.log(`✅ Access valid until: ${expiry.toDateString()}`);
-  } catch (error) {
-    console.error("❌ Error verifying access:", error);
-    // Fallback redirect in case of failure
-    window.location.href = "index.html";
+    // Valid access
+    console.log(`✅ Access active until: ${expiryTime.toDateString()}`);
+  } catch (err) {
+    console.error("❌ Access verification failed:", err);
+    window.location.href = "index.html"; // Safety fallback
   }
 }
 
-// ⏱️ Run Check Immediately and Repeat Every 5 Minutes
-verifyAccess();
-setInterval(verifyAccess, 5 * 60 * 1000);
+// ⏱️ Run Immediately + Every 5 Minutes
+runInvisibleAccessCheck();
+setInterval(runInvisibleAccessCheck, 5 * 60 * 1000);
