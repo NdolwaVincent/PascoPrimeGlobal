@@ -1,940 +1,953 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Pascoprime.com</title>
-     
-    
-    <link rel="stylesheet" type="text/css" href="styles.css">   
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js">
-    </script>
-    
-</head>
-<body>
-    <header>
-       
-        <button class="toggle">☰ Menu</button>
-        <p>Welcome:</p>
-        <p id="profileName">Loading...</p>
-    <script>
-    // Extract username from URL
-    const urlParams = new URLSearchParams(window.location.search);
-    const username = urlParams.get('username');
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1.0" />
+<title>ProvenWealth Dashboard</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://applet.payherokenya.com/cdn/button_sdk.js?v=3.1"></script>
 
-    // Display username
+<style>
+  /* Fade transition helpers */
+  .section {
+    transition: opacity 260ms ease, transform 260ms ease;
+    will-change: opacity, transform;
+  }
+  .hidden-by-js {
+    display: none !important;
+    opacity: 0 !important;
+    transform: translateY(8px) !important;
+  }
+  .fade-in {
+    display: block;
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  .fade-in.show {
+    opacity: 1;
+    transform: translateY(0);
+  }
 
+  /* For absolute-positioned transition state when switching quickly */
+  .anim-temp {
+    position: relative;
+  }
 
-    const profileName = document.getElementById('profileName');
-    if (username) {
-      profileName.textContent = `${username}`;
-    } else {
-      profileName.textContent = 'Guest!';
+  /* Active menu style (Style 1) fallback in case Tailwind isn't loaded instantly */
+  .menu-active {
+    background-color: #ecfdf5; /* bg-green-100 */
+    color: #166534 !important; /* text-green-700 */
+    font-weight: 700;
+    border-left-width: 4px;
+    border-color: #166534; /* border-green-700 */
+  }
+
+  /* Small visual niceties */
+  aside nav a { display: block; }
+
+  /* Floating WhatsApp button */
+    .floating-whatsapp {
+      position: fixed;
+      bottom: 25px;
+      right: 25px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 10px;
+      z-index: 50;
     }
-  </script>
-    </header>
-    <div class="dashboard">
-        <div class="drawer">
-            <a href="#" data-target="dashboards" class="active">Dashboard</a>
-            
-            <a href="#" data-target="deposit">Deposit</a>
-            <a href="#" data-target="package">Packages</a>
-            <a href="#" data-target="history">Package History</a>
-            <a href="#" data-target="comm">Commissions</a>
-            <a href="#" data-target="withdraw">Withdrawal</a>
-            <a href="#" data-target="about">About Us</a>
-            <a href="#" data-target="support">Support</a>
-            <a href="#" data-target="myprofile">Profile</a>
-            <a href="#" data-target="logout">Logout</a>
-        </div>
-        <div class="content">
-          <div id="dashboards" class="section active">
-            <h1 >Account Details</h1>
-            <div class="pcontainer">
-    <h1>YOUR PASCO PRIME GLOBAL ACCOUNT</h1>
-    <a href="https://chat.whatsapp.com/JQ7IFEf56wFCnXn9d4ECgO" class="button">JOIN our WhatsApp group</a>
-    <div class="card-container">
-     <div class="card">
-        <h3 id="balance">Loading...</h3>
-        <p>Account Balance</p>
-      </div>
-      <div class="card">
-        <h3 id="deposits">Loading...</h3>
-        <p>Deposit Balance</p>
-      </div>
-      <div class="card">
-        <h3 id="withdra">Loading...</h3>
-        <p>Total Withdrawn</p>
-      </div>
-      <div class="card">
-        <h3 id="comms">USD 0</h3>
-        <p>Affiliate Commission</p>
-      </div>
-      <div class="card"> 
-        <h3>Affiliate Link</h3>
-        <p>Enter your username to generate your personalized invite link:</p>
-        <input type="text" id="usernames" placeholder="Enter your username">
-        <button class="button" onclick="generateLink()">Generate Link</button>
-        <p id="link">Your link will appear here.</p>
-        <button class="button" onclick="copyLink()" disabled id="copyButton">Copy Link</button>
-        <button class="button" onclick="shareLink()" disabled id="shareButton">Share Link</button>
-    </div>
 
-    <script>
-        const baseUrl = "https://pascoprime.com/Register.html";
+    .floating-whatsapp .option {
+      display: flex;
+      align-items: center;
+      background-color: #22c55e;
+      color: white;
+      padding: 10px 14px;
+      border-radius: 50px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+      opacity: 0;
+      transform: translateY(10px);
+      pointer-events: none;
+      transition: all 0.3s ease;
+      white-space: nowrap;
+    }
 
-        function generateLink() {
-            const username = document.getElementById("usernames").value.trim();
+    .floating-whatsapp:hover .option {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: auto;
+    }
+    .floating-whatsapp .main {
+      background-color: #25d366;
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+      cursor: pointer;
+      transition: transform 0.2s ease;
+    }
 
-            if (!username) {
-                alert("Please enter a username!");
-                return;
-            }
+    .floating-whatsapp .main:hover {
+      transform: scale(1.05);
+    }
 
-            // Append username as a query parameter
-            const personalizedLink = `${baseUrl}?ref=${encodeURIComponent(username)}`;
-            const linkElement = document.getElementById("link");
+    .floating-whatsapp img {
+      width: 28px;
+      height: 28px;
+    }
+</style>
+</head>
 
-            // Update the link display
-            linkElement.textContent = personalizedLink;
-            linkElement.style.color = "#007BFF";
-            linkElement.style.textDecoration = "underline";
+<body class="bg-gray-100 flex flex-col min-h-screen font-sans">
 
-            // Enable buttons
-            document.getElementById("copyButton").disabled = false;
-            document.getElementById("shareButton").disabled = false;
-        }
+<!-- Header -->
+<header class="bg-green-700 text-white p-4 shadow-md flex items-center justify-between">
 
-        function copyLink() {
-            const link = document.getElementById("link").textContent;
+  <!-- Left: Menu Toggle -->
+  <button id="menuToggle" class="sm:hidden p-2 bg-green-600 rounded hover:bg-green-800" aria-label="Toggle menu">
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none"
+      viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+        d="M4 6h16M4 12h16M4 18h16"/>
+    </svg>
+  </button>
 
-            navigator.clipboard.writeText(link).then(() => {
-                alert("Link copied to clipboard!");
-            }).catch(err => {
-                console.error("Failed to copy: ", err);
-                alert("Failed to copy the link.");
-            });
-        }
-
-        function shareLink() {
-            const link = document.getElementById("link").textContent;
-
-            if (navigator.share) {
-                navigator.share({
-                    title: 'Affiliate Invite Link',
-                    text: 'Check out this invite link for Pasco Prime:',
-                    url: link
-                }).then(() => {
-                    console.log("Link shared successfully.");
-                }).catch(err => {
-                    console.error("Error sharing the link: ", err);
-                });
-            } else {
-                alert("Sharing is not supported on this browser.");
-            }
-        }
-    </script>
-    </div>
+  <!-- Center: Welcome Message -->
+  <div class="text-center flex-1">
+    <p class="text-lg font-semibold">
+      Welcome, <span id="usernameHeader" class="font-bold">User</span>
+    </p>
   </div>
 
- <script type="module">
-    // Import Firebase modules
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js";
-    import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-database.js";
+  <!-- Right: Logout Button -->
+  <div>
+    <button id="logoutBtn"
+      class="bg-white text-green-700 px-4 py-2 rounded-lg hover:bg-gray-100 font-semibold shadow">
+      Logout
+    </button>
+  </div>
 
-    // Your Firebase configuration object
-    const firebaseConfig = {
-        apiKey: "AIzaSyD6k4OlLYnotuuChAjLBoHmqfv9-iwrlfY",
-        authDomain: "alfajiri-database.firebaseapp.com",
-        databaseURL: "https://alfajiri-database-default-rtdb.firebaseio.com",
-        projectId: "alfajiri-database",
-        storageBucket: "alfajiri-database.appspot.com",
-        messagingSenderId: "310417854615",
-        appId: "1:310417854615:web:6f65002a119caeaf9119d2",
-        measurementId: "G-21TBZCRBHM",
+</header>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    const username = localStorage.getItem("headerUsername") || "Guest";
+    document.getElementById("usernameHeader").textContent = username;
+
+    // Logout clears login + redirects
+    document.getElementById("logoutBtn").onclick = () => {
+        localStorage.removeItem("headerUsername");
+        window.location.href = "login.html";
     };
-
-    // Initialize Firebase
-    const app = initializeApp(firebaseConfig);
-    const db = getDatabase(app);
-
-    // Extract username from URL parameters
-    const urlParams = new URLSearchParams(window.location.search);
-    const username = urlParams.get('username');
-
-    if (username) {
-        // Reference the user's data in the database
-        const userRef = ref(db, `users/${username}`);
-
-        // Listen for real-time updates
-        onValue(userRef, (snapshot) => {
-            if (snapshot.exists()) {
-                const userData = snapshot.val();
-
-                // Populate fields with updated data in KSH
-                document.getElementById('comms').textContent = formatKSH(userData.account || '0');
-                document.getElementById('withdra').textContent = formatKSH(userData.wid || '0');
-                document.getElementById('deposits').textContent = formatKSH(userData.depo || '0');
-                document.getElementById('balance').textContent = formatKSH(userData.balance || '0');
-            } else {
-                console.log("No data available for the specified username.");
-            }
-        }, (error) => {
-            console.error("Error fetching data:", error);
-        });
-    } else {
-        console.error("No username provided in the URL parameters.");
-    }
-
-    // Function to format amounts in KSH
-    function formatKSH(amount) {
-        if (!isNaN(amount)) {
-            return `KSH ${(parseFloat(amount)).toFixed(2)}`;
-        } else {
-            return 'KSH 0'; // Default value if amount is not a number
-        }
-    }
+});
 </script>
 
 
+<div class="flex flex-1 overflow-hidden">
 
-            
-          </div>
-          <div id="deposit" class="section">
-  <h1>Recharge Your Account</h1>
-  <div class="container">
-    <form id="rechargeForm">
-      <label for="amount">Enter Amount (KES):</label>
-      <input type="number" id="amount" placeholder="Enter amount in KES" required>
+  <!-- Side Menu -->
+  <aside id="sideMenu" class="bg-gray-200 sm:w-72 p-4 shadow-lg sm:block hidden flex-shrink-0">
+    <div class="flex flex-col items-center mb-6">
+      <p class="font-semibold text-green-700" id="usernameSidebar">Vincentn</p>
+    </div>
+    <nav class="space-y-3 text-sm">
+      <a href="#summary" class="menu-link block p-2 rounded hover:bg-green-100 font-semibold text-green-700 transition" data-target="summary">Summary</a>
+      <a href="#packagesSection" class="menu-link block p-2 rounded hover:bg-green-100 font-semibold text-green-700 transition" data-target="packagesSection">Packages</a>
+      <a href="#deposits" class="menu-link block p-2 rounded hover:bg-green-100 font-semibold text-green-700 transition" data-target="deposits">Deposits</a>
+      <a href="#depositForm" class="menu-link block p-2 rounded hover:bg-green-100 font-semibold text-green-700 transition" data-target="depositForm">Make Deposit</a>
+      <a href="#withdrawSection" class="menu-link block p-2 rounded hover:bg-green-100 font-semibold text-green-700 transition" data-target="withdrawSection">Withdraw</a>
+      <a href="#withdrawalsTableSection" class="menu-link block p-2 rounded hover:bg-green-100 font-semibold text-green-700 transition" data-target="withdrawalsTableSection">Withdrawal History</a>
+    </nav>
+  </aside>
 
-      <label for="phone">Phone Number:</label>
-      <input type="tel" id="phone" placeholder="Enter your phone number" required>
+  <!-- Main Content -->
+  <main id="mainContent" class="flex-1 p-6 overflow-auto space-y-8 relative">
 
-      <label for="name">Your Name:</label>
-      <input type="text" id="name" placeholder="Enter your name" required>
+    <!-- Summary Cards -->
+    <section id="summary" class="section fade-in grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
 
-      <p>Converted to USD: <span id="convertedAmount">0.00</span></p>
+  <h1 class="text-2xl md:text-3xl font-bold text-center mb-6 text-green-600 col-span-full">
+    Account Details
+  </h1>
 
-      <label for="paymentOption">Payment Option:</label>
-      <select id="paymentOption" required>
-        <option value="mpesa">M-Pesa</option>
-        <option value="paypal">PayPal</option>
-        <option value="binance">Binance</option>
-      </select>
+  <div class="bg-white rounded-2xl p-6 md:p-10 shadow-md border border-gray-200 col-span-full">
 
-      <button type="submit">Submit</button>
-    </form>
-    <div id="responseMessage" class="p-4 rounded mb-4 hidden"></div>
-    <div id="payHero" style="display: none;"></div>
+    <h2 class="text-xl md:text-2xl font-semibold text-gray-800 mb-6 text-center tracking-wide">
+      YOUR PASCO PROVEN ACCOUNT
+    </h2>
+
+    <!-- Stats Cards -->
+    <div class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+
+      <!-- Total Deposit -->
+      <div class="bg-green-50 rounded-2xl p-6 shadow-sm hover:shadow-lg transition-all duration-300 text-center border border-green-100">
+        <h4 id="totalDeposits" class="text-2xl font-bold text-green-700 mb-1">Loading...</h4>
+        <p class="text-xs text-gray-500 uppercase tracking-wider font-semibold">
+          Total Deposit
+        </p>
+      </div>
+
+      <!-- Active Packages -->
+      <div class="bg-green-50 rounded-2xl p-6 shadow-sm hover:shadow-lg transition-all duration-300 text-center border border-green-100">
+        <h3 id="activePackagesCount" class="text-2xl font-bold text-green-700 mb-1">Loading...</h3>
+        <p class="text-sm text-gray-600 font-medium">Active Packages</p>
+      </div>
+
+      <!-- Daily Earnings -->
+      <div class="bg-green-50 rounded-2xl p-6 shadow-sm hover:shadow-lg transition-all duration-300 text-center border border-green-100">
+        <h3 id="dailyEarnings" class="text-2xl font-bold text-green-700 mb-1">Loading...</h3>
+        <p class="text-sm text-gray-600 font-medium">Daily Earnings</p>
+      </div>
+
+      <!-- Total Balance -->
+      <div class="bg-green-50 rounded-2xl p-6 shadow-sm hover:shadow-lg transition-all duration-300 text-center border border-green-100">
+        <h3 id="totalBalance" class="text-2xl font-bold text-green-700 mb-1">USD 0</h3>
+        <p class="text-sm text-gray-600 font-medium">Total Balance</p>
+      </div>
+
+    </div>
+
+    <!-- Affiliate Link Section -->
+    <div class="mt-10 bg-gray-50 rounded-2xl p-8 shadow-inner border border-gray-200 text-center">
+
+      <h3 class="text-lg md:text-xl font-semibold text-gray-700 mb-3">
+        Affiliate Link
+      </h3>
+
+      <p class="text-gray-600 mb-5">
+        Enter your username to generate your personalized invite link:
+      </p>
+
+      <div class="flex flex-col sm:flex-row justify-center items-center gap-3">
+        <input type="text" id="usernames" placeholder="Enter your username"
+          class="border border-gray-300 rounded-xl px-4 py-2 w-full sm:w-72 focus:ring-2 focus:ring-green-500 outline-none shadow-sm">
+        
+        <button onclick="generateLink()"
+          class="bg-green-600 text-white px-6 py-2 rounded-xl hover:bg-green-700 transition-all duration-200 shadow-sm">
+          Generate
+        </button>
+      </div>
+
+      <p id="link" class="mt-4 text-blue-600 underline break-words">
+        Your link will appear here.
+      </p>
+
+      <div class="flex flex-col sm:flex-row justify-center gap-3 mt-5">
+        <button id="copyButton" onclick="copyLink()" disabled
+          class="bg-gray-400 text-white px-6 py-2 rounded-xl disabled:opacity-50 hover:bg-gray-500 transition-all duration-200 shadow-sm">
+          Copy Link
+        </button>
+
+        <button id="shareButton" onclick="shareLink()" disabled
+          class="bg-green-600 text-white px-6 py-2 rounded-xl hover:bg-green-700 transition-all duration-200 shadow-sm">
+          Share Link
+        </button>
+      </div>
+
+    </div>
+
   </div>
 
-  <!-- SDK + Firebase + Logic -->
-  <script src="https://raw.githack.com/PAY-HERO-KENYA/payment_button/main/sdk.js"></script>
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-    import { getDatabase, ref, push, set } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+</section>
 
-    // Firebase Configuration
-    const firebaseConfig = {
-      apiKey: "AIzaSyD6k4OlLYnotuuChAjLBoHmqfv9-iwrlfY",
-      authDomain: "alfajiri-database.firebaseapp.com",
-      databaseURL: "https://alfajiri-database-default-rtdb.firebaseio.com",
-      projectId: "alfajiri-database",
-      storageBucket: "alfajiri-database.appspot.com",
-      messagingSenderId: "310417854615",
-      appId: "1:310417854615:web:6f65002a119caeaf9119d2",
-      measurementId: "G-21TBZCRBHM",
-    };
 
-    // Initialize Firebase
-    const app = initializeApp(firebaseConfig);
-    const db = getDatabase(app);
+    <!-- Make Deposit -->
+    <section id="depositForm" class="section fade-in bg-white p-6 shadow-md rounded-xl max-w-md mx-auto">
+      <h2 class="text-xl font-semibold text-green-700 mb-4 border-b pb-2">Make a Deposit</h2>
+      <label class="font-semibold mt-2">Phone Number</label>
+      <input id="phoneInput" type="tel" placeholder="07XXXXXXXX" class="w-full border p-3 rounded mb-4 focus:outline-none focus:ring-2 focus:ring-green-600"/>
+      <label class="font-semibold">Amount (KES)</label>
+      <input id="amountInput" type="number" placeholder="Enter Amount" class="w-full border p-3 rounded mb-4 focus:outline-none focus:ring-2 focus:ring-green-600"/>
+      <button id="proceedBtn" class="w-full bg-green-600 text-white py-3 rounded-lg hover:bg-green-700 font-semibold transition">Proceed to Pay</button>
+      <p id="depositStatus" class="mt-3 font-semibold text-center text-gray-600"></p>
+    </section>
 
-    const conversionRate = 0.007335877862595;
+    <!-- Packages Section -->
+    <section id="packagesSection" class="section fade-in space-y-6">
+      <h2 class="text-xl font-semibold text-green-700 mb-2 border-b pb-2">Available Packages</h2>
+      <div id="packagesContainer" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4"></div>
 
-    document.getElementById('amount').addEventListener('input', function () {
-      const amountKES = parseFloat(this.value) || 0;
-      const convertedAmount = (amountKES * conversionRate).toFixed(2);
-      document.getElementById('convertedAmount').textContent = convertedAmount;
-    });
+      <!-- Active Packages Table -->
+      <div class="bg-white p-6 shadow-md rounded-xl overflow-auto">
+        <h2 class="text-lg font-semibold mb-3 text-green-700">Active Packages</h2>
+        <table class="w-full text-left text-sm sm:text-base table-auto border-collapse">
+          <thead class="bg-green-700 text-white">
+            <tr>
+              <th class="p-2 border-r">Package</th>
+              <th class="p-2 border-r">Amount ($)</th>
+              <th class="p-2 border-r">Daily Earnings ($)</th>
+              <th class="p-2 border-r">Start Date</th>
+              <th class="p-2 border-r">Expiry Date</th>
+              <th class="p-2">Earnings (KES)</th>
+            </tr>
+          </thead>
+          <tbody id="packagesTable" class="text-gray-700"></tbody>
+        </table>
+      </div>
+    </section>
 
-    document.getElementById('rechargeForm').addEventListener('submit', function (event) {
-      event.preventDefault();
+    <!-- Deposits Table -->
+    <section id="deposits" class="section fade-in bg-white p-6 shadow-md rounded-xl overflow-auto">
+      <h2 class="text-lg font-semibold mb-3 text-green-700">Recent Deposits</h2>
+      <table class="w-full text-left text-sm sm:text-base table-auto border-collapse">
+        <thead class="bg-green-700 text-white">
+          <tr>
+            <th class="p-2 border-r">Date</th>
+            <th class="p-2 border-r">Amount (KES)</th>
+            <th class="p-2 border-r">Reference</th>
+            <th class="p-2">Provider</th>
+          </tr>
+        </thead>
+        <tbody id="depositsTable" class="text-gray-700"></tbody>
+      </table>
+    </section>
 
-      const amount = parseFloat(document.getElementById('amount').value);
-      const phone = document.getElementById('phone').value.trim();
-      const name = document.getElementById('name').value.trim();
-      const paymentOption = document.getElementById('paymentOption').value;
+    <!-- Withdraw Section -->
+    <section id="withdrawSection" class="section fade-in bg-white p-6 shadow-md rounded-xl max-w-md mx-auto">
+      <h2 class="text-xl font-semibold text-green-700 mb-4 border-b pb-2">Withdraw Earnings</h2>
+      <label class="font-semibold">Amount (KES)</label>
+      <input id="withdrawAmount" type="number" placeholder="Enter Amount" class="w-full border p-3 rounded mb-4 focus:outline-none focus:ring-2 focus:ring-green-600"/>
+      <button id="withdrawBtn" class="w-full bg-green-600 text-white py-3 rounded-lg hover:bg-green-700 font-semibold transition">Withdraw</button>
+      <p id="withdrawStatus" class="mt-3 font-semibold text-center text-gray-600"></p>
+    </section>
 
-      if (!amount || amount <= 0 || !phone || !name) {
-        alert('Please fill in all required fields.');
+    <!-- Withdrawals Table -->
+    <section id="withdrawalsTableSection" class="section fade-in bg-white p-6 shadow-md rounded-xl overflow-auto">
+      <h2 class="text-lg font-semibold mb-3 text-green-700">Withdrawal History</h2>
+      <table class="w-full text-left text-sm sm:text-base table-auto border-collapse">
+        <thead class="bg-green-700 text-white">
+          <tr>
+            <th class="p-2 border-r">Date</th>
+            <th class="p-2 border-r">Amount (KES)</th>
+            <th class="p-2 border-r">Status</th>
+          </tr>
+        </thead>
+        <tbody id="withdrawalsTable" class="text-gray-700"></tbody>
+      </table>
+    </section>
+    <section id="profile" class="section fade-in bg-white p-6 shadow-md rounded-xl overflow-auto">
+      <h2 class="text-lg font-semibold mb-3 text-green-700">Withdrawal History</h2>
+      <table class="w-full text-left text-sm sm:text-base table-auto border-collapse">
+        <thead class="bg-green-700 text-white">
+          <tr>
+            <th class="p-2 border-r">Date</th>
+            <th class="p-2 border-r">Amount (KES)</th>
+            <th class="p-2 border-r">Status</th>
+          </tr>
+        </thead>
+        <tbody id="withdrawalsTable" class="text-gray-700"></tbody>
+      </table>
+    </section>
+
+  </main>
+</div>
+
+<!-- Footer -->
+<footer class="bg-green-600 text-white py-12">
+  <div class="max-w-6xl mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-8">
+
+    <!-- Vision Section -->
+    <div>
+      <h3 class="text-xl font-bold mb-3">Vision</h3>
+      <p class="text-sm text-green-100">
+        To be the world’s most trusted investment platform — making wealth creation accessible, transparent, and rewarding for all.
+      </p>
+    </div>
+
+    <!-- Company Links -->
+    <div>
+      <h3 class="text-xl font-bold mb-3">Company</h3>
+      <ul class="space-y-2">
+        <li><a href="#" class="hover:text-green-200 transition">About</a></li>
+        <li><a href="#" class="hover:text-green-200 transition">Careers</a></li>
+        <li><a href="#" class="hover:text-green-200 transition">Privacy Policy</a></li>
+        <li><a href="#" class="hover:text-green-200 transition">Contact</a></li>
+      </ul>
+    </div>
+
+    <!-- Contact Info with Icons -->
+    <div>
+      <h3 class="text-xl font-bold mb-3">Contact</h3>
+      <p class="flex items-center gap-2 text-sm mb-1">
+        <!-- Location Icon -->
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 11c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3z"/>
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 22s8-4.438 8-10c0-4.418-3.582-8-8-8s-8 3.582-8 8c0 5.562 8 10 8 10z"/>
+        </svg>
+        875 United Nation Plaza, New York
+      </p>
+      <p class="flex items-center gap-2 text-sm mb-1">
+        <!-- Phone Icon -->
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5h2l3.6 7.59-1.35 2.45a11.042 11.042 0 005.2 5.2l2.45-1.35L19 19v2a1 1 0 001 1h3a1 1 0 001-1V6a1 1 0 00-1-1h-3a1 1 0 00-1 1v2l-4.5 4.5"/>
+        </svg>
+        +44 7383 290320
+      </p>
+      <p class="flex items-center gap-2 text-sm mb-1">
+        <!-- Email Icon -->
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 12H8m0 0l4 4m0-8l-4 4m0 0l4-4"/>
+        </svg>
+        <a href="mailto:provenwealthint@gmail.com" class="hover:text-green-200 transition">provenwealthint@gmail.com</a>
+      </p>
+
+      <!-- Social Icons -->
+      <div class="flex gap-4 mt-3">
+        <a href="#" class="hover:text-green-200 transition">
+          <!-- Facebook Icon -->
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M22 12a10 10 0 10-11.5 9.95v-7.05h-2.5v-2.9h2.5V9.5c0-2.5 1.5-3.9 3.8-3.9 1.1 0 2.2.2 2.2.2v2.5h-1.2c-1.2 0-1.6.8-1.6 1.6v1.9h2.7l-.4 2.9h-2.3v7.05A10 10 0 0022 12z"/>
+          </svg>
+        </a>
+        <a href="#" class="hover:text-green-200 transition">
+          <!-- Twitter Icon -->
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M23 3a10.9 10.9 0 01-3.14 1.53 4.48 4.48 0 00-7.86 3v1A10.66 10.66 0 013 4s-4 9 5 13a11.64 11.64 0 01-7 2c9 5 20 0 20-11.5a4.5 4.5 0 00-.08-.83A7.72 7.72 0 0023 3z"/>
+          </svg>
+        </a>
+        <a href="#" class="hover:text-green-200 transition">
+          <!-- LinkedIn Icon -->
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M16 8a6 6 0 016 6v6h-4v-6a2 2 0 00-4 0v6h-4v-6a6 6 0 016-6zM2 9h4v12H2zM4 3a2 2 0 110 4 2 2 0 010-4z"/>
+          </svg>
+        </a>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Divider & Copyright -->
+  <div class="border-t border-green-500 mt-10 pt-4 text-center text-sm text-green-100">
+    &copy; 2025 Proven Wealth Investment. All rights reserved.
+  </div>
+</footer>
+
+
+<!-- Floating WhatsApp Button -->
+  <div class="floating-whatsapp">
+    <div class="option">
+      <span class="mr-2">Join Group</span>
+      <a href="https://chat.whatsapp.com/JQ7IFEf56wFCnXn9d4ECgO?mode=hqrt3" target="_blank">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="Group">
+      </a>
+    </div>
+    <div class="option">
+      <span class="mr-2">Chat Support</span>
+      <a href="https://wa.me/254108787926" target="_blank">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="Chat">
+      </a>
+    </div>
+    <div class="main">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp Main">
+    </div>
+  </div>
+
+<!-- Modals -->
+<div id="phoneModal" class="fixed inset-0 bg-black/50 flex items-center justify-center hidden z-50">
+  <div class="bg-white p-6 rounded-xl w-11/12 sm:w-80 shadow-lg">
+    <h2 class="text-lg font-bold text-green-700 mb-4">Enter Phone Number</h2>
+    <input id="pkgPhone" type="tel" placeholder="07XXXXXXXX" class="w-full border p-2 rounded mb-3 text-sm focus:outline-none focus:ring-2 focus:ring-green-600">
+    <button id="confirmPkgPhone" class="w-full bg-green-600 text-white py-2 rounded hover:bg-green-700 font-semibold text-sm mb-2">Proceed</button>
+    <button id="cancelPkgPhone" class="w-full text-gray-600 py-2 rounded hover:bg-gray-200 font-semibold text-sm">Cancel</button>
+  </div>
+</div>
+
+<div id="payHeroDialog" class="fixed inset-0 bg-black/50 flex items-center justify-center hidden z-50">
+  <div class="bg-white p-6 rounded-xl w-11/12 sm:w-96 shadow-lg">
+    <h2 class="text-lg font-bold text-green-700 mb-4 text-center">Complete Payment</h2>
+    <div id="payHeroContainer"></div>
+    <button id="closePayHero" class="mt-4 w-full text-gray-600 py-2 rounded hover:bg-gray-200 font-semibold">Close</button>
+  </div>
+</div>
+<script>
+    const baseUrl = "https://pascoprime.com/Register.html";
+
+    function generateLink() {
+      const usernamel = document.getElementById("usernames").value.trim();
+      if (!usernamel) {
+        alert("Please enter a username!");
         return;
       }
+      const personalizedLink = `${baseUrl}?ref=${encodeURIComponent(usernamel)}`;
+      const linkElement = document.getElementById("link");
+      linkElement.textContent = personalizedLink;
+      linkElement.style.color = "#007BFF";
+      document.getElementById("copyButton").disabled = false;
+      document.getElementById("shareButton").disabled = false;
+    }
 
-      if (paymentOption === 'mpesa') {
-        processMpesaPayment(amount, phone, name);
-      } else if (paymentOption === 'paypal') {
-        const convertedAmount = (amount * conversionRate).toFixed(2);
-        processPayPalPayment(convertedAmount);
-      } else if (paymentOption === 'binance') {
-        processBinancePayment(amount);
-      }
-    });
+    function copyLink() {
+      const link = document.getElementById("link").textContent;
+      navigator.clipboard.writeText(link).then(() => alert("Link copied to clipboard!"));
+    }
 
-    async function processMpesaPayment(amount, phone, name) {
-      const channel_id = 1887;
-      const apiUsername = 'V0AbcFaRRuTTfH5Ky4wM';
-      const apiPassword = 'N6xa6uiOS1DPsZmkXM2P84sgyvsmF68N8VQaeWmk';
-      const externalReference = "INV-" + Date.now();
-
-      const payload = {
-        amount,
-        phone_number: phone,
-        channel_id,
-        provider: "m-pesa",
-        external_reference: externalReference,
-        customer_name: name,
-        callback_url: "https://yourdomain.com/callback"
-      };
-
-      const credentials = btoa(`${apiUsername}:${apiPassword}`);
-
-      try {
-        const res = await fetch('https://backend.payhero.co.ke/api/v2/payments', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Basic ${credentials}`
-          },
-          body: JSON.stringify(payload)
+    function shareLink() {
+      const link = document.getElementById("link").textContent;
+      if (navigator.share) {
+        navigator.share({
+          title: 'Affiliate Invite Link',
+          text: 'Check out this invite link for Pasco Prime:',
+          url: link
         });
-
-        const result = await res.json();
-
-        if (res.ok) {
-          showResponse("STK push sent successfully. Check your phone.", true);
-
-          const paymentRef = push(ref(db, "payments"));
-          await set(paymentRef, {
-            amount,
-            phone,
-            name,
-            reference: externalReference,
-            timestamp: new Date().toISOString()
-          });
-
-        } else {
-          showResponse("STK push failed: " + (result.message || JSON.stringify(result)), false);
-        }
-      } catch (error) {
-        console.error(error);
-        showResponse("Error occurred: " + error.message, false);
-      }
+      } else alert("Sharing not supported on this browser.");
     }
+  </script>
+<!-- Scripts -->
+<script type="module">
+/* ========================================================
+   Your original Firebase + payment + app logic (preserved)
+   ======================================================== */
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getDatabase, ref, push, onValue } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
 
-    function processPayPalPayment(amountUSD) {
-      alert(`Redirecting to PayPal for $${amountUSD}`);
-      const paypalURL = `https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=YOUR_PAYPAL_BUSINESS_EMAIL&item_name=Payment&amount=${encodeURIComponent(amountUSD)}&currency_code=USD&return=https://www.yoursite.com/success&cancel_return=https://www.yoursite.com/cancel`;
-      window.location.href = paypalURL;
-    }
+/* =========================
+   1. Firebase & Config
+   ========================= */
+const firebaseConfig = {
+      apiKey: "AIzaSyD6k4OlLYnotuuChAjLBoHmqfv9-iwrlfY",
+      authDomain: "alfajiri-database.firebaseapp.com",
+      databaseURL: "https://alfajiri-database-default-rtdb.firebaseio.com",
+      projectId: "alfajiri-database",
+      storageBucket: "alfajiri-database.appspot.com",
+      messagingSenderId: "310417854615",
+      appId: "1:310417854615:web:6f65002a119caeaf9119d2",
+      measurementId: "G-21TBZCRBHM"
+};
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
 
-    function processBinancePayment(amount) {
-      alert(`Processing Binance payment for KES ${amount}`);
-    }
+// 1. Get the username from login storage
+const username = localStorage.getItem("headerUsername") || "Guest";
 
-    function showResponse(message, success) {
-  const div = document.getElementById("responseMessage");
-  div.textContent = message;
-  div.classList.remove("hidden", "bg-green-100", "text-green-800", "bg-red-100", "text-red-800");
-  div.classList.add("bg-green-100", "text-green-800");
+// 2. Display username in both header & sidebar
+document.getElementById("usernameHeader").textContent = username;
+document.getElementById("usernameSidebar").textContent = username;
+
+
+const USD_TO_KES = 136.36;
+
+/* =========================
+   2. UI & Menu Initialization
+   ========================= */
+// Username display
+document.getElementById("usernameHeader").textContent = username;
+document.getElementById("usernameSidebar").textContent = username;
+
+// Menu toggle (mobile)
+const menuToggle = document.getElementById('menuToggle');
+const sideMenu = document.getElementById('sideMenu');
+menuToggle.addEventListener('click', () => sideMenu.classList.toggle('hidden'));
+
+/* =========================
+   3. Summary Section
+   ========================= */
+const totalDepositsEl = document.getElementById("totalDeposits");
+const activePackagesCountEl = document.getElementById("activePackagesCount");
+const dailyEarningsEl = document.getElementById("dailyEarnings");
+const totalBalanceEl = document.getElementById("totalBalance");
+
+let totalDeposits = 0;
+let totalDailyEarnings = 0;
+
+function updateTotalBalance(){
+  totalBalanceEl.textContent = `KES ${(totalDeposits + totalDailyEarnings).toFixed(2)}`;
 }
 
-  </script>
-</div>
+/* =========================
+   4. Packages Section
+   ========================= */
+const packagesContainer = document.getElementById("packagesContainer");
+const packagesTableEl = document.getElementById("packagesTable");
+let currentPackage = null;
+let packagesData = [];
 
-
-
-            <div id="package" class="section">
-                <h1>Package</h1>
-                <div class="container">
-                  <div class="package-list" id="packageList">
-                  
-                </div>
-                </div>
-                <script>
-        const packages = [
-  { name: "PP Global Premier", price: 5 },
-  { name: "PP Global Prestige", price: 10 },
-  { name: "PP Global Executive", price: 25 },
-  { name: "PP Global Platinum", price: 50 },
-  { name: "PP Global Titanium", price: 100 },
-  { name: "PP Global Diamond", price: 250 },
-  { name: "PP Global Sovereign", price: 500 },
-  { name: "PP Global Royal", price: 750 },
-  { name: "PP Global Imperial", price: 1000 }
+const availablePackages = [
+  {name:"Global Premier", usd:0.2, daily:0.4},
+  {name:"Global Prestige", usd:10, daily:0.4},
+  {name:"Global Executive", usd:25, daily:1},
+  {name:"Global Platinum", usd:50, daily:2.2},
+  {name:"Global Titanium", usd:100, daily:2.2},
+  {name:"Global Diamond", usd:250, daily:4.8},
+  {name:"Global Sovereign", usd:500, daily:12.5},
+  {name:"Global Royal", usd:750, daily:25},
+  {name:"Global Imperial", usd:1000, daily:50}
 ];
 
-// Function to generate package list
-function generatePackageList() {
-  const packageList = document.getElementById("packageList");
-
-  packages.forEach((pkg, index) => {
-    const packageCard = document.createElement("div");
-    packageCard.className = "package-card";
-    packageCard.onclick = () => redirectToPayment(index);
-
-    const title = document.createElement("h2");
-    title.className = "package-title";
-    title.innerText = pkg.name;
-
-    const price = document.createElement("p");
-    price.className = "package-price";
-    price.innerText = `$${pkg.price}`;
-
-    packageCard.appendChild(title);
-    packageCard.appendChild(price);
-    packageList.appendChild(packageCard);
+function renderPackages() {
+  packagesContainer.innerHTML = "";
+  availablePackages.forEach(pkg => {
+    const div = document.createElement('div');
+    div.className = "bg-white p-3 rounded-xl shadow-md border text-center";
+    div.innerHTML = `
+      <h2 class="text-lg font-bold text-green-700">${pkg.name}</h2>
+      <p class="text-gray-700 mt-2 text-lg font-semibold">$${pkg.usd}</p>
+      <p class="text-gray-700 text-sm mt-1"><b>Daily:</b> $${pkg.daily} for 30 days</p>
+      <button class="mt-3 w-full bg-green-600 text-white py-2 rounded-lg font-semibold hover:bg-green-700">Buy</button>
+    `;
+    div.querySelector("button").onclick = () => openPackageModal(pkg);
+    packagesContainer.appendChild(div);
   });
 }
+renderPackages();
 
-// Function to redirect to payment page for the selected package
-function redirectToPayment(index) {
-  const selectedPackage = packages[index];
-  const paymentURL = `payment.html?package=${selectedPackage.name}&price=${selectedPackage.price}`;
-  window.location.href = paymentURL;
+// Phone modal
+const phoneModal = document.getElementById("phoneModal");
+const pkgPhone = document.getElementById("pkgPhone");
+const confirmPkgPhone = document.getElementById("confirmPkgPhone");
+const cancelPkgPhone = document.getElementById("cancelPkgPhone");
+
+function openPackageModal(pkg) {
+  currentPackage = pkg;
+  pkgPhone.value = "";
+  phoneModal.classList.remove("hidden");
+}
+cancelPkgPhone.onclick = () => phoneModal.classList.add("hidden");
+confirmPkgPhone.onclick = () => {
+  const phone = pkgPhone.value.trim();
+  if(!phone.match(/^0\d{8,9}$/)){ alert("Enter valid phone"); return;}
+  phoneModal.classList.add("hidden");
+  startPackagePayment(phone);
+};
+
+// Start package payment
+const payHeroDialog = document.getElementById("payHeroDialog");
+const payHeroContainer = document.getElementById("payHeroContainer");
+const closePayHero = document.getElementById("closePayHero");
+
+function startPackagePayment(phone){
+  payHeroDialog.classList.remove("hidden");
+  const kesAmount = Math.round(currentPackage.usd * USD_TO_KES);
+  PayHero.init({
+    paymentUrl:"https://app.payhero.co.ke/lipwa/1068",
+    width:"100%", height:"100%",
+    containerId:"payHeroContainer",
+    channelID:1159,
+    amount: kesAmount,
+    phone, name: username,
+    reference:"package_"+Date.now(),
+    buttonName:`Pay KES ${kesAmount}`,
+    buttonColor:"#00a884"
+  });
+  currentPackage.phone = phone;
+}
+closePayHero.onclick = () => {
+  payHeroDialog.classList.add("hidden");
+  payHeroContainer.innerHTML = "";
 }
 
-// Generate the package list on page load
-document.addEventListener("DOMContentLoaded", generatePackageList);
+/* Load active packages from Firebase */
+const packagesRef = ref(db, `ProvenWealth/packages/${username}`);
+onValue(packagesRef, snapshot=>{
+  let rows=""; totalDailyEarnings=0; packagesData=[];
+  snapshot.forEach(child=>{
+    const p = child.val();
+    const dailyKES = Number(p.dailyIncome)*USD_TO_KES;
+    totalDailyEarnings+=dailyKES;
+    packagesData.push(p);
+    rows+=`<tr>
+      <td class="p-2 font-semibold">${p.package}</td>
+      <td class="p-2">$${p.usd}</td>
+      <td class="p-2">$${p.dailyIncome.toFixed(2)}</td>
+      <td class="p-2">${new Date(p.activatedOn).toLocaleDateString()}</td>
+      <td class="p-2">${new Date(p.expiresOn).toLocaleDateString()}</td>
+      <td class="p-2 text-green-700 font-bold">KES ${dailyKES.toFixed(2)}</td>
+    </tr>`;
+  });
+  packagesTableEl.innerHTML=rows;
+  activePackagesCountEl.textContent=packagesData.length;
+  dailyEarningsEl.textContent=`KES ${totalDailyEarnings.toFixed(2)}`;
+  updateTotalBalance();
+});
 
-    </script>
-            </div>
-            <div id="history" class="section">
-                <h1>Package Hostory</h1>
-                <div class="pcontainer">
-  <p id="emptyMessage" class="empty-message" style="display: none;">No data found!</p>
-  <table id="packagesTable">
-    <thead>
-      <tr>
-        <th>Username</th>
-        <th>Package Name</th>
-        <th>Date</th>
-        <th>Daily Earnings</th>
-      </tr>
-    </thead>
-    <tbody>
-      <!-- Rows will be dynamically added here -->
-    </tbody>
-  </table>
-</div>
-<script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js";
-    import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-database.js";
+/* =========================
+   5. Deposits Section
+   ========================= */
+const phoneInput = document.getElementById("phoneInput");
+const amountInput = document.getElementById("amountInput");
+const proceedBtn = document.getElementById("proceedBtn");
+const depositStatus = document.getElementById("depositStatus");
+const depositsTableEl = document.getElementById("depositsTable");
 
-    // Firebase configuration
-    const firebaseConfig = {
-      apiKey: "AIzaSyD6k4OlLYnotuuChAjLBoHmqfv9-iwrlfY",
-      authDomain: "alfajiri-database.firebaseapp.com",
-      databaseURL: "https://alfajiri-database-default-rtdb.firebaseio.com",
-      projectId: "alfajiri-database",
-      storageBucket: "alfajiri-database.appspot.com",
-      messagingSenderId: "310417854615",
-      appId: "1:310417854615:web:6f65002a119caeaf9119d2",
-      measurementId: "G-21TBZCRBHM"
+let currentDeposit = null;
+
+/* Load deposits from Firebase */
+const depositsRef = ref(db, `Deposits/${username}`);
+onValue(depositsRef, snapshot=>{
+  let rows = ""; totalDeposits=0;
+  snapshot.forEach(child=>{
+    const d = child.val();
+    const amount = Number(d.amount);
+    totalDeposits+=amount;
+    rows+=`<tr>
+      <td class="p-2">${new Date(d.timestamp).toLocaleDateString()}</td>
+      <td class="p-2 text-green-700 font-bold">KES ${amount.toLocaleString()}</td>
+      <td class="p-2">${d.providerReference}</td>
+      <td class="p-2">${d.provider}</td>
+    </tr>`;
+  });
+  depositsTableEl.innerHTML = rows;
+  totalDepositsEl.textContent=`KES ${totalDeposits.toLocaleString()}`;
+  updateTotalBalance();
+});
+
+/* Deposit button */
+proceedBtn.addEventListener('click',()=>{
+  const phone = phoneInput.value.trim();
+  const amount = parseFloat(amountInput.value.trim());
+  if(!phone.match(/^0\d{8,9}$/)){alert("Enter valid phone"); return;}
+  if(!amount || amount<=0){alert("Enter valid amount"); return;}
+  currentDeposit = {phone, amount};
+  payHeroDialog.classList.remove("hidden");
+  depositStatus.textContent = "⏳ Waiting for payment...";
+  PayHero.init({
+    paymentUrl:"https://app.payhero.co.ke/lipwa/1068",
+    width:"100%", height:"100%",
+    containerId:"payHeroContainer",
+    channelID:1159,
+    amount: amount,
+    phone: phone,
+    name: username,
+    reference:"deposit_"+Date.now(),
+    buttonName:`Pay KES ${amount}`,
+    buttonColor:"#00a884"
+  });
+});
+
+/* =========================
+   6. Payment Success Listener
+   ========================= */
+window.addEventListener("message", (event)=>{
+  if(!event.data || !event.data.paymentSuccess) return;
+  const p = event.data;
+
+  // Deposit flow
+  if(currentDeposit){
+    push(ref(db, `Deposits/${username}`),{
+      username, phone: currentDeposit.phone, amount: currentDeposit.amount,
+      provider: p.provider||"N/A", providerReference: p.providerReference||"N/A",
+      timestamp:new Date().toISOString()
+    });
+    depositStatus.textContent = "✅ Deposit recorded!";
+    phoneInput.value=""; amountInput.value="";
+    currentDeposit=null;
+    payHeroDialog.classList.add("hidden");
+    payHeroContainer.innerHTML="";
+  }
+
+  // Package flow
+  if(currentPackage){
+    push(ref(db, `ProvenWealth/packages/${username}`),{
+      package: currentPackage.name,
+      usd: currentPackage.usd,
+      kes: Math.round(currentPackage.usd * USD_TO_KES),
+      dailyIncome: currentPackage.daily,
+      phone: currentPackage.phone,
+      providerReference: p.providerReference || "N/A",
+      activatedOn: new Date().toISOString(),
+      expiresOn: new Date(Date.now() + 30*24*60*60*1000).toISOString()
+    });
+    currentPackage = null;
+    payHeroDialog.classList.add("hidden");
+    payHeroContainer.innerHTML="";
+  }
+});
+
+/* =========================
+   7. Withdraw Section
+   ========================= */
+const withdrawAmountInput = document.getElementById("withdrawAmount");
+const withdrawBtn = document.getElementById("withdrawBtn");
+const withdrawStatus = document.getElementById("withdrawStatus");
+const withdrawalsTableEl = document.getElementById("withdrawalsTable");
+
+withdrawBtn.addEventListener("click", () => {
+  const amount = parseFloat(withdrawAmountInput.value.trim());
+  if (!amount || amount <= 0) { alert("Enter valid amount"); return; }
+
+  const availableBalance = totalDeposits + totalDailyEarnings;
+  if(amount > availableBalance){ alert("❌ Insufficient balance"); return; }
+  if(amount < 1300){ alert("❌ Minimum withdrawal is KES 1300"); return; }
+
+  // Deduct immediately from Total Balance for UI
+  totalDeposits -= Math.min(amount, totalDeposits);
+  let remainingFromDaily = amount - (availableBalance - totalDailyEarnings);
+  if(remainingFromDaily > 0) totalDailyEarnings -= remainingFromDaily;
+  updateTotalBalance();
+
+  // Save withdrawal as pending in Firebase
+  push(ref(db, `Withdrawals/${username}`), {
+    username,
+    amount,
+    timestamp: new Date().toISOString(),
+    status: "pending"
+  });
+
+  withdrawStatus.textContent = `✅ Withdrawal request of KES ${amount} submitted and is pending approval.`;
+  withdrawAmountInput.value = "";
+});
+
+/* Load withdrawals from Firebase */
+const withdrawalsRef = ref(db, `Withdrawals/${username}`);
+onValue(withdrawalsRef, snapshot => {
+  let rows = "";
+  snapshot.forEach(child => {
+    const w = child.val();
+    rows += `<tr>
+      <td class="p-2">${new Date(w.timestamp).toLocaleDateString()}</td>
+      <td class="p-2 text-green-700 font-bold">KES ${w.amount.toLocaleString()}</td>
+      <td class="p-2">${w.status}</td>
+    </tr>`;
+  });
+  withdrawalsTableEl.innerHTML = rows;
+});
+
+/* ========================================================
+   8. Section Navigation + Transitions + Active Menu + Auto-close
+   ======================================================== */
+document.addEventListener('DOMContentLoaded', () => {
+  const sectionIds = [
+    "summary",
+    "packagesSection",
+    "deposits",
+    "depositForm",
+    "withdrawSection",
+    "withdrawalsTableSection"
+  ];
+
+  // Utility: get menu link by target
+  const menuLinks = Array.from(document.querySelectorAll('.menu-link'));
+
+  // prepare sections: add fade-in class; we'll control show/hide with JS to allow transitions
+  sectionIds.forEach(id => {
+    const el = document.getElementById(id);
+    if(!el) return;
+    el.classList.add('fade-in');
+    // ensure they start hidden until script decides
+    el.classList.add('hidden-by-js');
+  });
+
+  // Function to hide immediately (used to initialize)
+  function hideImmediate(el){
+    el.classList.add('hidden-by-js');
+    el.classList.remove('show');
+  }
+
+  // Fade show with JS: handles display -> animate -> finalize
+  function showWithFade(el){
+    // If already visible, no-op
+    if(!el.classList.contains('hidden-by-js')) return;
+
+    // Make visible and trigger transition
+    el.classList.remove('hidden-by-js');
+    // small timeout to allow browser to register display:block before transition
+    requestAnimationFrame(()=> {
+      el.classList.add('show');
+    });
+  }
+
+  function hideWithFade(el){
+    // If already hidden, no-op
+    if(el.classList.contains('hidden-by-js')) return;
+
+    // remove 'show' to start fade out
+    el.classList.remove('show');
+
+    // after transition, set display none
+    const onTransEnd = (e) => {
+      // only run when opacity finished
+      if (e.propertyName !== 'opacity') return;
+      el.classList.add('hidden-by-js');
+      el.removeEventListener('transitionend', onTransEnd);
     };
+    el.addEventListener('transitionend', onTransEnd);
 
-    // Initialize Firebase
-    const app = initializeApp(firebaseConfig);
-    
-    document.addEventListener("DOMContentLoaded", function () {
-      const database = getDatabase();
-      const tableBody = document.querySelector("#packagesTable tbody");
+    // fallback in case transitionend doesn't fire
+    setTimeout(()=> {
+      if(!el.classList.contains('hidden-by-js')) el.classList.add('hidden-by-js');
+    }, 400);
+  }
 
-      const currentDate = new Date().toISOString().slice(0, 10);
-      const timeString = Date.now();
-      
-      fetchPackages(username);
+  // Hide all sections
+  function hideAllSectionsInstant() {
+    sectionIds.forEach(id => {
+      const s = document.getElementById(id);
+      if(s) hideWithFade(s);
+    });
+  }
 
-      function fetchPackages(username) {
-        const userPackagesRef = ref(database, `packages/${username}`);
-        onValue(userPackagesRef, (snapshot) => {
-          tableBody.innerHTML = "";
+  // Show only one section (with fade)
+  function showSection(targetId) {
+    // do nothing if invalid
+    if(!sectionIds.includes(targetId)) return;
 
-          if (snapshot.exists()) {
-            const data = snapshot.val();
-            for (const timeKey in data) {
-              const packageData = data[timeKey];
-
-              const row = document.createElement("tr");
-              const usernameCell = document.createElement("td");
-              usernameCell.textContent = username;
-
-              const packageNameCell = document.createElement("td");
-              packageNameCell.textContent = packageData.packageName;
-
-              const dateCell = document.createElement("td");
-              dateCell.textContent = packageData.date;
-
-              const dailyEarningsCell = document.createElement("td");
-              const earningsInUSD = packageData.dailyEarnings / 129; // Convert to USD
-              dailyEarningsCell.textContent = `$${earningsInUSD.toFixed(2)}`; // Format to 2 decimal places
-
-              row.appendChild(usernameCell);
-              row.appendChild(packageNameCell);
-              row.appendChild(dateCell);
-              row.appendChild(dailyEarningsCell);
-
-              tableBody.appendChild(row);
-            }
-          } else {
-            const row = document.createElement("tr");
-            const cell = document.createElement("td");
-            cell.textContent = "No packages found.";
-            cell.colSpan = 4;
-            row.appendChild(cell);
-            tableBody.appendChild(row);
-          }
-        });
+    // hide all others
+    sectionIds.forEach(id => {
+      const s = document.getElementById(id);
+      if(!s) return;
+      if(id === targetId) {
+        showWithFade(s);
+      } else {
+        hideWithFade(s);
       }
     });
+
+    // active menu highlight
+    setActiveMenu(targetId);
+  }
+
+  // Active menu highlight
+  function setActiveMenu(targetId) {
+    menuLinks.forEach(link => {
+      const tg = link.getAttribute('data-target');
+      if(tg === targetId) {
+        link.classList.add('menu-active');
+        // For better aria: indicate current
+        link.setAttribute('aria-current', 'page');
+      } else {
+        link.classList.remove('menu-active');
+        link.removeAttribute('aria-current');
+      }
+    });
+  }
+
+  // Auto-close mobile menu if small
+  function maybeCloseMobileMenu() {
+    // Tailwind 'sm' breakpoint is 640px; hide menu on widths < 640
+    if (window.matchMedia('(max-width: 639px)').matches) {
+      if(!sideMenu.classList.contains('hidden')) sideMenu.classList.add('hidden');
+    }
+  }
+
+  // Attach click events to menu links
+  menuLinks.forEach(link => {
+    link.addEventListener('click', (e) => {
+      e.preventDefault();
+      const target = link.getAttribute('data-target');
+      if(!target) return;
+      showSection(target);
+      // instant auto-close on mobile
+      maybeCloseMobileMenu();
+      // scroll to top of main content for better UX
+      document.getElementById('mainContent').scrollTop = 0;
+    });
+  });
+
+  // Initialize: show summary only
+  hideAllSectionsInstant();
+  showSection('summary');
+
+  // Also ensure correct state on window resize (so that large screens show side menu)
+  window.addEventListener('resize', () => {
+    // If larger than sm, ensure sideMenu visible
+    if (window.matchMedia('(min-width: 640px)').matches) {
+      sideMenu.classList.remove('hidden');
+    }
+  });
+});
 </script>
 
-                </div>
-<div id="comm" class="section">
-                <div class="table-container">
-    <h1>Affiliate Earnings</h1>
-    <table id="affiliateTable">
-      <thead>
-        <tr>
-          <th>Affiliate</th>
-          <th>Package Bought</th>
-          <th>Earned</th>
-          <th>Status</th>
-        </tr>
-      </thead>
-      <tbody>
-        <!-- Data will be dynamically inserted here -->
-      </tbody>
-    </table>
-  </div>
-
-  <script type="module">
-    // Firebase configuration
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js";
-    import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-database.js";
-
-    // Firebase configuration
-    const firebaseConfig = {
-      apiKey: "AIzaSyD6k4OlLYnotuuChAjLBoHmqfv9-iwrlfY",
-      authDomain: "alfajiri-database.firebaseapp.com",
-      databaseURL: "https://alfajiri-database-default-rtdb.firebaseio.com",
-      projectId: "alfajiri-database",
-      storageBucket: "alfajiri-database.appspot.com",
-      messagingSenderId: "310417854615",
-      appId: "1:310417854615:web:6f65002a119caeaf9119d2",
-      measurementId: "G-21TBZCRBHM"
-    };
-
-    // Initialize Firebase
-    const app = initializeApp(firebaseConfig);
-
-    // Reference to the data node in your database
-    const dataRef = db.ref("affiliates");
-
-    // Fetch data and populate table
-    const tableBody = document.querySelector("#affiliateTable tbody");
-
-    dataRef.on("value", (snapshot) => {
-      tableBody.innerHTML = ""; // Clear table before adding new data
-      const data = snapshot.val();
-
-      if (data) {
-        Object.keys(data).forEach((key) => {
-          const { affiliate, packageBought, earned, status } = data[key];
-
-          const row = `
-            <tr>
-              <td>${affiliate || "N/A"}</td>
-              <td>${packageBought || "N/A"}</td>
-              <td>${earned || "N/A"}</td>
-              <td>${status || "N/A"}</td>
-            </tr>
-          `;
-          tableBody.innerHTML += row;
-        });
-      } else {
-        tableBody.innerHTML = `<tr><td colspan="4">No data available</td></tr>`;
-      }
-    });
-  </script>
-            </div>
-            <div id="withdraw" class="section">
-                <h1>Withdraw</h1>
-                 <div class="container">
-    <div class="logo">Pasco Prime Global</div>
-    <h1>Withdraw Your Earnings</h1>
-    <form id="withdrawForm">
-      <label for="wallet">SELECT WALLET</label>
-      <select id="wallet" name="wallet" required>
-        <option value="main_balance">MAIN BALANCE</option>
-        <option value="Commission">Commission</option>
-      </select>
-
-      <label for="amount">Enter Amount in USD</label>
-      <input type="number" id="amounts" name="amounts" placeholder="Enter Amount" required>
-
-      <p class="note">Minimum Amount for Main balance: $ 10</p>
-      <p class="note">Minimum Amount for Commission: $ 1</p>
-      <button type="submit" id="withdrawBtn">Withdraw</button>
-    </form>
-    <div id="message" class="hidden">
-      <p>Your withdrawal request is being processed. Please wait...</p>
-    </div>
-  </div>
-  <script type="module">
-    // Import Firebase modules
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js";
-    import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-database.js";
-
-    // Firebase configuration
-    const firebaseConfig = {
-      apiKey: "AIzaSyD6k4OlLYnotuuChAjLBoHmqfv9-iwrlfY",
-      authDomain: "alfajiri-database.firebaseapp.com",
-      databaseURL: "https://alfajiri-database-default-rtdb.firebaseio.com",
-      projectId: "alfajiri-database",
-      storageBucket: "alfajiri-database.appspot.com",
-      messagingSenderId: "310417854615",
-      appId: "1:310417854615:web:6f65002a119caeaf9119d2",
-      measurementId: "G-21TBZCRBHM",
-    };
-
-    // Initialize Firebase
-    const app = initializeApp(firebaseConfig);
-    const database = getDatabase(app);
-
-    // Form submission logic
-    document.getElementById('withdrawForm').addEventListener('submit', function (event) {
-      event.preventDefault();
-      const wallet = document.getElementById('wallet').value;
-      const amounts = parseFloat(document.getElementById('amounts').value);
-      const messageDiv = document.getElementById('message');
-      const timestamp = Date.now(); // Unique timestamp for the database key
-
-      if (amounts >= 1) {
-        const withdrawalRequest = {
-          username: username,
-          wallet: wallet,
-          amount: amounts,
-          timestamp: new Date().toISOString()
-        };
-
-        // Save to Firebase Database using timestamp as unique child
-        const dbRef = ref(database, `withdrawals/${timestamp}`);
-        set(dbRef, withdrawalRequest)
-          .then(() => {
-            messageDiv.style.display = "block"; // Show the message
-            setTimeout(() => {
-              alert('Your withdrawal request has been received! and will be processed within 24 hours');
-              messageDiv.style.display = "none"; // Hide the message
-              document.getElementById('withdrawForm').reset(); // Reset the form
-            }, 3000); // Simulates processing time
-          })
-          .catch((error) => {
-            console.error('Error saving data:', error);
-            alert('An error occurred while processing your request. Please try again later.');
-          });
-      } else {
-        alert('Please enter an amount greater than $ 1');
-      }
-    });
-  </script>
-            </div>
-            <div id="about" class="section">
-                <h1>About</h1>
-                <div class="bout">
-                  <div class="faq-container">
-        <h1 class="faq-header">Explore more about Pasco Prime Global</h1>
-
-        <div class="faq-item">
-          <div class="faq-question" onclick="toggleAnswer('answer1')">
-            Overview and Summary
-            <span>+</span>
-          </div>
-          <div id="answer1" class="faq-answer">
-            PascoPrime Global is a premier international trading platform designed to offer individuals and businesses access to global financial markets. Built on transparency, technology, and customer-centric values, we aim to democratize trading and wealth-building opportunities worldwide.
-          </div>
-        </div>
-
-        <div class="faq-item">
-          <div class="faq-question" onclick="toggleAnswer('answer2')">
-            How It Works
-            <span>+</span>
-          </div>
-          <div id="answer2" class="faq-answer">
-            Our platform connects you to global financial markets with an intuitive interface and cutting-edge tools. Choose a package, subscribe, and start trading stocks, commodities, indices, and currencies. Earn daily on your subscribed package within 24 hours.
-          </div>
-        </div>
-
-        <div class="faq-item">
-          <div class="faq-question" onclick="toggleAnswer('answer3')">
-            How You Earn
-            <span>+</span>
-          </div>
-          <div id="answer3" class="faq-answer">
-            Our platform provides real-time data to inform your trading decisions and help maximize profitability.
-          </div>
-        </div>
-
-        <div class="faq-item">
-          <div class="faq-question" onclick="toggleAnswer('answer4')">
-            How to Cash Out
-            <span>+</span>
-          </div>
-          <div id="answer4" class="faq-answer">
-            Withdrawals are simple and secure, with funds sent to your bank or preferred payment method. Minimum cashout is $10.
-          </div>
-        </div>
-
-        <div class="faq-item">
-          <div class="faq-question" onclick="toggleAnswer('answer5')">
-            Why Choose Us?
-            <span>+</span>
-          </div>
-          <div id="answer5" class="faq-answer">
-            <ul>
-              <li><strong>Global Reach:</strong> Access diverse international markets for broader investment opportunities.</li>
-              <li><strong>User-Friendly Platform:</strong> Intuitive design and powerful tools for traders of all levels.</li>
-              <li><strong>Advanced Analytics:</strong> Real-time data to optimize trading decisions.</li>
-              <li><strong>Customizable Packages:</strong> Ten packages to fit any financial goal or style.</li>
-              <li><strong>Security & Reliability:</strong> Secure trading environment and asset protection.</li>
-              <li><strong>Dedicated Support:</strong> Expert guidance and personalized support.</li>
-            </ul>
-          </div>
-        </div>
-      </div>
-                </div>
-                <script>
-    // Toggle FAQ answers
-    function toggleAnswer(answerId) {
-      const answer = document.getElementById(answerId);
-      const isVisible = answer.style.display === "block";
-
-      // Collapse all answers
-      document.querySelectorAll(".faq-answer").forEach((el) => (el.style.display = "none"));
-
-      // Toggle selected answer
-      answer.style.display = isVisible ? "none" : "block";
-    }
-  </script>
-            </div>
-            <div id="support" class="section">
-                <h1>Support</h1>
-                <div class="containers">
-        <h1>Contact Us on WhatsApp</h1>
-        <p>Click the button below to chat with us on WhatsApp:</p>
-        <button id="whatsappBtn">Chat Now</button>
-    </div>
-    <script>
-        document.getElementById('whatsappBtn').addEventListener('click', function () {
-            const whatsappLink = ' https://wa.me/message/M6XXJJOP6PTLF1';
-            window.location.href = whatsappLink;
-        });
-    </script>
-            </div>
-            <div id="myprofile" class="section">
-              <div class="dashboard-container">
-    <h1>Profile Details</h1>
-    <div class="profile-section">
-      <h3>Your Profile</h3>
-      <div class="profile-details">
-        <label for="email">Email:</label>
-        <input type="email" id="email" value="" readonly>
-      </div>
-      <div class="profile-details">
-        <label for="username">Username:</label>
-        <input type="text" id="username" value="" readonly>
-      </div>
-      <div class="profile-details">
-        <label for="phones">Phone:</label>
-        <input type="text" id="phones" value="">
-      </div>
-      <div class="profile-details">
-        <label for="referredby">Referred By:</label>
-        <input type="text" id="referredby" value="">
-      </div>
-      <div class="actions">
-        <button class="save-btn" id="saveBtn">Save Changes</button>
-        <button class="cancel-btn" id="cancelBtn">Cancel</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Firebase SDK -->
-  <script type="module">
-    import { getDatabase, ref, update } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-database.js";
-
-    // Extract URL parameters
-    const urlParams = new URLSearchParams(window.location.search);
-
-    // Populate the profile section
-    document.getElementById('email').value = urlParams.get('email') || 'Not provided';
-    document.getElementById('username').value = urlParams.get('username') || 'Not provided';
-    document.getElementById('phones').value = urlParams.get('phone') || '';
-    document.getElementById('referredby').value = urlParams.get('referredby') || '';
-
-    // Handle save changes
-    const saveBtn = document.getElementById('saveBtn');
-    const cancelBtn = document.getElementById('cancelBtn');
-    const database = getDatabase();
-
-    saveBtn.addEventListener('click', () => {
-      const username = document.getElementById('username').value;
-      const email = document.getElementById('email').value;
-      const phone = document.getElementById('phone').value;
-      const referredby = document.getElementById('referredby').value;
-
-      // Update data in Firebase
-      const userRef = ref(database, `users/${username}`);
-      update(userRef, { email, phone, referredby })
-        .then(() => {
-          alert('Profile updated successfully!');
-        })
-        .catch((error) => {
-          console.error('Error updating profile:', error);
-          alert('Failed to update profile. Please try again.');
-        });
-    });
-
-    // Handle cancel changes
-    cancelBtn.addEventListener('click', () => {
-      // Reset fields to original values
-      document.getElementById('email').value = urlParams.get('email') || 'Not provided';
-      document.getElementById('username').value = urlParams.get('username') || 'Not provided';
-      document.getElementById('phone').value = urlParams.get('phone') || '';
-      document.getElementById('referredby').value = urlParams.get('referredby') || '';
-    });
-  </script>
-            </div>
-            
-            <div id="logout" class="section">
-                <div class="container" id="logoutContainer">
-    <p id="welcomeMessage"></p>
-    <button id="logoutButton">Logout</button>
-  </div>
-
- <script>
-    // Simulating user login status using localStorage
-    const user = {
-      username: "Pasco Prime User",
-      loggedIn: true
-    };
-
-    // Save user to localStorage (this would typically happen during login)
-    if (!localStorage.getItem("user")) {
-      localStorage.setItem("user", JSON.stringify(user));
-    }
-
-    // Get user data from localStorage
-    const storedUser = JSON.parse(localStorage.getItem("user"));
-
-    // Welcome message
-    const welcomeMessage = document.getElementById("welcomeMessage");
-    if (storedUser && storedUser.loggedIn) {
-      welcomeMessage.textContent = `Welcome, ${storedUser.username}!`;
-    } else {
-      window.location.href = "login.html"; // Redirect to login page if not logged in
-    }
-
-    // Logout logic
-    const logoutButton = document.getElementById("logoutButton");
-    logoutButton.addEventListener("click", () => {
-      // Clear user data from localStorage
-      localStorage.removeItem("user");
-
-      // Redirect to login page
-      alert("You have successfully logged out!");
-      window.location.href = "login.html"; // Replace with your login page URL
-    });
-  </script>
-            </div>
-        </div>
-    </div>
-    <footer id="footer-container">
-        <div class="footer-section">
-            <h3>Contact US</h3>
-            <p>Emal: pascoprimeint@gmail.com</p>
-            <p>Phone: +44 7383 290320</p>
-            <p>Address: 54433222 ss</p>
-        </div>
-        <div class="footer-section social-media">
-            <h3>Follow Us</h3>
-
-             <a href="https://facebook.com" target="_blank" class="social-icon">Facebook</a>
-                        <a href="https://twitter.com" target="_blank" class="social-icon">Twitter</a>
-                        <a href="https://instagram.com" target="_blank" class="social-icon">Instagram</a>
-                        <a href="https://linkedin.com" target="_blank" class="social-icon">LinkedIn</a>
-        </div>
-        <p>&copy; 2023 PascoPrime Global. All rights reserved.</p>
-    </footer>
-
-
-    <script>
-        const toggle = document.querySelector('.toggle');
-        const drawer = document.querySelector('.drawer');
-        const links = document.querySelectorAll('.drawer a');
-        const sections = document.querySelectorAll('.section');
-
-        // Toggle drawer visibility
-        toggle.addEventListener('click', () => {
-            drawer.classList.toggle('open');
-        });
-
-        // Section navigation
-        links.forEach(link => {
-            link.addEventListener('click', (e) => {
-                e.preventDefault();
-                const target = e.target.getAttribute('data-target');
-
-                sections.forEach(section => section.classList.remove('active'));
-                links.forEach(link => link.classList.remove('active'));
-
-                document.getElementById(target).classList.add('active');
-                e.target.classList.add('active');
-
-                // Close drawer on mobile
-                if (window.innerWidth <= 768) {
-                    drawer.classList.remove('open');
-                }
-            });
-        });
-    </script>
-    </div>
-    
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
