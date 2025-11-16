@@ -55,7 +55,7 @@
 
     <p id="connection-status" class="text-sm mb-3"></p>
 
-    <!-- ✅ LOGIN FORM -->
+    <!-- LOGIN FORM -->
     <form id="loginForm" class="space-y-4">
       <div class="text-left">
         <label class="text-base font-semibold">Username</label>
@@ -81,7 +81,7 @@
 
     <p class="text-red-400 mt-3 text-sm" id="error"></p>
 
-    <!-- ✅ CHANGE PASSWORD FORM -->
+    <!-- CHANGE PASSWORD FORM -->
     <form id="changePasswordForm" class="hidden space-y-3 mt-4">
       <div class="text-left">
         <label class="text-sm font-semibold">Current Password</label>
@@ -112,9 +112,8 @@
 
   </div>
 
-  <!-- ✅ Firebase Logic — untouched ✅ -->
+  <!-- FIREBASE LOGIC -->
   <script type="module">
-    /* 🔐 Your entire Firebase code is unchanged — pasted exactly here */
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js";
     import { getDatabase, ref, child, get, update } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-database.js";
     
@@ -163,9 +162,12 @@
       errorElement.textContent = '';
       successElement.textContent = '';
     });
+
+    /* ---------------------------- LOGIN LOGIC ---------------------------- */
     
     loginForm.addEventListener('submit', e => {
       e.preventDefault();
+
       if (!navigator.onLine) {
         errorElement.textContent = 'Cannot log in while offline.';
         return;
@@ -173,18 +175,29 @@
     
       const username = document.getElementById('username').value.trim();
       const password = document.getElementById('password').value;
-    
+
+      /* --------- ADMIN LOGIN --------- */
       if (username === adminuser && password === passkey) {
+
+        // ✅ Save admin username
+        localStorage.setItem("headerUsername", adminuser);
+
         const params = new URLSearchParams({ username: adminuser, role: 'admin' });
         window.location.href = `admindash.html?${params.toString()}`;
         return;
       }
     
+      /* --------- NORMAL USER LOGIN --------- */
       const dbRef = ref(db);
       get(child(dbRef, `users/${username}`)).then(snapshot => {
         if (snapshot.exists()) {
           const user = snapshot.val();
+
           if (user.password === password) {
+
+            // ✅ Save username for dashboard
+            localStorage.setItem("headerUsername", username);
+
             const params = new URLSearchParams({
               username,
               email: user.email || '',
@@ -195,10 +208,13 @@
               depo: user.depo || '',
               wid: user.wid || '0'
             });
-            window.location.href = `dashboard.html?${params.toString()}`;
+
+            window.location.href = `admin.html?${params.toString()}`;
+
           } else {
             errorElement.textContent = '❌ Incorrect password!';
           }
+
         } else {
           errorElement.textContent = '❌ Username not found!';
         }
@@ -206,9 +222,12 @@
         errorElement.textContent = '⚠️ Something went wrong!';
       });
     });
-    
+
+    /* ------------------------ CHANGE PASSWORD ------------------------ */
+
     changePasswordForm.addEventListener('submit', e => {
       e.preventDefault();
+      
       const username = document.getElementById('username').value.trim();
       const currentPassword = document.getElementById('currentPassword').value;
       const newPassword = document.getElementById('newPassword').value;
@@ -222,16 +241,17 @@
       const dbRef = ref(db);
       get(child(dbRef, `users/${username}`)).then(snapshot => {
         if (snapshot.exists() && snapshot.val().password === currentPassword) {
-          update(dbRef, { [`users/${username}/password`]: newPassword }).then(() =>
-            successElement.textContent = '✅ Password updated successfully!'
-          ).catch(() =>
-            errorElement.textContent = '⚠️ Update failed!'
-          );
+          
+          update(dbRef, { [`users/${username}/password`]: newPassword })
+            .then(() => successElement.textContent = '✅ Password updated successfully!')
+            .catch(() => errorElement.textContent = '⚠️ Update failed!');
+        
         } else {
           errorElement.textContent = '⚠️ Incorrect current password!';
         }
       });
     });
+
   </script>
 
 </body>
