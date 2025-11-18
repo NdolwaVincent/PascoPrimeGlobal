@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Dashboard – Users, Deposits & Packages</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  [contenteditable="true"] { outline: 2px dashed #60a5fa; background: #f0f9ff; }
+  body,input,button,table,th,td { font-size:0.8rem; }
+  @media (max-width: 640px) {
+    h1,h2{ font-size:1rem !important;}
+    th,td{padding:6px !important;font-size:0.75rem !important;}
+    button{padding:6px 10px !important;font-size:0.75rem !important;}
+  }
+</style>
+</head>
+<body class="bg-gray-100 font-sans min-h-screen">
+
+<header class="bg-green-700 text-white p-3 flex justify-between items-center">
+  <h1 class="font-bold text-base sm:text-lg">Admin Dashboard</h1>
+</header>
+
+<main class="p-3 sm:p-6 max-w-6xl mx-auto">
+
+  <!-- Tabs -->
+  <div class="flex space-x-2 sm:space-x-4 mb-4 sm:mb-6 text-sm">
+    <button id="tabUsers" class="px-3 py-2 bg-green-600 text-white rounded">Users</button>
+    <button id="tabDeposits" class="px-3 py-2 bg-gray-200 text-gray-800 rounded">Deposits</button>
+    <button id="tabPackages" class="px-3 py-2 bg-gray-200 text-gray-800 rounded">Packages</button>
+  </div>
+
+  <!-- Users Section -->
+  <section id="sectionUsers">
+    <h2 class="text-lg font-bold mb-2">Users Management</h2>
+    <input id="searchUser" type="text" placeholder="Search username..." class="w-full mb-3 p-2 border rounded shadow"/>
+    <div class="bg-white rounded shadow overflow-x-auto">
+      <table class="min-w-full text-sm">
+        <thead class="bg-blue-600 text-white">
+          <tr>
+            <th class="px-3 py-2">#</th>
+            <th class="px-3 py-2">Username</th>
+            <th class="px-3 py-2">Email</th>
+            <th class="px-3 py-2">Phone</th>
+            <th class="px-3 py-2">Referred By</th>
+            <th class="px-3 py-2">Password</th>
+            <th class="px-3 py-2">Actions</th>
+          </tr>
+        </thead>
+        <tbody id="tableUsers" class="bg-white"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- Deposits Section -->
+  <section id="sectionDeposits" class="hidden">
+    <h2 class="text-lg font-bold mb-2">Deposits Management</h2>
+    <button id="btnAddDepositModal" class="bg-green-600 text-white px-3 py-2 rounded mb-3 hover:bg-green-700">Add Deposit</button>
+    <input id="searchDeposit" placeholder="Search by username or phone..." class="w-full mb-3 p-2 border rounded">
+    <div class="w-full overflow-x-auto">
+      <table class="w-full bg-white rounded-xl shadow min-w-[600px]">
+        <thead class="bg-green-700 text-white text-xs sm:text-sm">
+          <tr>
+            <th class="p-2 border-r">Username</th>
+            <th class="p-2 border-r">Phone</th>
+            <th class="p-2 border-r">Amount</th>
+            <th class="p-2 border-r">Provider</th>
+            <th class="p-2 border-r">Reference</th>
+            <th class="p-2 border-r">Date</th>
+            <th class="p-2">Actions</th>
+          </tr>
+        </thead>
+        <tbody id="tableDeposits" class="text-gray-700 text-xs sm:text-sm"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- Packages Section -->
+  <section id="sectionPackages" class="hidden">
+    <h2 class="text-lg font-bold mb-2">Packages Management</h2>
+    <button id="btnAddPackageModal" class="bg-green-700 text-white px-3 py-2 rounded mb-3 hover:bg-green-800">Add Package</button>
+    <input id="searchPackage" placeholder="Search by username or package..." class="w-full mb-3 p-2 border rounded">
+    <div class="w-full overflow-x-auto">
+      <table class="w-full bg-white rounded-xl shadow min-w-[650px]">
+        <thead class="bg-green-700 text-white text-xs sm:text-sm">
+          <tr>
+            <th class="p-2 border-r">Username</th>
+            <th class="p-2 border-r">Package</th>
+            <th class="p-2 border-r">USD</th>
+            <th class="p-2 border-r">Daily $</th>
+            <th class="p-2 border-r">Phone</th>
+            <th class="p-2 border-r">Activated</th>
+            <th class="p-2 border-r">Expires</th>
+            <th class="p-2">Actions</th>
+          </tr>
+        </thead>
+        <tbody id="tablePackages" class="text-gray-700 text-xs sm:text-sm"></tbody>
+      </table>
+    </div>
+  </section>
+
+</main>
+
+<!-- Deposit Modal -->
+<div id="modalDeposit" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden p-4">
+  <div class="bg-white rounded-lg p-4 w-full max-w-xs sm:max-w-sm">
+    <h2 class="font-bold mb-3 text-sm sm:text-base">Deposit</h2>
+    <div class="space-y-2">
+      <input id="depositUsername" placeholder="Username" class="p-2 border rounded w-full">
+      <input id="depositPhone" placeholder="Phone" class="p-2 border rounded w-full">
+      <input id="depositAmount" type="number" placeholder="Amount" class="p-2 border rounded w-full">
+      <input id="depositProvider" placeholder="Provider" class="p-2 border rounded w-full">
+      <input id="depositReference" placeholder="Reference" class="p-2 border rounded w-full">
+    </div>
+    <div class="mt-4 flex justify-end space-x-2">
+      <button id="cancelDeposit" class="px-3 py-1 bg-gray-400 rounded text-white">Cancel</button>
+      <button id="saveDeposit" class="px-3 py-1 bg-green-600 rounded text-white">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- Package Modal -->
+<div id="modalPackage" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden p-4">
+  <div class="bg-white rounded-lg p-4 w-full max-w-xs sm:max-w-sm">
+    <h2 class="font-bold mb-3 text-sm sm:text-base">Package</h2>
+    <div class="space-y-2">
+      <input id="packageUsername" placeholder="Username" class="p-2 border rounded w-full">
+      <input id="packageName" placeholder="Package" class="p-2 border rounded w-full">
+      <input id="packageUSD" type="number" placeholder="USD" class="p-2 border rounded w-full">
+      <input id="packageDaily" type="number" placeholder="Daily $" class="p-2 border rounded w-full">
+      <input id="packagePhone" placeholder="Phone" class="p-2 border rounded w-full">
+    </div>
+    <div class="mt-4 flex justify-end space-x-2">
+      <button id="cancelPackage" class="px-3 py-1 bg-gray-400 rounded text-white">Cancel</button>
+      <button id="savePackage" class="px-3 py-1 bg-green-600 rounded text-white">Save</button>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getDatabase, ref, onValue, push, update, remove, set } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+
+// Firebase config
+const firebaseConfig = {
+  apiKey: "AIzaSyD6k4OlLYnotuuChAjLBoHmqfv9-iwrlfY",
+  authDomain: "alfajiri-database.firebaseapp.com",
+  databaseURL: "https://alfajiri-database-default-rtdb.firebaseio.com",
+  projectId: "alfajiri-database",
+  storageBucket: "alfajiri-database.appspot.com",
+  messagingSenderId: "310417854615",
+  appId: "1:310417854615:web:6f65002a119caeaf9119d2"
+};
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
+/* --------- Tabs --------- */
+const tabs = {
+  users:{btn:document.getElementById('tabUsers'),section:document.getElementById('sectionUsers')},
+  deposits:{btn:document.getElementById('tabDeposits'),section:document.getElementById('sectionDeposits')},
+  packages:{btn:document.getElementById('tabPackages'),section:document.getElementById('sectionPackages')}
+};
+Object.values(tabs).forEach(({btn,section})=>{
+  btn.addEventListener('click', ()=>{
+    Object.values(tabs).forEach(t=>{ t.section.classList.add('hidden'); t.btn.classList.remove('bg-green-600','text-white'); t.btn.classList.add('bg-gray-200','text-gray-800'); });
+    section.classList.remove('hidden'); btn.classList.add('bg-green-600','text-white'); btn.classList.remove('bg-gray-200','text-gray-800');
+  });
+});
+
+/* --------- Users Table --------- */
+const tableUsers=document.getElementById('tableUsers');
+const searchUser=document.getElementById('searchUser');
+onValue(ref(db,'users'), snapshot=>{
+  let i=1;
+  tableUsers.innerHTML='';
+  snapshot.forEach(snap=>{
+    const u = snap.val();
+    const tr=document.createElement('tr');
+    tr.classList.add('border-b');
+    tr.dataset.key=snap.key;
+    tr.innerHTML=`
+      <td class="px-3 py-2">${i++}</td>
+      <td class="px-3 py-2" data-field="username">${u.username||''}</td>
+      <td class="px-3 py-2" data-field="email">${u.email||''}</td>
+      <td class="px-3 py-2" data-field="phone">${u.phone||''}</td>
+      <td class="px-3 py-2" data-field="referredby">${u.referredby||''}</td>
+      <td class="px-3 py-2" data-field="password">${u.password||''}</td>
+      <td class="px-3 py-2 space-x-2">
+        <button class="edit bg-blue-500 text-white px-2 py-1 rounded">Edit</button>
+        <button class="save bg-green-500 text-white px-2 py-1 rounded hidden">Save</button>
+        <button class="delete bg-red-500 text-white px-2 py-1 rounded">Delete</button>
+      </td>`;
+    tableUsers.appendChild(tr);
+    const editBtn=tr.querySelector('.edit'), saveBtn=tr.querySelector('.save'), deleteBtn=tr.querySelector('.delete'), editable=tr.querySelectorAll('td[data-field]');
+    editBtn.onclick=()=>{ editable.forEach(td=>td.contentEditable="true"); editBtn.classList.add('hidden'); saveBtn.classList.remove('hidden'); }
+    saveBtn.onclick=async()=>{ 
+      const updated={}; editable.forEach(td=>{ updated[td.dataset.field]=td.innerText.trim(); td.contentEditable="false"; });
+      await update(ref(db,'users/'+snap.key),updated); saveBtn.classList.add('hidden'); editBtn.classList.remove('hidden');
+    }
+    deleteBtn.onclick=async()=>{ if(confirm("Delete this user?")){ await remove(ref(db,'users/'+snap.key)); tr.remove(); } }
+  });
+});
+searchUser.addEventListener('input',()=>{ const val=searchUser.value.toLowerCase(); tableUsers.querySelectorAll('tr').forEach(tr=>{ const username=tr.querySelector('td[data-field="username"]').textContent.toLowerCase(); tr.style.display=username.includes(val)?'':'none'; }); });
+
+/* --------- Deposits --------- */
+let currentDepositId=null;
+const tableDeposits=document.getElementById('tableDeposits');
+const searchDeposit=document.getElementById('searchDeposit');
+const modalDeposit=document.getElementById('modalDeposit');
+const depositFields={username:document.getElementById('depositUsername'),phone:document.getElementById('depositPhone'),amount:document.getElementById('depositAmount'),provider:document.getElementById('depositProvider'),reference:document.getElementById('depositReference')};
+document.getElementById('btnAddDepositModal').onclick=()=>{ currentDepositId=null; Object.values(depositFields).forEach(f=>f.value=''); modalDeposit.classList.remove('hidden'); }
+document.getElementById('cancelDeposit').onclick=()=>modalDeposit.classList.add('hidden');
+document.getElementById('saveDeposit').onclick=()=>{
+  const username=depositFields.username.value.trim();
+  const data={phone:depositFields.phone.value.trim(),amount:parseFloat(depositFields.amount.value),provider:depositFields.provider.value.trim(),providerReference:depositFields.reference.value.trim(),timestamp:Date.now()};
+  if(!username||!data.phone||!data.amount||!data.provider) return alert('All fields required!');
+  if(currentDepositId){ set(ref(db,`Deposits/${username}/${currentDepositId}`),data); }
+  else{ push(ref(db,`Deposits/${username}`),data); }
+  modalDeposit.classList.add('hidden');
+};
+onValue(ref(db,'Deposits'), snapshot=>{
+  let html='';
+  snapshot.forEach(userSnap=>{
+    const username=userSnap.key;
+    userSnap.forEach(depSnap=>{
+      const d=depSnap.val();
+      html+=`<tr data-user="${username}" data-id="${depSnap.key}">
+        <td class="p-2 border-r">${username}</td>
+        <td class="p-2 border-r">${d.phone}</td>
+        <td class="p-2 border-r">${d.amount}</td>
+        <td class="p-2 border-r">${d.provider}</td>
+        <td class="p-2 border-r">${d.providerReference}</td>
+        <td class="p-2 border-r">${new Date(d.timestamp).toLocaleString()}</td>
+        <td class="p-2 text-center">
+          <button class="editDepositBtn bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700">Edit</button>
+          <button class="deleteDepositBtn bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700">Delete</button>
+        </td>
+      </tr>`;
+    });
+  });
+  tableDeposits.innerHTML=html;
+
+  tableDeposits.querySelectorAll('.editDepositBtn').forEach(btn=>{
+    btn.onclick=()=>{
+      const tr=btn.closest('tr'); currentDepositId=tr.dataset.id;
+      const username=tr.dataset.user;
+      onValue(ref(db,`Deposits/${username}/${currentDepositId}`),snap=>{
+        const d=snap.val();
+        depositFields.username.value=username; depositFields.phone.value=d.phone; depositFields.amount.value=d.amount;
+        depositFields.provider.value=d.provider; depositFields.reference.value=d.providerReference;
+        modalDeposit.classList.remove('hidden');
+      },{onlyOnce:true});
+    }
+  });
+  tableDeposits.querySelectorAll('.deleteDepositBtn').forEach(btn=>{
+    btn.onclick=()=>{
+      const tr=btn.closest('tr'); const username=tr.dataset.user; const id=tr.dataset.id;
+      if(confirm('Delete this deposit?')) remove(ref(db,`Deposits/${username}/${id}`));
+    }
+  });
+});
+searchDeposit.addEventListener('input',()=>{ const val=searchDeposit.value.toLowerCase(); tableDeposits.querySelectorAll('tr').forEach(tr=>{ const user=tr.dataset.user.toLowerCase(); const phone=tr.children[1].textContent.toLowerCase(); tr.style.display=(user.includes(val)||phone.includes(val))?'':'none'; }); });
+
+/* --------- Packages --------- */
+let currentPackageId=null;
+const tablePackages=document.getElementById('tablePackages');
+const searchPackage=document.getElementById('searchPackage');
+const modalPackage=document.getElementById('modalPackage');
+const packageFields={username:document.getElementById('packageUsername'),name:document.getElementById('packageName'),usd:document.getElementById('packageUSD'),daily:document.getElementById('packageDaily'),phone:document.getElementById('packagePhone')};
+document.getElementById('btnAddPackageModal').onclick=()=>{ currentPackageId=null; Object.values(packageFields).forEach(f=>f.value=''); modalPackage.classList.remove('hidden'); }
+document.getElementById('cancelPackage').onclick=()=>modalPackage.classList.add('hidden');
+document.getElementById('savePackage').onclick=()=>{
+  const username=packageFields.username.value.trim();
+  const now=Date.now();
+  const data={package:packageFields.name.value.trim(),usd:parseFloat(packageFields.usd.value),dailyIncome:parseFloat(packageFields.daily.value),phone:packageFields.phone.value.trim(),activatedOn:now,expiresOn:now+30*24*60*60*1000};
+  if(!username||!data.package||!data.usd||!data.dailyIncome||!data.phone) return alert('All fields required!');
+  if(currentPackageId){ set(ref(db,`ProvenWealth/packages/${username}/${currentPackageId}`),data); }
+  else{ push(ref(db,`ProvenWealth/packages/${username}`),data); }
+  modalPackage.classList.add('hidden');
+};
+onValue(ref(db,'ProvenWealth/packages'), snapshot=>{
+  let html='';
+  snapshot.forEach(userSnap=>{
+    const username=userSnap.key;
+    userSnap.forEach(pkgSnap=>{
+      const p=pkgSnap.val();
+      html+=`<tr data-user="${username}" data-id="${pkgSnap.key}">
+        <td class="p-2 border-r">${username}</td>
+        <td class="p-2 border-r">${p.package}</td>
+        <td class="p-2 border-r">${p.usd}</td>
+        <td class="p-2 border-r">${p.dailyIncome}</td>
+        <td class="p-2 border-r">${p.phone}</td>
+        <td class="p-2 border-r">${new Date(p.activatedOn).toLocaleString()}</td>
+        <td class="p-2 border-r">${new Date(p.expiresOn).toLocaleString()}</td>
+        <td class="p-2 text-center">
+          <button class="editPackageBtn bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700">Edit</button>
+          <button class="deletePackageBtn bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700">Delete</button>
+        </td>
+      </tr>`;
+    });
+  });
+  tablePackages.innerHTML=html;
+
+  tablePackages.querySelectorAll('.editPackageBtn').forEach(btn=>{
+    btn.onclick=()=>{
+      const tr=btn.closest('tr'); currentPackageId=tr.dataset.id;
+      const username=tr.dataset.user;
+      onValue(ref(db,`ProvenWealth/packages/${username}/${currentPackageId}`),snap=>{
+        const p=snap.val();
+        packageFields.username.value=username;
+        packageFields.name.value=p.package;
+        packageFields.usd.value=p.usd;
+        packageFields.daily.value=p.dailyIncome;
+        packageFields.phone.value=p.phone;
+        modalPackage.classList.remove('hidden');
+      },{onlyOnce:true});
+    }
+  });
+  tablePackages.querySelectorAll('.deletePackageBtn').forEach(btn=>{
+    btn.onclick=()=>{
+      const tr=btn.closest('tr'); const username=tr.dataset.user; const id=tr.dataset.id;
+      if(confirm('Delete this package?')) remove(ref(db,`ProvenWealth/packages/${username}/${id}`));
+    }
+  });
+});
+searchPackage.addEventListener('input',()=>{ const val=searchPackage.value.toLowerCase(); tablePackages.querySelectorAll('tr').forEach(tr=>{ const username=tr.dataset.user.toLowerCase(); const pkg=tr.children[1].textContent.toLowerCase(); tr.style.display=(username.includes(val)||pkg.includes(val))?'':'none'; }); });
+</script>
+
+</body>
+</html>
