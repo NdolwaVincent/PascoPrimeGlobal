@@ -1,1 +1,979 @@
 
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1.0" />
+<title>ProvenWealth Dashboard</title>
+    
+<script src="https://cdn.tailwindcss.com"></script>
+   
+<script src="https://applet.payherokenya.com/cdn/button_sdk.js?v=3.1"></script>
+   
+
+<style>
+  /* Fade transition helpers */
+  .section {
+    transition: opacity 260ms ease, transform 260ms ease;
+    will-change: opacity, transform;
+  }
+  .hidden-by-js {
+    display: none !important;
+    opacity: 0 !important;
+    transform: translateY(8px) !important;
+  }
+  .fade-in {
+    display: block;
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  .fade-in.show {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* For absolute-positioned transition state when switching quickly */
+  .anim-temp {
+    position: relative;
+  }
+
+  /* Active menu style (Style 1) fallback in case Tailwind isn't loaded instantly */
+  .menu-active {
+    background-color: #ecfdf5; /* bg-green-100 */
+    color: #166534 !important; /* text-green-700 */
+    font-weight: 700;
+    border-left-width: 4px;
+    border-color: #166534; /* border-green-700 */
+  }
+
+  /* Small visual niceties */
+  aside nav a { display: block; }
+
+  /* Floating WhatsApp button */
+    .floating-whatsapp {
+      position: fixed;
+      bottom: 25px;
+      right: 25px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 10px;
+      z-index: 50;
+    }
+
+    .floating-whatsapp .option {
+      display: flex;
+      align-items: center;
+      background-color: #22c55e;
+      color: white;
+      padding: 10px 14px;
+      border-radius: 50px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+      opacity: 0;
+      transform: translateY(10px);
+      pointer-events: none;
+      transition: all 0.3s ease;
+      white-space: nowrap;
+    }
+
+    .floating-whatsapp:hover .option {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: auto;
+    }
+    .floating-whatsapp .main {
+      background-color: #25d366;
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+      cursor: pointer;
+      transition: transform 0.2s ease;
+    }
+
+    .floating-whatsapp .main:hover {
+      transform: scale(1.05);
+    }
+
+    .floating-whatsapp img {
+      width: 28px;
+      height: 28px;
+    }
+</style>
+</head>
+
+<body class="bg-gray-100 flex flex-col min-h-screen font-sans">
+
+<!-- Header -->
+<header class="bg-green-700 text-white p-4 shadow-md flex items-center justify-between">
+
+  <!-- Left: Menu Toggle -->
+  <button id="menuToggle" class="sm:hidden p-2 bg-green-600 rounded hover:bg-green-800" aria-label="Toggle menu">
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none"
+      viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+        d="M4 6h16M4 12h16M4 18h16"/>
+    </svg>
+  </button>
+
+  <!-- Center: Welcome Message -->
+  <div class="text-center flex-1">
+    <p class="text-lg font-semibold">
+      Welcome, <span id="usernameHeader" class="font-bold">User</span>
+    </p>
+  </div>
+
+  <!-- Right: Logout Button -->
+  <div>
+    <button id="logoutBtn"
+      class="bg-white text-green-700 px-4 py-2 rounded-lg hover:bg-gray-100 font-semibold shadow">
+      Logout
+    </button>
+  </div>
+
+</header>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    const username = localStorage.getItem("headerUsername") || "Guest";
+    document.getElementById("usernameHeader").textContent = username;
+
+    // Logout clears login + redirects
+    document.getElementById("logoutBtn").onclick = () => {
+        localStorage.removeItem("headerUsername");
+        window.location.href = "login.html";
+    };
+});
+</script>
+
+
+<div class="flex flex-1 overflow-hidden">
+
+  <!-- Side Menu -->
+  <aside id="sideMenu" class="bg-gray-200 sm:w-72 p-4 shadow-lg sm:block hidden flex-shrink-0">
+    <div class="flex flex-col items-center mb-6">
+      <p class="font-semibold text-green-700" id="usernameSidebar">Vincentn</p>
+    </div>
+    <nav class="space-y-3 text-sm">
+      <a href="#summary" class="menu-link block p-2 rounded hover:bg-green-100 font-semibold text-green-700 transition" data-target="summary">Summary</a>
+      <a href="#packagesSection" class="menu-link block p-2 rounded hover:bg-green-100 font-semibold text-green-700 transition" data-target="packagesSection">Packages</a>
+      <a href="#deposits" class="menu-link block p-2 rounded hover:bg-green-100 font-semibold text-green-700 transition" data-target="deposits">Deposits</a>
+      <a href="#depositForm" class="menu-link block p-2 rounded hover:bg-green-100 font-semibold text-green-700 transition" data-target="depositForm">Make Deposit</a>
+      <a href="#withdrawSection" class="menu-link block p-2 rounded hover:bg-green-100 font-semibold text-green-700 transition" data-target="withdrawSection">Withdraw</a>
+      <a href="#withdrawalsTableSection" class="menu-link block p-2 rounded hover:bg-green-100 font-semibold text-green-700 transition" data-target="withdrawalsTableSection">Withdrawal History</a>
+    </nav>
+  </aside>
+
+  <!-- Main Content -->
+  <main id="mainContent" class="flex-1 p-6 overflow-auto space-y-8 relative">
+
+    <!-- Summary Cards -->
+    <section id="summary" class="section fade-in grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+
+  <h1 class="text-2xl md:text-3xl font-bold text-center mb-6 text-green-600 col-span-full">
+    Account Details
+  </h1>
+
+  <div class="bg-white rounded-2xl p-6 md:p-10 shadow-md border border-gray-200 col-span-full">
+
+    <h2 class="text-xl md:text-2xl font-semibold text-gray-800 mb-6 text-center tracking-wide">
+      YOUR PROVEN ACCOUNT
+    </h2>
+
+    <!-- Stats Cards -->
+    <div class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+
+      <!-- Total Deposit -->
+      <div class="bg-green-50 rounded-2xl p-6 shadow-sm hover:shadow-lg transition-all duration-300 text-center border border-green-100">
+        <h4 id="totalDeposits" class="text-2xl font-bold text-green-700 mb-1">Loading...</h4>
+        <p class="text-xs text-gray-500 uppercase tracking-wider font-semibold">
+          Total Deposit
+        </p>
+      </div>
+
+      <!-- Active Packages -->
+      <div class="bg-green-50 rounded-2xl p-6 shadow-sm hover:shadow-lg transition-all duration-300 text-center border border-green-100">
+        <h3 id="activePackagesCount" class="text-2xl font-bold text-green-700 mb-1">Loading...</h3>
+        <p class="text-sm text-gray-600 font-medium">Active Packages</p>
+      </div>
+
+      <!-- Daily Earnings -->
+      <div class="bg-green-50 rounded-2xl p-6 shadow-sm hover:shadow-lg transition-all duration-300 text-center border border-green-100">
+        <h3 id="dailyEarnings" class="text-2xl font-bold text-green-700 mb-1">Loading...</h3>
+        <p class="text-sm text-gray-600 font-medium">Daily Earnings</p>
+      </div>
+
+      <!-- Total Balance -->
+      <div class="bg-green-50 rounded-2xl p-6 shadow-sm hover:shadow-lg transition-all duration-300 text-center border border-green-100">
+        <h3 id="totalBalance" class="text-2xl font-bold text-green-700 mb-1">USD 0</h3>
+        <p class="text-sm text-gray-600 font-medium">Total Balance</p>
+      </div>
+
+    </div>
+
+    <!-- Affiliate Link Section -->
+    <div class="mt-10 bg-gray-50 rounded-2xl p-8 shadow-inner border border-gray-200 text-center">
+
+      <h3 class="text-lg md:text-xl font-semibold text-gray-700 mb-3">
+        Affiliate Link
+      </h3>
+
+      <p class="text-gray-600 mb-5">
+        Enter your username to generate your personalized invite link:
+      </p>
+
+      <div class="flex flex-col sm:flex-row justify-center items-center gap-3">
+        <input type="text" id="usernames" placeholder="Enter your username"
+          class="border border-gray-300 rounded-xl px-4 py-2 w-full sm:w-72 focus:ring-2 focus:ring-green-500 outline-none shadow-sm">
+        
+        <button onclick="generateLink()"
+          class="bg-green-600 text-white px-6 py-2 rounded-xl hover:bg-green-700 transition-all duration-200 shadow-sm">
+          Generate
+        </button>
+      </div>
+
+      <p id="link" class="mt-4 text-blue-600 underline break-words">
+        Your link will appear here.
+      </p>
+
+      <div class="flex flex-col sm:flex-row justify-center gap-3 mt-5">
+        <button id="copyButton" onclick="copyLink()" disabled
+          class="bg-gray-400 text-white px-6 py-2 rounded-xl disabled:opacity-50 hover:bg-gray-500 transition-all duration-200 shadow-sm">
+          Copy Link
+        </button>
+
+        <button id="shareButton" onclick="shareLink()" disabled
+          class="bg-green-600 text-white px-6 py-2 rounded-xl hover:bg-green-700 transition-all duration-200 shadow-sm">
+          Share Link
+        </button>
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+    <!-- Make Deposit -->
+    <section id="depositForm" class="section fade-in bg-white p-6 shadow-md rounded-xl max-w-md mx-auto">
+      <h2 class="text-xl font-semibold text-green-700 mb-4 border-b pb-2">Make a Deposit</h2>
+      <label class="font-semibold mt-2">Phone Number</label>
+      <input id="phoneInput" type="tel" placeholder="07XXXXXXXX" class="w-full border p-3 rounded mb-4 focus:outline-none focus:ring-2 focus:ring-green-600"/>
+      <label class="font-semibold">Amount (KES)</label>
+      <input id="amountInput" type="number" placeholder="Enter Amount" class="w-full border p-3 rounded mb-4 focus:outline-none focus:ring-2 focus:ring-green-600"/>
+      <button id="proceedBtn" class="w-full bg-green-600 text-white py-3 rounded-lg hover:bg-green-700 font-semibold transition">Proceed to Pay</button>
+      <p id="depositStatus" class="mt-3 font-semibold text-center text-gray-600"></p>
+    </section>
+
+    <!-- Packages Section -->
+    <section id="packagesSection" class="section fade-in space-y-6">
+      <h2 class="text-xl font-semibold text-green-700 mb-2 border-b pb-2">Available Packages</h2>
+      <div id="packagesContainer" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4"></div>
+
+      <!-- Active Packages Table -->
+      <div class="bg-white p-6 shadow-md rounded-xl overflow-auto">
+        <h2 class="text-lg font-semibold mb-3 text-green-700">Active Packages</h2>
+        <table class="w-full text-left text-sm sm:text-base table-auto border-collapse">
+          <thead class="bg-green-700 text-white">
+            <tr>
+              <th class="p-2 border-r">Package</th>
+              <th class="p-2 border-r">Amount ($)</th>
+              <th class="p-2 border-r">Daily Earnings ($)</th>
+              <th class="p-2 border-r">Start Date</th>
+              <th class="p-2 border-r">Expiry Date</th>
+              <th class="p-2">Earnings (KES)</th>
+            </tr>
+          </thead>
+          <tbody id="packagesTable" class="text-gray-700"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Deposits Table -->
+    <section id="deposits" class="section fade-in bg-white p-6 shadow-md rounded-xl overflow-auto">
+      <h2 class="text-lg font-semibold mb-3 text-green-700">Recent Deposits</h2>
+      <table class="w-full text-left text-sm sm:text-base table-auto border-collapse">
+        <thead class="bg-green-700 text-white">
+          <tr>
+            <th class="p-2 border-r">Date</th>
+            <th class="p-2 border-r">Amount (KES)</th>
+            <th class="p-2 border-r">Reference</th>
+            <th class="p-2">Provider</th>
+          </tr>
+        </thead>
+        <tbody id="depositsTable" class="text-gray-700"></tbody>
+      </table>
+    </section>
+
+    <!-- Withdraw Section -->
+    <section id="withdrawSection" class="section fade-in bg-white p-6 shadow-md rounded-xl max-w-md mx-auto">
+      <h2 class="text-xl font-semibold text-green-700 mb-4 border-b pb-2">Withdraw Earnings</h2>
+      <label class="font-semibold">Amount (KES)</label>
+      <input id="withdrawAmount" type="number" placeholder="Enter Amount" class="w-full border p-3 rounded mb-4 focus:outline-none focus:ring-2 focus:ring-green-600"/>
+      <button id="withdrawBtn" class="w-full bg-green-600 text-white py-3 rounded-lg hover:bg-green-700 font-semibold transition">Withdraw</button>
+      <p id="withdrawStatus" class="mt-3 font-semibold text-center text-gray-600"></p>
+    </section>
+
+    <!-- Withdrawals Table -->
+    <section id="withdrawalsTableSection" class="section fade-in bg-white p-6 shadow-md rounded-xl overflow-auto">
+      <h2 class="text-lg font-semibold mb-3 text-green-700">Withdrawal History</h2>
+      <table class="w-full text-left text-sm sm:text-base table-auto border-collapse">
+        <thead class="bg-green-700 text-white">
+          <tr>
+            <th class="p-2 border-r">Date</th>
+            <th class="p-2 border-r">Amount (KES)</th>
+            <th class="p-2 border-r">Status</th>
+          </tr>
+        </thead>
+        <tbody id="withdrawalsTable" class="text-gray-700"></tbody>
+      </table>
+    </section>
+    <section id="profile" class="section fade-in bg-white p-6 shadow-md rounded-xl overflow-auto">
+      <h2 class="text-lg font-semibold mb-3 text-green-700">Withdrawal History</h2>
+      <table class="w-full text-left text-sm sm:text-base table-auto border-collapse">
+        <thead class="bg-green-700 text-white">
+          <tr>
+            <th class="p-2 border-r">Date</th>
+            <th class="p-2 border-r">Amount (KES)</th>
+            <th class="p-2 border-r">Status</th>
+          </tr>
+        </thead>
+        <tbody id="withdrawalsTable" class="text-gray-700"></tbody>
+      </table>
+    </section>
+
+  </main>
+</div>
+
+<!-- Footer -->
+<footer class="bg-green-600 text-white py-12">
+  <div class="max-w-6xl mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-8">
+
+    <!-- Vision Section -->
+    <div>
+      <h3 class="text-xl font-bold mb-3">Vision</h3>
+      <p class="text-sm text-green-100">
+        To be the world’s most trusted investment platform — making wealth creation accessible, transparent, and rewarding for all.
+      </p>
+    </div>
+
+    <!-- Company Links -->
+    <div>
+      <h3 class="text-xl font-bold mb-3">Company</h3>
+      <ul class="space-y-2">
+        <li><a href="#" class="hover:text-green-200 transition">About</a></li>
+        <li><a href="#" class="hover:text-green-200 transition">Careers</a></li>
+        <li><a href="#" class="hover:text-green-200 transition">Privacy Policy</a></li>
+        <li><a href="#" class="hover:text-green-200 transition">Contact</a></li>
+      </ul>
+    </div>
+
+    <!-- Contact Info with Icons -->
+    <div>
+      <h3 class="text-xl font-bold mb-3">Contact</h3>
+      <p class="flex items-center gap-2 text-sm mb-1">
+        <!-- Location Icon -->
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 11c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3z"/>
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 22s8-4.438 8-10c0-4.418-3.582-8-8-8s-8 3.582-8 8c0 5.562 8 10 8 10z"/>
+        </svg>
+        875 United Nation Plaza, New York
+      </p>
+      <p class="flex items-center gap-2 text-sm mb-1">
+        <!-- Phone Icon -->
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5h2l3.6 7.59-1.35 2.45a11.042 11.042 0 005.2 5.2l2.45-1.35L19 19v2a1 1 0 001 1h3a1 1 0 001-1V6a1 1 0 00-1-1h-3a1 1 0 00-1 1v2l-4.5 4.5"/>
+        </svg>
+        +44 7383 290320
+      </p>
+      <p class="flex items-center gap-2 text-sm mb-1">
+        <!-- Email Icon -->
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 12H8m0 0l4 4m0-8l-4 4m0 0l4-4"/>
+        </svg>
+        <a href="mailto:provenwealthint@gmail.com" class="hover:text-green-200 transition">provenwealthint@gmail.com</a>
+      </p>
+
+      <!-- Social Icons -->
+      <div class="flex gap-4 mt-3">
+        <a href="#" class="hover:text-green-200 transition">
+          <!-- Facebook Icon -->
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M22 12a10 10 0 10-11.5 9.95v-7.05h-2.5v-2.9h2.5V9.5c0-2.5 1.5-3.9 3.8-3.9 1.1 0 2.2.2 2.2.2v2.5h-1.2c-1.2 0-1.6.8-1.6 1.6v1.9h2.7l-.4 2.9h-2.3v7.05A10 10 0 0022 12z"/>
+          </svg>
+        </a>
+        <a href="#" class="hover:text-green-200 transition">
+          <!-- Twitter Icon -->
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M23 3a10.9 10.9 0 01-3.14 1.53 4.48 4.48 0 00-7.86 3v1A10.66 10.66 0 013 4s-4 9 5 13a11.64 11.64 0 01-7 2c9 5 20 0 20-11.5a4.5 4.5 0 00-.08-.83A7.72 7.72 0 0023 3z"/>
+          </svg>
+        </a>
+        <a href="#" class="hover:text-green-200 transition">
+          <!-- LinkedIn Icon -->
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M16 8a6 6 0 016 6v6h-4v-6a2 2 0 00-4 0v6h-4v-6a6 6 0 016-6zM2 9h4v12H2zM4 3a2 2 0 110 4 2 2 0 010-4z"/>
+          </svg>
+        </a>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Divider & Copyright -->
+  <div class="border-t border-green-500 mt-10 pt-4 text-center text-sm text-green-100">
+    &copy; 2025 Proven Wealth Investment. All rights reserved.
+  </div>
+</footer>
+
+
+<!-- Floating WhatsApp Button -->
+  <div class="floating-whatsapp">
+    <div class="option">
+      <span class="mr-2">Join Group</span>
+      <a href="https://chat.whatsapp.com/JQ7IFEf56wFCnXn9d4ECgO?mode=hqrt3" target="_blank">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="Group">
+      </a>
+    </div>
+    <div class="option">
+      <span class="mr-2">Chat Support</span>
+      <a href="https://wa.me/254108891937" target="_blank">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="Chat">
+      </a>
+    </div>
+    <div class="main">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp Main">
+    </div>
+  </div>
+
+<!-- Modals -->
+<div id="phoneModal" class="fixed inset-0 bg-black/50 flex items-center justify-center hidden z-50">
+  <div class="bg-white p-6 rounded-xl w-11/12 sm:w-80 shadow-lg">
+    <h2 class="text-lg font-bold text-green-700 mb-4">Enter Phone Number</h2>
+    <input id="pkgPhone" type="tel" placeholder="07XXXXXXXX" class="w-full border p-2 rounded mb-3 text-sm focus:outline-none focus:ring-2 focus:ring-green-600">
+    <button id="confirmPkgPhone" class="w-full bg-green-600 text-white py-2 rounded hover:bg-green-700 font-semibold text-sm mb-2">Proceed</button>
+    <button id="cancelPkgPhone" class="w-full text-gray-600 py-2 rounded hover:bg-gray-200 font-semibold text-sm">Cancel</button>
+  </div>
+</div>
+
+<div id="payHeroDialog" class="fixed inset-0 bg-black/50 flex items-center justify-center hidden z-50">
+  <div class="bg-white p-6 rounded-xl w-11/12 sm:w-96 shadow-lg">
+    <h2 class="text-lg font-bold text-green-700 mb-4 text-center">Complete Payment</h2>
+    <div id="payHeroContainer"></div>
+    <button id="closePayHero" class="mt-4 w-full text-gray-600 py-2 rounded hover:bg-gray-200 font-semibold">Close</button>
+  </div>
+</div>
+<script>
+    const baseUrl = "https://provenwealthglobal.com/Register.html";
+
+    function generateLink() {
+      const usernamel = document.getElementById("usernames").value.trim();
+      if (!usernamel) {
+        alert("Please enter a username!");
+        return;
+      }
+      const personalizedLink = `${baseUrl}?ref=${encodeURIComponent(usernamel)}`;
+      const linkElement = document.getElementById("link");
+      linkElement.textContent = personalizedLink;
+      linkElement.style.color = "#007BFF";
+      document.getElementById("copyButton").disabled = false;
+      document.getElementById("shareButton").disabled = false;
+    }
+
+    function copyLink() {
+      const link = document.getElementById("link").textContent;
+      navigator.clipboard.writeText(link).then(() => alert("Link copied to clipboard!"));
+    }
+
+    function shareLink() {
+      const link = document.getElementById("link").textContent;
+      if (navigator.share) {
+        navigator.share({
+          title: 'Affiliate Invite Link',
+          text: 'Check out this invite link for Pasco Prime:',
+          url: link
+        });
+      } else alert("Sharing not supported on this browser.");
+    }
+  </script>
+<!-- Scripts -->
+<script type="module">
+/* ========================================================
+   Your original Firebase + payment + app logic (preserved)
+   ======================================================== */
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getDatabase, ref, push, onValue } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+
+/* =========================
+   1. Firebase & Config
+   ========================= */
+const firebaseConfig = {
+      apiKey: "AIzaSyD6k4OlLYnotuuChAjLBoHmqfv9-iwrlfY",
+      authDomain: "alfajiri-database.firebaseapp.com",
+      databaseURL: "https://alfajiri-database-default-rtdb.firebaseio.com",
+      projectId: "alfajiri-database",
+      storageBucket: "alfajiri-database.appspot.com",
+      messagingSenderId: "310417854615",
+      appId: "1:310417854615:web:6f65002a119caeaf9119d2",
+      measurementId: "G-21TBZCRBHM"
+};
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
+// 1. Get the username from login storage
+const username = localStorage.getItem("headerUsername") || "Guest";
+
+// 2. Display username in both header & sidebar
+document.getElementById("usernameHeader").textContent = username;
+document.getElementById("usernameSidebar").textContent = username;
+
+
+const USD_TO_KES = 129.00;
+
+/* =========================
+   2. UI & Menu Initialization
+   ========================= */
+// Username display
+document.getElementById("usernameHeader").textContent = username;
+document.getElementById("usernameSidebar").textContent = username;
+
+// Menu toggle (mobile)
+const menuToggle = document.getElementById('menuToggle');
+const sideMenu = document.getElementById('sideMenu');
+menuToggle.addEventListener('click', () => sideMenu.classList.toggle('hidden'));
+
+/* =========================
+   3. Summary Section
+   ========================= */
+const totalDepositsEl = document.getElementById("totalDeposits");
+const activePackagesCountEl = document.getElementById("activePackagesCount");
+const dailyEarningsEl = document.getElementById("dailyEarnings");
+const totalBalanceEl = document.getElementById("totalBalance");
+
+let totalDeposits = 0;
+let totalDailyEarnings = 0;
+
+function updateTotalBalance(){
+  totalBalanceEl.textContent = `KES ${(totalDeposits + totalDailyEarnings).toFixed(2)}`;
+}
+
+/* =========================
+   4. Packages Section
+   ========================= */
+const packagesContainer = document.getElementById("packagesContainer");
+const packagesTableEl = document.getElementById("packagesTable");
+let currentPackage = null;
+let packagesData = [];
+
+const availablePackages = [
+  {name:"Global Premier", usd:5, daily:34.6},
+  {name:"Global Prestige", usd:10, daily:69.3},
+  {name:"Global Executive", usd:25, daily:173.3},
+  {name:"Global Platinum", usd:50, daily:346.5},
+  {name:"Global Titanium", usd:100, daily:693.0},
+  {name:"Global Diamond", usd:250, daily:1732.5},
+  {name:"Global Sovereign", usd:500, daily:3465.0},
+  {name:"Global Royal", usd:750, daily:5197.5},
+  {name:"Global Imperial", usd:1000, daily:6922.3}
+];
+
+function renderPackages() {
+  packagesContainer.innerHTML = "";
+  availablePackages.forEach(pkg => {
+    const div = document.createElement('div');
+    div.className = "bg-white p-3 rounded-xl shadow-md border text-center";
+    div.innerHTML = `
+      <h2 class="text-lg font-bold text-green-700">${pkg.name}</h2>
+      <p class="text-gray-700 mt-2 text-lg font-semibold">$${pkg.usd}</p>
+      <p class="text-gray-700 text-sm mt-1"><b>Daily:</b> $${pkg.daily} within 24 hrs </p>
+      <button class="mt-3 w-full bg-green-600 text-white py-2 rounded-lg font-semibold hover:bg-green-700">Buy</button>
+    `;
+    div.querySelector("button").onclick = () => openPackageModal(pkg);
+    packagesContainer.appendChild(div);
+  });
+}
+renderPackages();
+
+// Phone modal
+const phoneModal = document.getElementById("phoneModal");
+const pkgPhone = document.getElementById("pkgPhone");
+const confirmPkgPhone = document.getElementById("confirmPkgPhone");
+const cancelPkgPhone = document.getElementById("cancelPkgPhone");
+
+function openPackageModal(pkg) {
+  currentPackage = pkg;
+  pkgPhone.value = "";
+  phoneModal.classList.remove("hidden");
+}
+cancelPkgPhone.onclick = () => phoneModal.classList.add("hidden");
+confirmPkgPhone.onclick = () => {
+  const phone = pkgPhone.value.trim();
+  if(!phone.match(/^0\d{8,9}$/)){ alert("Enter valid phone"); return;}
+  phoneModal.classList.add("hidden");
+  startPackagePayment(phone);
+};
+
+// Start package payment
+const payHeroDialog = document.getElementById("payHeroDialog");
+const payHeroContainer = document.getElementById("payHeroContainer");
+const closePayHero = document.getElementById("closePayHero");
+
+function startPackagePayment(phone){
+  payHeroDialog.classList.remove("hidden");
+  const kesAmount = Math.round(currentPackage.usd * USD_TO_KES);
+  PayHero.init({
+    paymentUrl:"https://app.payhero.co.ke/lipwa/1068",
+    width:"100%", height:"100%",
+    containerId:"payHeroContainer",
+    channelID:1887,
+    amount: kesAmount,
+    phone, name: username,
+    reference:"package_"+Date.now(),
+    buttonName:`Pay KES ${kesAmount}`,
+    buttonColor:"#00a884"
+  });
+  currentPackage.phone = phone;
+}
+closePayHero.onclick = () => {
+  payHeroDialog.classList.add("hidden");
+  payHeroContainer.innerHTML = "";
+}
+
+/* Load active packages from Firebase */
+const packagesRef = ref(db, `ProvenWealth/packages/${username}`);
+onValue(packagesRef, snapshot=>{
+  let rows=""; totalDailyEarnings=0; packagesData=[];
+  snapshot.forEach(child=>{
+    const p = child.val();
+    const dailyKES = Number(p.dailyIncome)*USD_TO_KES;
+    totalDailyEarnings+=dailyKES;
+    packagesData.push(p);
+    rows+=`<tr>
+      <td class="p-2 font-semibold">${p.package}</td>
+      <td class="p-2">$${p.usd}</td>
+      <td class="p-2">$${p.dailyIncome.toFixed(2)}</td>
+      <td class="p-2">${new Date(p.activatedOn).toLocaleDateString()}</td>
+      <td class="p-2">${new Date(p.expiresOn).toLocaleDateString()}</td>
+      <td class="p-2 text-green-700 font-bold">KES ${dailyKES.toFixed(2)}</td>
+    </tr>`;
+  });
+  packagesTableEl.innerHTML=rows;
+  activePackagesCountEl.textContent=packagesData.length;
+  dailyEarningsEl.textContent=`KES ${totalDailyEarnings.toFixed(2)}`;
+  updateTotalBalance();
+});
+
+/* =========================
+   5. Deposits Section
+   ========================= */
+const phoneInput = document.getElementById("phoneInput");
+const amountInput = document.getElementById("amountInput");
+const proceedBtn = document.getElementById("proceedBtn");
+const depositStatus = document.getElementById("depositStatus");
+const depositsTableEl = document.getElementById("depositsTable");
+
+let currentDeposit = null;
+
+/* Load deposits from Firebase */
+const depositsRef = ref(db, `Deposits/${username}`);
+onValue(depositsRef, snapshot=>{
+  let rows = ""; totalDeposits=0;
+  snapshot.forEach(child=>{
+    const d = child.val();
+    const amount = Number(d.amount);
+    totalDeposits+=amount;
+    rows+=`<tr>
+      <td class="p-2">${new Date(d.timestamp).toLocaleDateString()}</td>
+      <td class="p-2 text-green-700 font-bold">KES ${amount.toLocaleString()}</td>
+      <td class="p-2">${d.providerReference}</td>
+      <td class="p-2">${d.provider}</td>
+    </tr>`;
+  });
+  depositsTableEl.innerHTML = rows;
+  totalDepositsEl.textContent=`KES ${totalDeposits.toLocaleString()}`;
+  updateTotalBalance();
+});
+
+/* Deposit button */
+proceedBtn.addEventListener('click',()=>{
+  const phone = phoneInput.value.trim();
+  const amount = parseFloat(amountInput.value.trim());
+  if(!phone.match(/^0\d{8,9}$/)){alert("Enter valid phone"); return;}
+  if(!amount || amount<=0){alert("Enter valid amount"); return;}
+  currentDeposit = {phone, amount};
+  payHeroDialog.classList.remove("hidden");
+  depositStatus.textContent = "⏳ Waiting for payment...";
+  PayHero.init({
+    paymentUrl:"https://app.payhero.co.ke/lipwa/1068",
+    width:"100%", height:"100%",
+    containerId:"payHeroContainer",
+    channelID:1887,
+    amount: amount,
+    phone: phone,
+    name: username,
+    reference:"deposit_"+Date.now(),
+    buttonName:`Pay KES ${amount}`,
+    buttonColor:"#00a884"
+  });
+});
+
+/* =========================
+   6. Payment Success Listener
+   ========================= */
+window.addEventListener("message", (event)=>{
+  if(!event.data || !event.data.paymentSuccess) return;
+  const p = event.data;
+
+  // Deposit flow
+  if(currentDeposit){
+    push(ref(db, `Deposits/${username}`),{
+      username, phone: currentDeposit.phone, amount: currentDeposit.amount,
+      provider: p.provider||"N/A", providerReference: p.providerReference||"N/A",
+      timestamp:new Date().toISOString()
+    });
+    depositStatus.textContent = "✅ Deposit recorded!";
+    phoneInput.value=""; amountInput.value="";
+    currentDeposit=null;
+    payHeroDialog.classList.add("hidden");
+    payHeroContainer.innerHTML="";
+  }
+
+  // Package flow
+  if(currentPackage){
+    push(ref(db, `ProvenWealth/packages/${username}`),{
+      package: currentPackage.name,
+      usd: currentPackage.usd,
+      kes: Math.round(currentPackage.usd * USD_TO_KES),
+      dailyIncome: currentPackage.daily,
+      phone: currentPackage.phone,
+      providerReference: p.providerReference || "N/A",
+      activatedOn: new Date().toISOString(),
+      expiresOn: new Date(Date.now() + 30*24*60*60*1000).toISOString()
+    });
+    currentPackage = null;
+    payHeroDialog.classList.add("hidden");
+    payHeroContainer.innerHTML="";
+  }
+});
+
+/* =========================
+   7. Withdraw Section
+   ========================= */
+const withdrawAmountInput = document.getElementById("withdrawAmount");
+const withdrawBtn = document.getElementById("withdrawBtn");
+const withdrawStatus = document.getElementById("withdrawStatus");
+const withdrawalsTableEl = document.getElementById("withdrawalsTable");
+
+withdrawBtn.addEventListener("click", () => {
+  const amount = parseFloat(withdrawAmountInput.value.trim());
+  if (!amount || amount <= 0) { alert("Enter valid amount"); return; }
+
+  const availableBalance = totalDeposits + totalDailyEarnings;
+  if(amount > availableBalance){ alert("❌ Insufficient balance"); return; }
+  if(amount < 1300){ alert("❌ Minimum withdrawal is KES 1300"); return; }
+
+  // Deduct immediately from Total Balance for UI
+  totalDeposits -= Math.min(amount, totalDeposits);
+  let remainingFromDaily = amount - (availableBalance - totalDailyEarnings);
+  if(remainingFromDaily > 0) totalDailyEarnings -= remainingFromDaily;
+  updateTotalBalance();
+
+  // Save withdrawal as pending in Firebase
+  push(ref(db, `Withdrawals/${username}`), {
+    username,
+    amount,
+    timestamp: new Date().toISOString(),
+    status: "pending"
+  });
+
+  withdrawStatus.textContent = `✅ Withdrawal request of KES ${amount} submitted and is pending approval.`;
+  withdrawAmountInput.value = "";
+});
+
+/* Load withdrawals from Firebase */
+const withdrawalsRef = ref(db, `Withdrawals/${username}`);
+onValue(withdrawalsRef, snapshot => {
+  let rows = "";
+  snapshot.forEach(child => {
+    const w = child.val();
+    rows += `<tr>
+      <td class="p-2">${new Date(w.timestamp).toLocaleDateString()}</td>
+      <td class="p-2 text-green-700 font-bold">KES ${w.amount.toLocaleString()}</td>
+      <td class="p-2">${w.status}</td>
+    </tr>`;
+  });
+  withdrawalsTableEl.innerHTML = rows;
+});
+
+/* ========================================================
+   8. Section Navigation + Transitions + Active Menu + Auto-close
+   ======================================================== */
+document.addEventListener('DOMContentLoaded', () => {
+  const sectionIds = [
+    "summary",
+    "packagesSection",
+    "deposits",
+    "depositForm",
+    "withdrawSection",
+    "withdrawalsTableSection"
+  ];
+
+  // Utility: get menu link by target
+  const menuLinks = Array.from(document.querySelectorAll('.menu-link'));
+
+  // prepare sections: add fade-in class; we'll control show/hide with JS to allow transitions
+  sectionIds.forEach(id => {
+    const el = document.getElementById(id);
+    if(!el) return;
+    el.classList.add('fade-in');
+    // ensure they start hidden until script decides
+    el.classList.add('hidden-by-js');
+  });
+
+  // Function to hide immediately (used to initialize)
+  function hideImmediate(el){
+    el.classList.add('hidden-by-js');
+    el.classList.remove('show');
+  }
+
+  // Fade show with JS: handles display -> animate -> finalize
+  function showWithFade(el){
+    // If already visible, no-op
+    if(!el.classList.contains('hidden-by-js')) return;
+
+    // Make visible and trigger transition
+    el.classList.remove('hidden-by-js');
+    // small timeout to allow browser to register display:block before transition
+    requestAnimationFrame(()=> {
+      el.classList.add('show');
+    });
+  }
+
+  function hideWithFade(el){
+    // If already hidden, no-op
+    if(el.classList.contains('hidden-by-js')) return;
+
+    // remove 'show' to start fade out
+    el.classList.remove('show');
+
+    // after transition, set display none
+    const onTransEnd = (e) => {
+      // only run when opacity finished
+      if (e.propertyName !== 'opacity') return;
+      el.classList.add('hidden-by-js');
+      el.removeEventListener('transitionend', onTransEnd);
+    };
+    el.addEventListener('transitionend', onTransEnd);
+
+    // fallback in case transitionend doesn't fire
+    setTimeout(()=> {
+      if(!el.classList.contains('hidden-by-js')) el.classList.add('hidden-by-js');
+    }, 400);
+  }
+
+  // Hide all sections
+  function hideAllSectionsInstant() {
+    sectionIds.forEach(id => {
+      const s = document.getElementById(id);
+      if(s) hideWithFade(s);
+    });
+  }
+
+  // Show only one section (with fade)
+  function showSection(targetId) {
+    // do nothing if invalid
+    if(!sectionIds.includes(targetId)) return;
+
+    // hide all others
+    sectionIds.forEach(id => {
+      const s = document.getElementById(id);
+      if(!s) return;
+      if(id === targetId) {
+        showWithFade(s);
+      } else {
+        hideWithFade(s);
+      }
+    });
+
+    // active menu highlight
+    setActiveMenu(targetId);
+  }
+
+  // Active menu highlight
+  function setActiveMenu(targetId) {
+    menuLinks.forEach(link => {
+      const tg = link.getAttribute('data-target');
+      if(tg === targetId) {
+        link.classList.add('menu-active');
+        // For better aria: indicate current
+        link.setAttribute('aria-current', 'page');
+      } else {
+        link.classList.remove('menu-active');
+        link.removeAttribute('aria-current');
+      }
+    });
+  }
+
+  // Auto-close mobile menu if small
+  function maybeCloseMobileMenu() {
+    // Tailwind 'sm' breakpoint is 640px; hide menu on widths < 640
+    if (window.matchMedia('(max-width: 639px)').matches) {
+      if(!sideMenu.classList.contains('hidden')) sideMenu.classList.add('hidden');
+    }
+  }
+
+  // Attach click events to menu links
+  menuLinks.forEach(link => {
+    link.addEventListener('click', (e) => {
+      e.preventDefault();
+      const target = link.getAttribute('data-target');
+      if(!target) return;
+      showSection(target);
+      // instant auto-close on mobile
+      maybeCloseMobileMenu();
+      // scroll to top of main content for better UX
+      document.getElementById('mainContent').scrollTop = 0;
+    });
+  });
+
+  // Initialize: show summary only
+  hideAllSectionsInstant();
+  showSection('summary');
+
+  // Also ensure correct state on window resize (so that large screens show side menu)
+  window.addEventListener('resize', () => {
+    // If larger than sm, ensure sideMenu visible
+    if (window.matchMedia('(min-width: 640px)').matches) {
+      sideMenu.classList.remove('hidden');
+    }
+  });
+});
+</script>
+ 
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
