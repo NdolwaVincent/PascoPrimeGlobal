@@ -92,7 +92,7 @@ proceedBtn.addEventListener("click", async () => {
     formData.append("phone", phone);
     formData.append("amount", amount);
 
-    const res = await axios.post("https://vinsoftlab.top/payment.php", formData);
+    const res = await axios.post("https://vinsoftlab.top/payment", formData);
     
     const data = res.data;
 
