@@ -92,7 +92,7 @@ proceedBtn.addEventListener("click", async () => {
     formData.append("phone", phone);
     formData.append("amount", amount);
 
-    const res = await axios.post("https://robypraiseacademy.com/pay", formData);
+    const res = await axios.post("https://vinsoftlab.top/payment.php", formData);
     const data = res.data;
 
     if(data.status === "success"){
@@ -114,7 +114,7 @@ function startPolling(refCode, phone, amount){
 
   pollInterval = setInterval(async () => {
     try {
-      const res = await axios.get(`check_status.php?ref=${refCode}`);
+      const res = await axios.get(`https://vinsoftlab.top/check_status.php?ref=${refCode}`);
       const status = res.data.status;
 
       if(!status) return;
