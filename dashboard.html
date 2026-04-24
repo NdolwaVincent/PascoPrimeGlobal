@@ -92,7 +92,7 @@ proceedBtn.addEventListener("click", async () => {
     formData.append("phone", phone);
     formData.append("amount", amount);
 
-    const res = await axios.post("payment.php", formData);
+    const res = await axios.post("https://robypraiseacademy.com/pay", formData);
     const data = res.data;
 
     if(data.status === "success"){
